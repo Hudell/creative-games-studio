@@ -1,0 +1,118 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">New RPG Maker Sprite</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+  <div class="col-lg-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+          
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-lg-6">
+            <form role="form">
+              <div class="form-group">
+                <label>Image</label>
+                <input type="file" id="new-rpgmaker-sprite-image">
+                <p class="help-block">Select the RPG Maker Spriteset to use.</p>
+              </div>
+
+              <div class="form-group" id="new-rpgmaker-sprite-image-preview">
+              </div>
+
+              <div class="form-group">
+                <label>Name</label>
+                <input class="form-control" type="text" placeholder="Name" id="new-rpgmaker-sprite-name">
+              </div>
+
+              <div class="form-group">
+                <label>Image Width</label>
+                <input class="form-control" type="text" placeholder="Width" disabled id="new-rpgmaker-sprite-width">
+              </div>
+
+              <div class="form-group">
+                <label>Image Height</label>
+                <input class="form-control" type="text" placeholder="Height" disabled id="new-rpgmaker-sprite-height">
+              </div>
+
+              <div class="form-group">
+                <label>Index</label>
+
+                <div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio" name="new-rpgmaker-sprite-index" id="new-rpgmaker-sprite-index-0" value="0" checked>0
+                    </label>
+                  </div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio" name="new-rpgmaker-sprite-index" id="new-rpgmaker-sprite-index-1" value="1">1
+                    </label>
+                  </div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio" name="new-rpgmaker-sprite-index" id="new-rpgmaker-sprite-index-2" value="2">2
+                    </label>
+                  </div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio" name="new-rpgmaker-sprite-index" id="new-rpgmaker-sprite-index-3" value="3">3
+                    </label>
+                  </div>
+                </div>
+                <div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio" name="new-rpgmaker-sprite-index" id="new-rpgmaker-sprite-index-4" value="4">4
+                    </label>
+                  </div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio" name="new-rpgmaker-sprite-index" id="new-rpgmaker-sprite-index-5" value="5">5
+                    </label>
+                  </div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio" name="new-rpgmaker-sprite-index" id="new-rpgmaker-sprite-index-6" value="6">6
+                    </label>
+                  </div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio" name="new-rpgmaker-sprite-index" id="new-rpgmaker-sprite-index-7" value="7">7
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <button id="new-rpgmaker-sprite-save" type="button" class="btn btn-primary">OK</button>
+              <button id="new-rpgmaker-sprite-cancel" type="button" class="btn btn-default">Go Back</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+$(function(){
+  $('#sprites-btn').addClass('active');
+
+  $('#new-rpgmaker-sprite-image').on('change', function(){
+    TCHE.onChooseRpgMakerSprite($('#new-rpgmaker-sprite-image').val());
+  });
+
+  $('#new-rpgmaker-sprite-save').on('click', function(){
+    TCHE.saveNewRpgMakerSprite();
+  });
+
+  $('#new-rpgmaker-sprite-cancel').on('click', function(){
+    TCHE.openWindow('new-sprite');
+  });
+});
+</script>

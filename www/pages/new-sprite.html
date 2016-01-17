@@ -1,0 +1,49 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">New Sprite</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+  <div class="col-lg-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+          
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-lg-6">
+            <form role="form">
+              <div class="form-group">
+                <label>Sprite Type</label>
+                <select id="spriteType" class="form-control">
+                  <!-- <option value="tche">Tche</option> -->
+                  <option value="rpgmaker">Rpg Maker</option>
+                  <option value="image">Image</option>
+                </select>
+                <p class="help-block">Select the type of the Sprite that you want to use.</p>
+              </div>
+
+              <button id="new-sprite-continue-btn" type="button" class="btn btn-primary">Continue</button>
+              <button id="new-sprite-cancel-btn" type="button" class="btn btn-default">Cancel</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+$(function(){
+  $('#sprites-btn').addClass('active');
+  $('#new-sprite-continue-btn').on('click', function(){
+    TCHE.continueNewSprite();
+  });
+  $('#new-sprite-cancel-btn').on('click', function(){
+    TCHE.openWindow('sprites');
+  });
+});
+</script>

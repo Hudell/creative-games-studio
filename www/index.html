@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="us">
+<head>
+	<meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+	<title>Tche Editor</title>
+
+  <!-- Bootstrap Core CSS -->
+  <link href="external/bootstrap/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link href="css/tche.css" rel="stylesheet">
+
+  <!-- Custom Fonts -->
+  <link href="external/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+  <link href="external/jquery-ui/jquery-ui.css" rel="stylesheet">
+</head>
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-default" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html" id="gameName">No Game Loaded</a>
+                <a class="navbar-nav navbar-path" id="gamePath"></a>
+            </div>
+
+            <ul class="nav navbar-top-links navbar-right">
+                <li class="">
+                    <a href="#">
+                        <i class="fa fa-sign-out fa-fw"></i> Exit
+                    </a>
+                </li>
+            </ul>
+            <ul class="nav navbar-top-links navbar-right">
+                <li class="">
+                    <a id="play-btn" href="#">
+                        <i class="fa fa-play fa-fw"></i> Play
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="nav navbar-top-links navbar-right">
+                <li class="">
+                    <a id="save-btn" href="#">
+                        <i class="fa fa-save fa-fw"></i> Save
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="nav navbar-top-links navbar-right">
+                <li class="">
+                    <a id="reload-btn" href="#">
+                        <i class="fa fa-refresh fa-fw"></i> Reload
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="nav navbar-top-links navbar-right">
+                <li class="">
+                    <a id="open-btn" href="#">
+                        <i class="fa fa-folder fa-fw"></i> Open
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="nav navbar-top-links navbar-right">
+                <li class="">
+                    <a href="#">
+                        <i class="fa fa-file-o fa-fw"></i> New
+                    </a>
+                </li>
+            </ul>
+
+        </nav>
+
+        <div class="navbar-default sidebar" role="navigation">
+            <div class="sidebar-nav navbar-collapse">
+                <ul class="nav" id="side-menu">
+                    <li>
+                        <a id="index-btn" href="#"><i class="menu-option fa fa-dashboard fa-fw"></i> Dashboard</a>
+                    </li>
+                    <li>
+                        <a id="database" href="#"><i class="menu-option fa fa-table fa-fw"></i> Files<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                          <li>
+                            <a id="sprites-btn" href="#"><i class="menu-option fa fa-files-o fa-fw"></i> Sprites</a>
+                          </li>
+                          <li>
+                              <a id="skins-btn" href="#"><i class="menu-option fa fa-files-o fa-fw"></i> Skins</a>
+                          </li>
+                          <li>
+                              <a href="#"><i class="menu-option fa fa-music fa-fw"></i> Sounds</a>
+                          </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a id="database" href="#"><i class="menu-option fa fa-table fa-fw"></i> Database<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i class="menu-option fa fa-edit fa-fw"></i> Notes</a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="menu-option fa fa-code fa-fw"></i> Code</a>
+                    </li>
+                    <li>
+                        <a id="settings-btn" href="#"><i class="menu-option fa fa-wrench fa-fw"></i> Settings</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.sidebar-collapse -->
+        </div>
+        <!-- /.navbar-static-side -->
+
+        <!-- Page Content -->
+        <div id="page-wrapper">
+        Pick an option on the left menu
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+
+    <script src="external/jquery/jquery.js"></script>
+    <script src="external/jquery-ui/jquery-ui.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="external/bootstrap/bootstrap.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="js/tche.js"></script>
+    <script src="js/sprites.js"></script>
+    <script src="js/sprites-rpgmaker.js"></script>
+    <script src="js/sprites-image.js"></script>
+    <script src="js/settings.js"></script>
+
+</body>
+</html>

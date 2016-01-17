@@ -1,0 +1,11 @@
+{
+  "name": "tche-editor",
+  "main": "www/index.html",
+  "window" : {
+    "frame": true,
+    "toolbar": true,
+    "fullscreen" : false,
+    "width" : 1000,
+    "height" : 600
+  }
+}
