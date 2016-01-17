@@ -1,0 +1,81 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Game Settings</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <form role="form">
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input class="form-control" placeholder="Game Name" id="settings-game-name">
+                            </div>
+                            <div class="form-group">
+                                <label>Initial Scene</label>
+                                <select class="form-control" id="settings-game-initial-scene">
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Initial Map</label>
+                                <select class="form-control" id="settings-game-initial-map">
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Main Skin</label>
+                                <select class="form-control" id="settings-game-main-skin">
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Resolution Width</label>
+                                <input class="form-control" placeholder="0" type="number" id="settings-game-resolution-width">
+                            </div>
+                            <div class="form-group">
+                                <label>Resolution Height</label>
+                                <input class="form-control" placeholder="0" type="number" id="settings-game-resolution-height">
+                            </div>
+                            <div class="form-group">
+                                <label>Screen Width</label>
+                                <input class="form-control" placeholder="0" type="number" id="settings-game-screen-width">
+                            </div>
+                            <div class="form-group">
+                                <label>Screen Height</label>
+                                <input class="form-control" placeholder="0" type="number" id="settings-game-screen-height">
+                            </div>
+
+                            <button id="settings-game-save" type="button" class="btn btn-primary">OK</button>
+                            <button id="settings-game-cancel" type="button" class="btn btn-default">Go Back</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function(){
+  $('#settings-game-save').on('click', function(){
+    TCHE.saveGameSettings();
+  });
+  $('#settings-game-cancel').on('click', function(){
+    TCHE.openWindow('settings');
+  });
+
+  TCHE.fillScenes('settings-game-initial-scene');
+
+  $('#settings-game-name').val(TCHE.gameData.name);
+  $('#settings-game-resolution-width').val(TCHE.gameData.resolution.width);
+  $('#settings-game-resolution-height').val(TCHE.gameData.resolution.height);
+  $('#settings-game-screen-height').val(TCHE.gameData.resolution.screenHeight);
+  $('#settings-game-screen-width').val(TCHE.gameData.resolution.screenWidth);
+  $('#settings-game-initial-scene').val(TCHE.gameData.initialScene);
+  $('#settings-game-initial-map').val(TCHE.gameData.initialMap);
+});
+</script>

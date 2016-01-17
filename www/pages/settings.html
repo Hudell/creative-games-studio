@@ -5,91 +5,97 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                Game
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <form role="form">
-                            <div class="form-group">
-                                <label>Name</label>
-                                <input class="form-control" placeholder="Game Name">
-                            </div>
-                            <div class="form-group">
-                                <label>Initial Map</label>
-                                <select class="form-control">
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Main Skin</label>
-                                <select class="form-control">
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Resolution Width</label>
-                                <input class="form-control" placeholder="0" type="number">
-                            </div>
-                            <div class="form-group">
-                                <label>Resolution Height</label>
-                                <input class="form-control" placeholder="0" type="number">
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <a href="#" id="settings-game-option">
+      <div class="col-lg-3 col-md-3">
+          <div class="panel panel-red">
+              <div class="panel-heading">
+                  <div class="row">
+                      <div class="col-xs-3">
+                          <i class="fa fa-gamepad fa-5x"></i>
+                      </div>
+                      <div class="col-xs-6 text-right">
+                          <div class="huge">Game</div>
+                      </div>
+                  </div>
+              </div>
+              <div class="panel-footer">
+                  <span class="pull-left">Game Settings</span>
+                  <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                  <div class="clearfix"></div>
+              </div>
+          </div>
+      </div>
+    </a>
+    <a href="#" id="settings-player-option">
+      <div class="col-lg-3 col-md-3">
+          <div class="panel panel-red">
+              <div class="panel-heading">
+                  <div class="row">
+                      <div class="col-xs-3">
+                          <i class="fa fa-male fa-5x"></i>
+                      </div>
+                      <div class="col-xs-6 text-right">
+                          <div class="huge">Player</div>
+                      </div>
+                  </div>
+              </div>
+              <div class="panel-footer">
+                  <span class="pull-left">Initial Player Settings</span>
+                  <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                  <div class="clearfix"></div>
+              </div>
+          </div>
+      </div>
+    </a>
+    <a href="#" id="settings-steam-option">
+      <div class="col-lg-3 col-md-3">
+          <div class="panel panel-red">
+              <div class="panel-heading">
+                  <div class="row">
+                      <div class="col-xs-3">
+                          <i class="fa fa-steam fa-5x"></i>
+                      </div>
+                      <div class="col-xs-6 text-right">
+                          <div class="huge">Steam</div>
+                      </div>
+                  </div>
+              </div>
+              <div class="panel-footer">
+                  <span class="pull-left">Steam Integration Settings</span>
+                  <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                  <div class="clearfix"></div>
+              </div>
+          </div>
+      </div>
+    </a>
+    <a href="#" id="settings-time-option">
+      <div class="col-lg-3 col-md-3">
+          <div class="panel panel-red">
+              <div class="panel-heading">
+                  <div class="row">
+                      <div class="col-xs-3">
+                          <i class="fa fa-clock-o fa-5x"></i>
+                      </div>
+                      <div class="col-xs-6 text-right">
+                          <div class="huge">Time</div>
+                      </div>
+                  </div>
+              </div>
+              <div class="panel-footer">
+                  <span class="pull-left">Time System Settings</span>
+                  <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                  <div class="clearfix"></div>
+              </div>
+          </div>
+      </div>
+    </a>
 </div>
 
-
-<div class="row">
-    <div class="col-lg-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                Player's Initial Settings
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <form role="form">
-                            <div class="form-group">
-                                <label>Sprite</label>
-                                <select class="form-control">
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>X position</label>
-                                <input class="form-control" placeholder="0" type="number">
-                            </div>
-                            <div class="form-group">
-                                <label>Y position</label>
-                                <input class="form-control" placeholder="0" type="number">
-                            </div>
-                            <div class="form-group">
-                                <label>Hitbox X</label>
-                                <input class="form-control" placeholder="0" type="number">
-                            </div>
-                            <div class="form-group">
-                                <label>Hitbox Y</label>
-                                <input class="form-control" placeholder="0" type="number">
-                            </div>
-                            <div class="form-group">
-                                <label>Hitbox Width</label>
-                                <input class="form-control" placeholder="0" type="number">
-                            </div>
-                            <div class="form-group">
-                                <label>Hitbox Height</label>
-                                <input class="form-control" placeholder="0" type="number">
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
+<script type="text/javascript">
+$(function(){
+  $('#settings-player-option').on('click', function(event) { TCHE.eventOpenWindow(event, 'settings-player'); });
+  $('#settings-game-option').on('click', function(event) { TCHE.eventOpenWindow(event, 'settings-game'); });
+  $('#settings-steam-option').on('click', function(event) { TCHE.eventOpenWindow(event, 'settings-steam'); });
+  $('#settings-time-option').on('click', function(event) { TCHE.eventOpenWindow(event, 'settings-time'); });
+});
+</script>

@@ -46,6 +46,24 @@
     $('#new-rpgmaker-sprite-image-preview').html(img);
   };
 
+  TCHE.onChooseRpgMakerSpriteToEdit = function(filePath) {
+    if (!TCHE.isFileImported(filePath)) {
+      TCHE.goToRpgMakerSpriteImportScreen(filePath);
+      return;
+    }
+
+    var img = $("<img src='" + filePath + "'>");
+    img.on('load', function(){
+      var width = img[0].width;
+      var height = img[0].height;
+
+      $('#edit-rpgmaker-sprite-width').val(width);
+      $('#edit-rpgmaker-sprite-height').val(height);
+    });
+
+    $('#edit-rpgmaker-sprite-image-preview').html(img);
+  };
+
   TCHE.saveNewRpgMakerSprite = function() {
     var imageFile = $('#new-rpgmaker-sprite-image').val();
     if (!imageFile || !imageFile.trim()) {
@@ -80,7 +98,7 @@
       throw new Error("A sprite called " + spriteName + " already exists.");
     }
 
-    var imageRelativePath = imageFile.replace(TCHE.loadedGame.folder, '').replace(TCHE.currentGamePath, '');
+    var imageRelativePath = imageFile.replace(TCHE.loadedGame.folder, '');
     while (imageRelativePath.length > 0 && (imageRelativePath.substr(0, 1) == "\\" || imageRelativePath.substr(0, 1) == '/')) {
       imageRelativePath = imageRelativePath.slice(1, imageRelativePath.length);
     }
@@ -93,7 +111,7 @@
       "index" : index
     };
 
-    TCHE.saveGameData();
+    TCHE.markAsModified();
     TCHE.openWindow('sprites');
   };
 
@@ -133,7 +151,8 @@
       }
     }
 
-    TCHE.copyFileSync(imageFile, path.join('currentGame', newName));
+    var newPath = path.join(TCHE.loadedGame.folder, newName);
+    TCHE.copyFileSync(imageFile, newPath);
 
     for (var i = 0; i < 8; i++) {
       var name = $('#import-rpgmaker-sprite-' + i).val();
@@ -150,7 +169,93 @@
       };      
     }
 
-    TCHE.saveGameData();
+    TCHE.markAsModified();
     TCHE.openWindow('sprites');
+  };
+
+
+  TCHE.saveOldRpgMakerSprite = function(){
+    var spriteName = $('#edit-rpgmaker-sprite-name').val();
+    if (!spriteName || !spriteName.trim) {
+      throw new Error("I forgot what sprite you were modifying. Try again.");
+    }
+
+    var data = TCHE.gameData.sprites[spriteName];
+    if (!data) {
+      throw new Error("I couldn't find the existing sprite data.");
+    }
+
+    var imageFile = $('#edit-rpgmaker-sprite-image').val();
+    if (!imageFile || !imageFile.trim()) {
+      imageFile = path.join(TCHE.loadedGame.folder, data.image);
+    }
+
+    if (!TCHE.isFileImported(imageFile)) {
+      throw new Error("The selected image file was not imported.");
+    }
+
+    var width = $('#edit-rpgmaker-sprite-width').val();
+    if (isNaN(width) || width == 0) {
+      throw new Error("Invalid image width.");
+    }
+
+    var height = $('#edit-rpgmaker-sprite-height').val();
+    if (isNaN(height) || height == 0) {
+      throw new Error("Invalid image height.");
+    }
+
+    var index = $('input[name="edit-rpgmaker-sprite-index"]:checked').val();
+    if (!index || isNaN(index) || index < 0 || index >= 8) {
+      throw new Error("Invalid Index.");
+    }
+
+    var imageRelativePath = imageFile.replace(TCHE.loadedGame.folder, '');
+    while (imageRelativePath.length > 0 && (imageRelativePath.substr(0, 1) == "\\" || imageRelativePath.substr(0, 1) == '/')) {
+      imageRelativePath = imageRelativePath.slice(1, imageRelativePath.length);
+    }
+
+    data.image = imageRelativePath;
+    data.imageWidth = width;
+    data.imageHeight = height;
+    data.index = index;
+
+    TCHE.gameData.sprites[spriteName] = {
+      "type" : "rpgmaker",
+      "image" : imageRelativePath,
+      "imageWidth" : width,
+      "imageHeight" : height,
+      "index" : index
+    };
+
+    TCHE.markAsModified();
+    TCHE.openWindow('sprites');
+  };
+
+  TCHE.loadRpgMakerSpriteData = function(spriteName) {
+    var spriteData = TCHE.gameData.sprites[spriteName];
+
+    var fullImagePath = path.join(TCHE.loadedGame.folder, spriteData.image);
+
+    var img = $("<img src='" + fullImagePath + "'>");
+    img.on('load', function(){
+      var width = img[0].width;
+      var height = img[0].height;
+
+      $('#edit-rpgmaker-sprite-width').val(width);
+      $('#edit-rpgmaker-sprite-height').val(height);
+    });
+    $('#edit-rpgmaker-sprite-image-preview').html(img);
+    
+    $('#edit-rpgmaker-sprite-name').val(spriteName);
+    $('input[name="edit-rpgmaker-sprite-index"]').attr('checked', null);
+    $('#edit-rpgmaker-sprite-index-' + spriteData.index).attr('checked', 'checked');
+
+
+  };
+
+  TCHE.editRpgMakerSprite = function(spriteName) {
+    TCHE.openWindow('edit-sprite-rpgmaker', function(){
+      TCHE.loadRpgMakerSpriteData(spriteName);
+    });
   };
 })();

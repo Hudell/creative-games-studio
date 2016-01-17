@@ -1,6 +1,6 @@
 $(function(){
   window.onerror = function(msg, url, line, col, error) {
-    TCHE.openDialog($("<div></div>").html(error.message));
+    TCHE.openDialog($("<div></div>").html(error.message), 'Error');
     return false;
   };
 });
@@ -9,13 +9,16 @@ var TCHE = {};
 (function(){
   var path = require("path");
   var fs = require("fs");
+  var gui = require('nw.gui');
+  var win = gui.Window.get();
+  TCHE.win = win;
+
 
   TCHE.gameData = undefined;
   TCHE.loadedGame = {
-    folder : "",
-    modified : false
+    folder : ""
   };
-  TCHE.currentGamePath = path.join(path.resolve("."), 'currentGame');
+  TCHE.modified = false;
 
   TCHE.requestPage = function(pageName, onSuccess, onError) {
     var mimeType = "text/html";
@@ -39,7 +42,7 @@ var TCHE = {};
     xhr.send();
   };
 
-  TCHE.openDialog = function(element, title) {
+  TCHE.openDialog = function(element, title, buttons) {
     element.dialog({
       title : title || "Information",
       width : 'auto',
@@ -47,7 +50,7 @@ var TCHE = {};
       close: function () {
         $(this).dialog('destroy').remove ();
       },
-      buttons: [
+      buttons: buttons || [
         {
           text: "Ok",
           click: function() {
@@ -56,16 +59,49 @@ var TCHE = {};
         }
       ]      
     });
-  }
+  };
+
+  TCHE.confirm = function(message, okCallback, title, cancelCallback){
+    TCHE.customConfirm(message, title || "Confirmation", "Ok", "Cancel", okCallback, cancelCallback);
+  };
+
+  TCHE.customConfirm = function(message, title, okLabel, cancelLabel, okCallback, cancelCallback) {
+    TCHE.openDialog($("<div></div>").html(message), title, [
+      {
+        text : okLabel,
+        click : function() {
+          if (!!okCallback) {
+            okCallback();
+          }
+          $(this).dialog("close");
+        }
+      },
+      {
+        text : cancelLabel,
+        click : function() {
+          if (!!cancelCallback) {
+            cancelCallback();
+          }
+          $(this).dialog("close");
+        }        
+      }
+    ]);
+  };
 
   TCHE.showMessage = function(message) {
     TCHE.openDialog($("<div></div>").html(message));
+  };
+
+  TCHE.showError = function(message) {
+    console.error(message);
+    TCHE.openDialog($("<div></div>").html(message), 'Error');
   };
 
   TCHE.loadJson = function(fileName) {
     if (!fs.existsSync(fileName)) {
       console.log("File not found: ", fileName);
       throw new Error("File not found");
+      return;
     }
 
     var content = fs.readFileSync(fileName, {encoding : 'utf8'});
@@ -100,18 +136,28 @@ var TCHE = {};
     $('#' + tableId).children('tbody').append(row);
   };
 
-  TCHE.openWindow = function(windowName) {
+  TCHE.openWindow = function(windowName, callback) {
     $('.menu-option').parent().removeClass('active');
     
-    if (windowName !== 'index') {
+    if (windowName !== 'new-project') {
       if (!TCHE.isGameLoaded()) {
-        TCHE.openWindow('index');
-        throw new Error("There's no game loaded.");
+        TCHE.openWindow('new-project');
+
+        if (windowName !== 'index') {
+          TCHE.showError("There's no game loaded.");
+          return;
+        } else {
+          return;
+        }
       }
     }
 
     TCHE.requestPage(windowName + '.html', function(result, xhr){
       $('#page-wrapper').html(xhr.responseText);
+
+      if (!!callback) {
+        callback();
+      }
     });
 
     $('#' + windowName + '-btn').addClass('active');
@@ -133,26 +179,85 @@ var TCHE = {};
     TCHE.openWindow(windowName);
   };
 
+  TCHE.closeProject = function(){
+    TCHE.changeLoadedPath('');
+  };
+
   TCHE.openProject = function(folderPath) {
     if (!fs.existsSync(path.join(folderPath, "game.json"))) {
-      throw new Error("Game Data not found");
+      TCHE.showError("Game Data not found");
+      return;
     }
     if (!fs.existsSync(path.join(folderPath, 'index.html'))) {
-      throw new Error("Game Index not found");
+      TCHE.showError("Game Index not found");
+      return;
     }
     if (!fs.existsSync(path.join(folderPath, 'main.js'))) {
-      throw new Error("Main Game not found");
+      TCHE.showError("Main Game not found");
+      return;
     }
 
     TCHE.loadProject(folderPath);
   };
 
   TCHE.saveProject = function() {
-    TCHE.copyFolderSync('currentGame', TCHE.loadedGame.folder);
+    if (!TCHE.isGameLoaded()) {
+      throw new Error("There's no game loaded.");
+    }
+
+    TCHE.saveGameData();
+    TCHE.markAsSaved();
+  };
+
+  TCHE.reloadProject = function() {
+    location.reload();
+  };
+
+  TCHE.reloadProjectButton = function() {
+    if (!TCHE.isGameLoaded()) {
+      throw new Error("There's no game loaded.");
+    }
+
+    if (TCHE.isGameModified()) {
+      TCHE.customConfirm("Unsaved changes will be lost.", "Attention", "No problem.", "Wait, No.", function(){
+        TCHE.reloadProject();
+      });
+    } else {
+      TCHE.reloadProject();
+    }    
+  };
+
+  TCHE.newProject = function() {
+    TCHE.openWindow('new-project');
+  };
+
+  TCHE.newProjectButton = function(){
+    if (TCHE.isGameModified()) {
+      TCHE.customConfirm("Unsaved changes will be lost.", "Attention", "No problem.", "Wait, No.", function(){
+        TCHE.newProject();
+      });
+    } else {
+      TCHE.newProject();
+    }
   };
 
   TCHE.playProject = function() {
-    window.open('file://' + TCHE.currentGamePath + '/index.html?debug');
+    window.open('file://' + TCHE.loadedGame.folder + '/index.html?debug');
+  };
+
+  TCHE.playProjectButton = function(){
+    if (!TCHE.isGameLoaded()) {
+      throw new Error("There's no game loaded.");
+    }
+
+    if (TCHE.isGameModified()) {
+      TCHE.confirm("Save before running?", function(){
+        TCHE.saveProject();
+        TCHE.playProject();
+      });
+    } else {
+      TCHE.playProject();
+    }
   };
 
   TCHE.removeFolderContent = function(folderPath) {
@@ -163,7 +268,8 @@ var TCHE = {};
     }
     catch(e) {
       console.log("Failed to clean folder content", folderPath);
-      throw new Error("Failed clean folder content");
+      TCHE.showError("Failed clean folder content");
+      return;
     }
 
     if (files.length > 0) {
@@ -184,7 +290,7 @@ var TCHE = {};
 
     //check if folder needs to be created or integrated
     if (!fs.existsSync(destinationPath)) {
-      fs.mkdirSync(destinationPath);
+      TCHE.forceDirSync(destinationPath);
     }
 
     //copy
@@ -229,13 +335,9 @@ var TCHE = {};
   };
 
   TCHE.loadProject = function(folderPath) {
-    TCHE.changeLoadedPath('');
-    
-    TCHE.removeFolderContent('currentGame');
-    TCHE.copyFolderSync(folderPath, 'currentGame');
-    TCHE.loadGameData();
-
     TCHE.changeLoadedPath(folderPath);
+    TCHE.loadGameData();
+    TCHE.markAsSaved();
   };
 
   TCHE.openProjectDialog = function() {
@@ -253,7 +355,7 @@ var TCHE = {};
   };
 
   TCHE.changeGamePath = function(newPath) {
-    $('#gamePath').html(newPath);
+    win.title = 'TCHE Editor - ' + newPath;
   };
 
   TCHE.loadLoadedGameInfo = function() {
@@ -270,13 +372,24 @@ var TCHE = {};
 
   TCHE.loadGameData = function() {
     try {
-      TCHE.gameData = TCHE.loadJson('currentGame/game.json');
+      TCHE.gameData = TCHE.loadJson(path.join(TCHE.loadedGame.folder, 'game.json'));
     }
     catch(e) {
-      TCHE.changeGameTitle('No Game Loaded');
-      throw e;
+      try{
+        TCHE.changeGameTitle('No Game Loaded');
+        TCHE.closeProject();
+      }
+      catch(e) {
+        console.error(e);
+        TCHE.showError("Game Data is missing and another error happened while closing the project.");
+        return;
+      }
+
+      TCHE.showError("Game Data is missing. The project was unloaded.");
+      return;
     }
 
+    TCHE.validateGameData();
     if (!!TCHE.gameData && !!TCHE.gameData.name) {
       TCHE.changeGameTitle(TCHE.gameData.name);
     }
@@ -284,48 +397,162 @@ var TCHE = {};
     TCHE.openWindow('index');
   };
 
+  TCHE.getAllScenes = function() {
+    return TCHE.gameData.tcheScenes.concat(TCHE.gameData.gameScenes);
+  };
+
+  TCHE.validateGameData = function() {
+    if (!TCHE.gameData.skins) {
+      TCHE.gameData.skins = {};
+    }
+    if (!TCHE.gameData.sprites) {
+      TCHE.gameData.sprites = {};
+    }
+    if (!TCHE.gameData.resolution) {
+      TCHE.gameData.resolution = {};
+    }
+    if (!TCHE.gameData.player) {
+      TCHE.gameData.player = {};
+    }
+    if (!TCHE.gameData.sounds) {
+      TCHE.gameData.sounds = {};
+    }
+    if (!TCHE.gameData.maps) {
+      TCHE.gameData.maps = {};
+    }
+
+    if (!TCHE.gameData.tcheScenes) {
+      TCHE.gameData.tcheScenes = [
+        'SceneMap',
+        'SceneTitle'
+      ];
+    }
+    if (!TCHE.gameData.gameScenes) {
+      TCHE.gameData.gameScenes = [];
+    }
+
+    TCHE.gameData.resolution.width = TCHE.gameData.resolution.width || 640;
+    TCHE.gameData.resolution.height = TCHE.gameData.resolution.height || 360;
+    TCHE.gameData.resolution.screenWidth = TCHE.gameData.resolution.screenWidth || 640;
+    TCHE.gameData.resolution.screenHeight = TCHE.gameData.resolution.screenHeight || 360;
+    TCHE.gameData.name = TCHE.gameData.name || "Untitled Project";
+    TCHE.gameData.initialMap = TCHE.gameData.initialMap || "";
+    TCHE.gameData.initialScene = TCHE.gameData.initialScene || "SceneTitle";
+    TCHE.gameData.mainSkin = TCHE.gameData.mainSkin || "system";
+  };
+
   TCHE.saveGameData = function() {
-    TCHE.saveJson('currentGame/game.json', TCHE.gameData);
-  }
+    TCHE.saveJson(path.join(TCHE.loadedGame.folder, 'game.json'), TCHE.gameData);
+  };
+
+  TCHE.markAsSaved = function(){
+    TCHE.modified = false;
+    $('#save-btn').css('color', '#337ab7');
+  };
+
+  TCHE.markAsModified = function(){
+    TCHE.modified = true;
+
+    $('#save-btn').css('color', 'red');
+  };
 
   TCHE.isFileImported = function(filePath) {
-    var currentGame = TCHE.currentGamePath;
     var loadedPath = TCHE.loadedGame.folder;
 
-    return filePath.indexOf(currentGame) === 0 || filePath.indexOf(loadedPath) === 0;
+    return filePath.indexOf(loadedPath) === 0;
   };
 
   TCHE.isGameLoaded = function(){
     return !!TCHE.loadedGame.folder && !!TCHE.gameData;
   };
 
+  TCHE.isGameModified = function() {
+    return TCHE.isGameLoaded() && TCHE.modified;
+  };
 
+  TCHE.exit = function(){
+    win.close();
+  };
+
+  TCHE.exitButton = function(){
+    if (TCHE.isGameModified()) {
+      TCHE.confirm("Save before leaving?", function(){
+        TCHE.saveProject();
+        TCHE.exit();
+      });
+    } else {
+      TCHE.exit();
+    }
+  };
+
+  TCHE.fillScenes = function(selectId) {
+    var element = $('#' + selectId);
+    element.html('');
+
+    var scenes = TCHE.getAllScenes();
+    for (var i = 0; i < scenes.length; i++) {
+      element.append('<option value="' +  scenes[i] + '">' +  scenes[i] + '</option>');
+    }
+  };
+
+  TCHE.onLoad = function(){
+    $('#index-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'index'); });
+    
+    $('#files-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'files'); });
+    $('#faces-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'faces'); });
+    $('#maps-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'maps'); });
+    $('#movies-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'movies'); });
+    $('#musics-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'musics'); });
+    $('#sprites-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'sprites'); });
+    $('#skins-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'skins'); });
+    $('#sounds-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'sounds'); });
+    $('#tilesets-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'tilesets'); });
+    
+    $('#database-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'database'); });
+
+    $('#code-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'code'); });
+
+    $('#plugins-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'plugins'); });
+    
+    $('#settings-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'settings'); });
+    $('#settings-player-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'settings-player'); });
+    $('#settings-game-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'settings-game'); });
+    $('#settings-steam-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'settings-steam'); });
+    $('#settings-time-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'settings-time'); });
+
+    $('#open-btn').on('click', function(event) {
+      event.preventDefault();
+      TCHE.openProjectDialog();
+    });
+    $('#save-btn').on('click', function(event) {
+      event.preventDefault();            
+      TCHE.saveProject();
+    });
+    $('#reload-btn').on('click', function(event) {
+      event.preventDefault();
+      TCHE.reloadProjectButton();
+    });
+    $('#new-btn').on('click', function(event) {
+      event.preventDefault();
+      TCHE.newProjectButton();
+    });
+    $('#play-btn').on('click', function(event) {
+      event.preventDefault();
+      TCHE.playProjectButton();
+    });
+
+    $('#exit-btn').on('click', function(event) {
+      event.preventDefault();
+      TCHE.exitButon();
+    });
+
+    TCHE.openWindow('index');
+
+    TCHE.loadLoadedGameInfo();
+    if (!!TCHE.loadedGame.folder) {
+      TCHE.loadGameData();
+    }
+
+    TCHE.win.maximize();
+  };
 })();
-
-$(function(){
-  $('#index-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'index'); });
-  $('#sprites-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'sprites'); });
-  $('#skins-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'skins'); });
-  $('#settings-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'settings'); });
-
-  $('#open-btn').on('click', function(event) {
-    TCHE.openProjectDialog();
-  });
-  $('#save-btn').on('click', function(event) {
-    TCHE.saveProject();
-  });
-  $('#play-btn').on('click', function(event) {
-    TCHE.playProject();
-  });
-
-  TCHE.openWindow('index');
-
-  TCHE.loadLoadedGameInfo();
-  if (!!TCHE.loadedGame.folder) {
-    TCHE.loadGameData();
-  }
-
-  var gui = require('nw.gui');
-  var win = gui.Window.get();
-  win.maximize();
-});

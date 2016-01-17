@@ -12,7 +12,7 @@
     data.push(image);
     data.push(spriteData.imageWidth || spriteData.width || 0);
     data.push(spriteData.imageHeight || spriteData.height || 0);
-    data.push(spriteData.index || "");
+    data.push(spriteData.index || (spriteData.index === 0 ? 0 : ""));
 
     TCHE.addRowToTable('sprites-table', data, 'sprites', name);
   };
@@ -43,13 +43,26 @@
 
   TCHE.removeSprite = function(spriteName) {
     delete TCHE.gameData.sprites[spriteName];
-    TCHE.saveGameData();
+    TCHE.markAsModified();
   };
 
   TCHE.viewSpriteImage = function(spriteName) {
     var image = TCHE.gameData.sprites[spriteName].image;
-    var imagePath = path.join(TCHE.currentGamePath, image);
+    var imagePath = path.join(TCHE.loadedGame.folder, image);
 
     TCHE.openDialog($('<div><img src="' + imagePath + '"></img></div>'), image);
+  };
+
+  TCHE.editSprite = function(spriteName) {
+    if (!TCHE.gameData.sprites[spriteName]) {
+      throw new Error("Sprite " + spriteName + " not found.");
+    }
+
+    var spriteData = TCHE.gameData.sprites[spriteName];
+    switch (spriteData.type) {
+      case 'rpgmaker' :
+        TCHE.editRpgMakerSprite(spriteName);
+        break;
+    }
   };
 })();

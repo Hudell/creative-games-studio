@@ -75,7 +75,7 @@
       throw new Error("A sprite called " + spriteName + " already exists.");
     }
 
-    var imageRelativePath = imageFile.replace(TCHE.loadedGame.folder, '').replace(TCHE.currentGamePath, '');
+    var imageRelativePath = imageFile.replace(TCHE.loadedGame.folder, '');
     while (imageRelativePath.length > 0 && (imageRelativePath.substr(0, 1) == "\\" || imageRelativePath.substr(0, 1) == '/')) {
       imageRelativePath = imageRelativePath.slice(1, imageRelativePath.length);
     }
@@ -87,7 +87,7 @@
       "height" : height
     };
 
-    TCHE.saveGameData();
+    TCHE.markAsModified();
     TCHE.openWindow('sprites');
   };
 
@@ -123,7 +123,8 @@
       }
     }
 
-    TCHE.copyFileSync(imageFile, path.join('currentGame', newName));
+    var newPath = path.join(TCHE.loadedGame.folder, newName);
+    TCHE.copyFileSync(imageFile, newPath);
 
     if (!!name && !!name.trim()) {
       TCHE.gameData.sprites[name] = {
@@ -134,7 +135,8 @@
       };
     }
 
-    TCHE.saveGameData();
+
+    TCHE.markAsModified();    
     TCHE.openWindow('sprites');
   };
 })();

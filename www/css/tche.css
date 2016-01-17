@@ -1,5 +1,6 @@
 body {
     background-color: #f8f8f8;
+    overflow-x: hidden;
 }
 
 #wrapper {
@@ -291,6 +292,24 @@ table.dataTable thead .sorting:after {
 
 .huge {
     font-size: 40px;
+}
+
+.panel-blue {
+    border-color: #337ab7;
+}
+
+.panel-blue .panel-heading {
+    border-color: #337ab7;
+    color: #fff;
+    background-color: #337ab7;
+}
+
+.panel-blue a {
+    color: #337ab7;
+}
+
+.panel-blue a:hover {
+    color: #23527c;
 }
 
 .panel-green {

@@ -15,6 +15,13 @@
   "name" : "Untitled Game",
   "initialMap" : "",
   "mainSkin" : "",
+
+  "resolution" : {
+    "width" : 640,
+    "height" : 360,
+    "screenWidth" : 640,
+    "screenHeight" : 360
+  },
   
   "maps" : {
   },

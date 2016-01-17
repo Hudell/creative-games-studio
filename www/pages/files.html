@@ -1,0 +1,133 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Files</h1>
+    </div>
+</div>
+
+<div class="row">
+    <a href="#" id="files-faces-option">
+      <div class="col-lg-2 col-md-2">
+          <div class="panel panel-green">
+              <div class="panel-heading">
+                  <div class="row">
+                      <div class="text-center">
+                          <i class="fa fa-user fa-5x"></i>
+                          <div class="huge">Faces</div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </a>
+    <a href="#" id="files-maps-option">
+      <div class="col-lg-2 col-md-2">
+          <div class="panel panel-green">
+              <div class="panel-heading">
+                  <div class="row">
+                      <div class="text-center">
+                          <i class="fa fa-globe fa-5x"></i>
+                          <div class="huge">Maps</div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </a>
+    <a href="#" id="files-movies-option">
+      <div class="col-lg-2 col-md-2">
+          <div class="panel panel-green">
+              <div class="panel-heading">
+                  <div class="row">
+                      <div class="text-center">
+                          <i class="fa fa-film fa-5x"></i>
+                          <div class="huge">Movies</div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </a>
+    <a href="#" id="files-music-option">
+      <div class="col-lg-2 col-md-2">
+          <div class="panel panel-green">
+              <div class="panel-heading">
+                  <div class="row">
+                      <div class="text-center">
+                          <i class="fa fa-music fa-5x"></i>
+                          <div class="huge">Music</div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </a>
+    <a href="#" id="files-sprites-option">
+      <div class="col-lg-2 col-md-2">
+          <div class="panel panel-green">
+              <div class="panel-heading">
+                  <div class="row">
+                      <div class="text-center">
+                          <i class="fa fa-image fa-5x"></i>
+                          <div class="huge">Sprites</div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </a>
+    <a href="#" id="files-skins-option">
+      <div class="col-lg-2 col-md-2">
+          <div class="panel panel-green">
+              <div class="panel-heading">
+                  <div class="row">
+                      <div class="text-center">
+                          <i class="fa fa-tint fa-5x"></i>
+                          <div class="huge">Skins</div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </a>
+    <a href="#" id="files-sounds-option">
+      <div class="col-lg-2 col-md-2">
+          <div class="panel panel-green">
+              <div class="panel-heading">
+                  <div class="row">
+                      <div class="text-center">
+                          <i class="fa fa-file-sound-o fa-5x"></i>
+                          <div class="huge">Sounds</div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </a>
+    <a href="#" id="files-tilesets-option">
+      <div class="col-lg-2 col-md-2">
+          <div class="panel panel-green">
+              <div class="panel-heading">
+                  <div class="row">
+                      <div class="text-center">
+                          <i class="fa fa-pagelines fa-5x"></i>
+                          <div class="huge">Tilesets</div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </a>
+</div>
+
+<script type="text/javascript">
+$(function(){
+  $('#files-faces-option').on('click', function(event) { TCHE.eventOpenWindow(event, 'faces'); });
+  $('#files-maps-option').on('click', function(event) { TCHE.eventOpenWindow(event, 'maps'); });
+  $('#files-movies-option').on('click', function(event) { TCHE.eventOpenWindow(event, 'movies'); });
+  $('#files-music-option').on('click', function(event) { TCHE.eventOpenWindow(event, 'musics'); });
+  $('#files-sprites-option').on('click', function(event) { TCHE.eventOpenWindow(event, 'sprites'); });
+  $('#files-skins-option').on('click', function(event) { TCHE.eventOpenWindow(event, 'skins'); });
+  $('#files-sounds-option').on('click', function(event) { TCHE.eventOpenWindow(event, 'sounds'); });
+  $('#files-tilesets-option').on('click', function(event) { TCHE.eventOpenWindow(event, 'tilesets'); });
+});
+</script>

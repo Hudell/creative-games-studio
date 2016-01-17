@@ -1,0 +1,120 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Modify RPG Maker Sprite</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+  <div class="col-lg-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+          
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-lg-6">
+            <form role="form">
+              <div class="form-group">
+                <label>Image</label>
+                <input type="file" id="edit-rpgmaker-sprite-image">
+                <p class="help-block">Select the RPG Maker Spriteset to use. Leave empty to keep the current image.</p>
+              </div>
+
+              <div class="form-group" id="edit-rpgmaker-sprite-image-preview">
+              </div>
+
+              <div class="form-group">
+                <label>Name</label>
+                <input class="form-control" type="text" placeholder="Name" id="edit-rpgmaker-sprite-name" disabled>
+              </div>
+
+              <div class="form-group">
+                <label>Image Width</label>
+                <input class="form-control" type="text" placeholder="Width" disabled id="edit-rpgmaker-sprite-width">
+              </div>
+
+              <div class="form-group">
+                <label>Image Height</label>
+                <input class="form-control" type="text" placeholder="Height" disabled id="edit-rpgmaker-sprite-height">
+              </div>
+
+              <div class="form-group">
+                <label>Index</label>
+
+                <div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio" name="edit-rpgmaker-sprite-index" id="edit-rpgmaker-sprite-index-0" value="0" checked>0
+                    </label>
+                  </div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio" name="edit-rpgmaker-sprite-index" id="edit-rpgmaker-sprite-index-1" value="1">1
+                    </label>
+                  </div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio" name="edit-rpgmaker-sprite-index" id="edit-rpgmaker-sprite-index-2" value="2">2
+                    </label>
+                  </div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio" name="edit-rpgmaker-sprite-index" id="edit-rpgmaker-sprite-index-3" value="3">3
+                    </label>
+                  </div>
+                </div>
+                <div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio" name="edit-rpgmaker-sprite-index" id="edit-rpgmaker-sprite-index-4" value="4">4
+                    </label>
+                  </div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio" name="edit-rpgmaker-sprite-index" id="edit-rpgmaker-sprite-index-5" value="5">5
+                    </label>
+                  </div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio" name="edit-rpgmaker-sprite-index" id="edit-rpgmaker-sprite-index-6" value="6">6
+                    </label>
+                  </div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio" name="edit-rpgmaker-sprite-index" id="edit-rpgmaker-sprite-index-7" value="7">7
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <button id="edit-rpgmaker-sprite-save" type="button" class="btn btn-primary">OK</button>
+              <button id="edit-rpgmaker-sprite-cancel" type="button" class="btn btn-default">Go Back</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+$(function(){
+  $('#sprites-btn').addClass('active');
+
+  $('#edit-rpgmaker-sprite-image').on('change', function(){
+    TCHE.onChooseRpgMakerSpriteToEdit($('#edit-rpgmaker-sprite-image').val());
+  });
+
+  $('#edit-rpgmaker-sprite-save').on('click', function(event){
+    event.preventDefault();
+    TCHE.saveOldRpgMakerSprite();
+  });
+
+  $('#edit-rpgmaker-sprite-cancel').on('click', function(event){
+    event.preventDefault();
+    TCHE.openWindow('sprites');
+  });
+});
+</script>

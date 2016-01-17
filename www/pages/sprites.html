@@ -98,13 +98,22 @@ $(function(){
   $('#import-sprite-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'import-sprite'); });
 
   $('.sprites-delete').on('click', function(event) {
+    event.preventDefault();
     var spriteName = event.currentTarget.dataset.elementId;
 
     TCHE.removeSprite(spriteName);
     TCHE.openWindow('sprites');
   });
 
+  $('.sprites-edit').on('click', function(event) {
+    event.preventDefault();
+    var spriteName = event.currentTarget.dataset.elementId;
+
+    TCHE.editSprite(spriteName);
+  });
+
   $('.sprites-view').on('click', function(event) {
+    event.preventDefault();
     var spriteName = event.currentTarget.dataset.elementId;
 
     TCHE.viewSpriteImage(spriteName);
