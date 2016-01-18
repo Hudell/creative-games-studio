@@ -496,7 +496,6 @@ var TCHE = {};
     $('#sprites-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'sprites'); });
     $('#skins-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'skins'); });
     $('#sounds-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'sounds'); });
-    $('#tilesets-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'tilesets'); });
     
     $('#database-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'database'); });
 
