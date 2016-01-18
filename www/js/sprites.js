@@ -65,4 +65,14 @@
         break;
     }
   };
+
+  TCHE.fillSprites = function(selectId) {
+    var element = $('#' + selectId);
+    element.html('');
+
+    var sprites = TCHE.gameData.sprites;
+    for (var key in sprites) {
+      element.append('<option value="' + key + '">' +  key + '</option>');
+    }
+  };
 })();

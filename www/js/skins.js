@@ -62,4 +62,14 @@
         break;
     }
   };
+
+  TCHE.fillSkins = function(selectId) {
+    var element = $('#' + selectId);
+    element.html('');
+
+    var skins = TCHE.gameData.skins;
+    for (var key in skins) {
+      element.append('<option value="' + key + '">' +  key + '</option>');
+    }
+  };
 })();
