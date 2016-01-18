@@ -157,8 +157,7 @@
     $('#edit-rpgmaker-skin-image-preview').html(img);
     
     $('#edit-rpgmaker-skin-name').val(skinName);
-    $('input[name="edit-rpgmaker-skin-index"]').attr('checked', null);
-    $('#edit-rpgmaker-skin-index-' + skinData.index).attr('checked', 'checked');
+    $('#edit-rpgmaker-skin-index-' + skinData.index).prop('checked', 'checked');
   };
 
   TCHE.editRpgMakerSkin = function(skinName) {

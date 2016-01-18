@@ -28,6 +28,37 @@
     $('#import-rpgmaker-sprite-image-preview').html(img);
   };
 
+  TCHE.makeRpgMakerSpriteSetSiteMap = function(selector, img){
+    var sitemap = "<map name='spritemap'>";
+
+    var width = img[0].width;
+    var height = img[0].height;
+    var spriteWidth = Math.floor(width / 4);
+    var spriteHeight = Math.floor(height / 2);
+
+    for (var i = 0; i < 8; i++) {
+      var x = (i % 4) * spriteWidth;
+      var y = i >= 4 ? spriteHeight : 0;
+
+      sitemap += "<area shape='rect' coords='" + x + ',' + y + ',' + (x + spriteWidth) + ',' + (y + spriteHeight) + "' alt='Sprite " + i + "' title='Sprite " + i + "' href='#' class='image-map' data-index='" + i + "'>";
+    }
+    sitemap += "</map>";
+
+    var fullSelector = '#' + selector + '-rpgmaker-sprite-image-preview';
+
+    $(fullSelector).append(sitemap);
+    $(img).attr('usemap', '#spritemap');
+    $('img[usemap]').maphilight();
+
+    $('.image-map').on('click', function(event){
+      event.preventDefault();
+
+      var index = event.currentTarget.dataset.index;
+
+      $('#' + selector + '-rpgmaker-sprite-index-' + index).prop('checked', 'checked');
+    });
+  };
+
   TCHE.onChooseRpgMakerSprite = function(filePath) {
     if (!TCHE.isFileImported(filePath)) {
       TCHE.goToRpgMakerSpriteImportScreen(filePath);
@@ -41,6 +72,8 @@
 
       $('#new-rpgmaker-sprite-width').val(width);
       $('#new-rpgmaker-sprite-height').val(height);
+
+      TCHE.makeRpgMakerSpriteSetSiteMap('new', img);
     });
 
     $('#new-rpgmaker-sprite-image-preview').html(img);
@@ -59,6 +92,8 @@
 
       $('#edit-rpgmaker-sprite-width').val(width);
       $('#edit-rpgmaker-sprite-height').val(height);
+
+      TCHE.makeRpgMakerSpriteSetSiteMap('edit', img);
     });
 
     $('#edit-rpgmaker-sprite-image-preview').html(img);
@@ -243,14 +278,13 @@
 
       $('#edit-rpgmaker-sprite-width').val(width);
       $('#edit-rpgmaker-sprite-height').val(height);
+
+      TCHE.makeRpgMakerSpriteSetSiteMap('edit', img);
     });
     $('#edit-rpgmaker-sprite-image-preview').html(img);
     
     $('#edit-rpgmaker-sprite-name').val(spriteName);
-    $('input[name="edit-rpgmaker-sprite-index"]').attr('checked', null);
-    $('#edit-rpgmaker-sprite-index-' + spriteData.index).attr('checked', 'checked');
-
-
+    $('#edit-rpgmaker-sprite-index-' + spriteData.index).prop('checked', 'checked');
   };
 
   TCHE.editRpgMakerSprite = function(spriteName) {

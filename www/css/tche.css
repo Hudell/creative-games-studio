@@ -369,3 +369,7 @@ table.dataTable thead .sorting:after {
 .navbar-path {
     padding: 15px;
 }
+
+.extra-huge {
+    font-size: 50px;
+}
