@@ -24,8 +24,9 @@
                             </div>
                             <div class="form-group">
                                 <label>Initial Map</label>
-                                <select class="form-control" id="settings-game-initial-map">
-                                </select>
+<!--                                 <select class="form-control" id="settings-game-initial-map">
+                                </select> -->
+                                <input class="form-control" placeholder="Map Name" id="settings-game-initial-map">
                             </div>
                             <div class="form-group">
                                 <label>Main Skin</label>
@@ -70,6 +71,8 @@ $(function(){
 
   TCHE.fillScenes('settings-game-initial-scene');
   TCHE.fillSkins('settings-game-main-skin');
+
+  TCHE.loadGameSettings();
 
   $('#settings-game-name').val(TCHE.gameData.name);
   $('#settings-game-resolution-width').val(TCHE.gameData.resolution.width);
