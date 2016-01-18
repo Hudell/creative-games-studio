@@ -1,0 +1,116 @@
+<div class="row">
+  <div class="col-lg-12">
+    <h1 class="page-header">Skins</h1>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="input-group custom-search-form">
+      <input type="text" class="form-control" placeholder="Search...">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button">
+          <i class="fa fa-search"></i>
+        </button>
+      </span>
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-lg-12">
+    <hr>
+  </div>
+</div>
+
+<nav class="navbar navbar-default" role="navigation" style="margin-bottom: 0">
+  <ul class="nav navbar-top-links navbar-left">
+    <li class="">
+      <a id="new-skin-btn" href="#">
+        <i class="fa fa-file-o fa-fw"></i> New Skin
+      </a>
+    </li>
+  </ul>
+
+  <ul class="nav navbar-top-links navbar-left">
+    <li class="">
+      <a id="import-skin-btn" href="#">
+        <i class="fa fa-folder fa-fw"></i> Import Skin
+      </a>
+    </li>
+  </ul>
+</nav>
+
+
+<div class="row">
+  <div class="col-lg-12">
+    <hr>
+  </div>
+</div>
+
+
+<!-- /.row -->
+<div class="row">
+  <div class="col-lg-12">  
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped" id="skins-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>
+                  Type
+                </th>
+                <th>
+                  Image
+                </th>
+                <th>
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+$(function(){
+  TCHE.loadSkins();
+  $('#new-skin-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'new-skin'); });
+  $('#import-skin-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'import-skin'); });
+
+  $('.skins-delete').on('click', function(event) {
+    event.preventDefault();
+    var skinName = event.currentTarget.dataset.elementId;
+
+    TCHE.removeSkin(skinName);
+    TCHE.openWindow('skins');
+  });
+
+  $('.skins-edit').on('click', function(event) {
+    event.preventDefault();
+    debugger;
+    var skinName = event.currentTarget.dataset.elementId;
+
+    TCHE.editSkin(skinName);
+  });
+
+  $('.skins-view').on('click', function(event) {
+    event.preventDefault();
+    debugger;
+    var skinName = event.currentTarget.dataset.elementId;
+
+    TCHE.viewSkinImage(skinName);
+  });
+
+});
+</script>
