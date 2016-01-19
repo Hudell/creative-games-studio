@@ -155,6 +155,8 @@ var TCHE = {};
     TCHE.requestPage(windowName + '.html', function(result, xhr){
       $('#page-wrapper').html(xhr.responseText);
 
+      TCHE.fixLinks();
+
       if (!!callback) {
         callback();
       }
@@ -242,7 +244,11 @@ var TCHE = {};
   };
 
   TCHE.playProject = function() {
-    window.open('file://' + TCHE.loadedGame.folder + '/index.html?debug');
+    var newWin = gui.Window.open('file://' + TCHE.loadedGame.folder + '/index.html?debug', {
+      position : 'center',
+      title : TCHE.gameData.name,
+      toolbar : true
+    });
   };
 
   TCHE.playProjectButton = function(){
@@ -488,22 +494,15 @@ var TCHE = {};
   TCHE.onLoad = function(){
     $('#index-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'index'); });
     
-    $('#files-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'files'); });
-    $('#faces-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'faces'); });
     $('#maps-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'maps'); });
-    $('#movies-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'movies'); });
-    $('#musics-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'musics'); });
-    $('#sprites-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'sprites'); });
-    $('#skins-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'skins'); });
-    $('#sounds-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'sounds'); });
-    
-    $('#database-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'database'); });
-
     $('#code-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'code'); });
-
     $('#plugins-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'plugins'); });
     
-    $('#settings-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'settings'); });
+    $('#menu-characters-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'characters'); });
+    $('#menu-objects-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'objects'); });
+    $('#menu-sprites-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'sprites'); });
+    $('#menu-variables-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'variables'); });
+    
     $('#settings-player-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'settings-player'); });
     $('#settings-game-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'settings-game'); });
     $('#settings-steam-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'settings-steam'); });
@@ -543,5 +542,14 @@ var TCHE = {};
     }
 
     TCHE.win.maximize();
+  };
+
+  TCHE.fixLinks = function(){
+    setTimeout(function(){
+      $('a[target=_blank]').on('click', function(){
+        require('nw.gui').Shell.openExternal( this.href );
+        return false;
+      });
+    }, 100);
   };
 })();
