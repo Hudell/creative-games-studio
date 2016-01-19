@@ -377,3 +377,39 @@ table.dataTable thead .sorting:after {
 .medium {
     font-size: 26px;
 }
+
+.panel-purple {
+    border-color: #9400D3;
+}
+
+.panel-purple .panel-heading {
+    border-color: #9400D3;
+    color: #fff;
+    background-color: #9400D3;
+}
+
+.panel-purple a {
+    color: #9400D3;
+}
+
+.panel-purple a:hover {
+    color: #23527c;
+}
+
+.panel-navy {
+    border-color: #000080;
+}
+
+.panel-navy .panel-heading {
+    border-color: #000080;
+    color: #fff;
+    background-color: #000080;
+}
+
+.panel-navy a {
+    color: #000080;
+}
+
+.panel-navy a:hover {
+    color: #23527c;
+}
