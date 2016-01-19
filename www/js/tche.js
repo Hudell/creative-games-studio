@@ -136,6 +136,24 @@ var TCHE = {};
     $('#' + tableId).children('tbody').append(row);
   };
 
+  TCHE.openPopup = function(popupName, title, callback) {
+    TCHE.requestPage(path.join('popups', popupName + '.html'), function(result, xhr){
+      TCHE.openDialog($('<div></div>').html(xhr.responseText), title, [
+        {
+          text: "Close",
+          click: function() {
+            $( this ).dialog( "close" );
+          }
+        }
+      ]);
+      TCHE.fixLinks();
+
+      if (!!callback) {
+        callback();
+      }
+    });
+  };
+
   TCHE.openWindow = function(windowName, callback) {
     $('.menu-option').parent().removeClass('active');
     
@@ -407,6 +425,12 @@ var TCHE = {};
     return TCHE.gameData.tcheScenes.concat(TCHE.gameData.gameScenes);
   };
 
+  TCHE.registerEngineScene = function(sceneName) {
+    if (TCHE.gameData.tcheScenes.indexOf(sceneName) < 0) {
+      TCHE.gameData.tcheScenes.push(sceneName);
+    }
+  };
+
   TCHE.validateGameData = function() {
     if (!TCHE.gameData.skins) {
       TCHE.gameData.skins = {};
@@ -426,13 +450,17 @@ var TCHE = {};
     if (!TCHE.gameData.maps) {
       TCHE.gameData.maps = {};
     }
+    if (!TCHE.gameData.codeList) {
+      TCHE.gameData.codeList = {};
+    }
 
     if (!TCHE.gameData.tcheScenes) {
-      TCHE.gameData.tcheScenes = [
-        'SceneMap',
-        'SceneTitle'
-      ];
+      TCHE.gameData.tcheScenes = [];
     }
+
+    TCHE.registerEngineScene('SceneMap');
+    TCHE.registerEngineScene('SceneTitle');
+
     if (!TCHE.gameData.gameScenes) {
       TCHE.gameData.gameScenes = [];
     }
