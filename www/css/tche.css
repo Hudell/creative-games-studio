@@ -416,13 +416,18 @@ table.dataTable thead .sorting:after {
 
 .command-list {
     max-width: 450px;
-    /*margin-right: 20px;*/
     margin-top: 40px;
 }
 
 .command-list button {
     width: 200px;
-    margin-right: 20px;
+    margin-right: 10px;
+    margin-left: 10px;
+    display: block;
+}
+
+.popup .command-list {
+    margin-top: 0;
 }
 
 .code-command-form {
@@ -432,3 +437,15 @@ table.dataTable thead .sorting:after {
 .game-code-list {
     height: 600px !important;
 }
+
+.game-code-list option {
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+

@@ -18,88 +18,114 @@
     }
   };
 
-  TCHE.addCodeLineToTable = function(tableId, index, codeLine) {
-    var line = '<tr><td>';
+  TCHE.addCodeLineToSelect = function(selectId, index, codeLine) {
+    var type = '';
     if (!!codeLine) {
-
+      type = codeLine.code;
     }
 
-    line += '<a href="#" class="code-add" data-index="' + index + '" style="float:right"><i class="fa fa-plus fa-fw"></i></a>';
-    line += '</td></tr>';
+    var line = '<option value="' + type + '">';
+    if (!!codeLine) {
+      line += TCHE.getCodeCommandDescription(codeLine);
+    }
 
-    $('#' + tableId).children('tbody').append(line);
+    line += '</option>';
+
+    $('#' + selectId).append(line);
+  };
+
+  TCHE.closeCommandWindowAndRefresh = function(event, increaseSelection) {
+    var selectedIndex = $('#edit-code-list')[0].selectedIndex;
+    if (selectedIndex < 0) {
+      selectedIndex = TCHE._currentCode.codeLines.length;
+    }
+
+    $(event.currentTarget).parents('.popup').parent().dialog('close');
+    
+    if (!!increaseSelection || increaseSelection === undefined) {
+      selectedIndex++;
+    }
+
+    TCHE.refreshCodeSelectList();
+
+    $('#edit-code-list')[0].selectedIndex = selectedIndex;
+  };
+
+  TCHE.addCommandToScreenCode = function(command) {
+    var selectedIndex = $('#edit-code-list')[0].selectedIndex;
+
+    if (selectedIndex >= 0 && selectedIndex < TCHE._currentCode.codeLines.length) {
+      TCHE._currentCode.codeLines.splice(selectedIndex, 0, command);
+    } else {
+      TCHE._currentCode.codeLines.push(command);
+    }
   };
 
   TCHE.registerCodeCommandEvents = function() {
+    $('#code-command-exit').on('click', function(event){
+      event.preventDefault();
 
+      TCHE.addCommandToScreenCode({
+        code : 'exit'
+      });
+
+      TCHE.closeCommandWindowAndRefresh(event);
+    });
+
+    $('#code-command-wait').on('click', function(event){
+      event.preventDefault();
+
+      TCHE.addCommandToScreenCode({
+        code : 'wait'
+      });
+
+      TCHE.closeCommandWindowAndRefresh(event);
+    });
   };
 
   TCHE.checkIfCodeOwnVariableExists = function(ownVariableName) {
     if (!TCHE._currentCode) {
       return false;
     }
-
-    // if (!)
   };
 
-  TCHE.registerCodeInitializationCommandEvents = function() {
-    $('#code-command-declare-own-variable').on('click', function(event){
-      event.preventDefault();
-      TCHE.openPopupForm('code-command-declare-own-variable', 'Declare Own Variable', function(){
-        var name = $('#code-command-declare-own-variable-name').val();
+  TCHE.removeSelectedCodeCommand = function() {
+    var selectedIndex = $('#edit-code-list')[0].selectedIndex;
 
-        if (!name || !name.trim()) {
-          throw new Error("Please give your variable a name.");
-        }
+    if (selectedIndex >= 0 && selectedIndex < TCHE._currentCode.codeLines.length) {
+      TCHE._currentCode.codeLines.splice(selectedIndex, 1);
+    }
 
-
-
-        // $('#code-command-declare-own-variable-confirm').on('click', function(){
-        //   $('#popup-declare-own-variable').dialog("close");
-        // });
-      });
-    });
+    TCHE.refreshCodeSelectList();
   };
 
-  TCHE.showCodeOptionsForInitialization = function(index) {
-    TCHE._currentCode.selectedIndex = index;
-    TCHE.openPopup('code-declaration-list', 'Add Command', function(){
-      TCHE.registerCodeInitializationCommandEvents();
-    });
+  TCHE.getCodeCommandDescription = function(command) {
+    if (!command || !command.code) return '';
+
+    switch (command.code) {
+      case 'wait' :
+        return 'Wait';
+      case 'exit' :
+        return 'Exit Code Block';
+      default :
+        return '';
+    }
   };
 
-  TCHE.showCodeOptions = function(index) {
-    TCHE._currentCode.selectedIndex = index;
+  TCHE.showCodeOptions = function() {
     TCHE.openPopup('code-command-list', 'Add Command', function(){
       TCHE.registerCodeCommandEvents();
     });
   };
 
-  TCHE.createCodeTable = function(tableId, code, init) {
-    $('#' + tableId).children('tbody').html('');
+  TCHE.createCodeSelectList = function(selectId, code) {
+    $('#' + selectId).html('');
 
-    TCHE.addCodeLineToTable(tableId, 0, null);
     for (var i = 0; i < code.length; i++) {
-      TCHE.addCodeLineToTable(tableId, i + 1, code[i]);
+      TCHE.addCodeLineToSelect(selectId, i + 1, code[i]);
     }
-    if (code.length > 0) {
-      TCHE.addCodeLineToTable(tableId, code.length + 1, null);
-    }
-
-    if (init) {
-      $('#' + tableId).find('.code-add').on('click', function(event){
-        event.preventDefault();
-
-        var index = event.currentTarget.dataset.index;
-        TCHE.showCodeOptionsForInitialization(index);
-      });
-    } else {
-      $('#' + tableId).find('.code-add').on('click', function(event){
-        event.preventDefault();
-        var index = event.currentTarget.dataset.index;
-        TCHE.showCodeOptions(index);
-      });      
-    }
+    
+    TCHE.addCodeLineToSelect(selectId, code.length + 1, null);
   };
 
   TCHE.saveCode = function () {
@@ -116,14 +142,22 @@
       oldName : '',
       initialization : [],
       codeLines : [],
-      returnType : 'none',
-      selectedIndex : -1
+      returnType : 'none'
     };
 
     TCHE.openWindow('edit-code', function(){
-      TCHE.createCodeTable('edit-code-initialization', TCHE._currentCode.initialization, true);
-      TCHE.createCodeTable('edit-code-body', TCHE._currentCode.codeLines);
+      TCHE.refreshCodeSelectList();
     });
+  };
+
+  TCHE.refreshCodeSelectList = function(){
+    var selectedIndex = $('#edit-code-list')[0].selectedIndex;
+    
+    TCHE.createCodeSelectList('edit-code-list', TCHE._currentCode.codeLines);
+
+    if (selectedIndex >= 0) {
+      $('#edit-code-list')[0].selectedIndex = selectedIndex;
+    }
   };
 
   TCHE.editCode = function(codeName) {

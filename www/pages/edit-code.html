@@ -28,18 +28,20 @@
                       </div>
 
                       <div class="table-responsive">
-                        <select multiple class="form-control game-code-list">
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
+                        <select multiple class="form-control game-code-list" id="edit-code-list">
+                            <option></option>
                         </select>
                       </div>
-
                     </div>
                   </div>
                 </div>
+
+                <button id="edit-code-add-btn" type="button" class="btn btn-primary">Add</button>
+                <button id="edit-code-modify-btn" type="button" class="btn btn-default">Modify</button>
+                <button id="edit-code-remove-btn" type="button" class="btn btn-default">Remove</button>
+                <p></p>
+                <hr>
+                <p></p>
 
                 <button id="edit-code-save-btn" type="button" class="btn btn-info">Save</button>
                 <button id="edit-code-cancel-btn" type="button" class="btn btn-default">Close</button>
@@ -61,6 +63,20 @@ $(function(){
   });
   $('#edit-code-cancel-btn').on('click', function(){
     TCHE.openWindow('code');
+  });
+
+  $('#edit-code-add-btn').on('click', function(event){
+    event.preventDefault();
+    TCHE.showCodeOptions();
+  });
+
+  $('#edit-code-remove-btn').on('click', function(event){
+    event.preventDefault();
+    TCHE.removeSelectedCodeCommand();
+  });
+
+  $('#edit-code-list').on('dblclick', function(event){
+    TCHE.showCodeOptions();
   });
 });
 </script>
