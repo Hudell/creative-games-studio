@@ -413,3 +413,22 @@ table.dataTable thead .sorting:after {
 .panel-navy a:hover {
     color: #23527c;
 }
+
+.command-list {
+    max-width: 450px;
+    /*margin-right: 20px;*/
+    margin-top: 40px;
+}
+
+.command-list button {
+    width: 200px;
+    margin-right: 20px;
+}
+
+.code-command-form {
+    width: 500px;
+}
+
+.game-code-list {
+    height: 600px !important;
+}

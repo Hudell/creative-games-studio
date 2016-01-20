@@ -136,13 +136,13 @@ var TCHE = {};
     $('#' + tableId).children('tbody').append(row);
   };
 
-  TCHE.openPopup = function(popupName, title, callback) {
+  TCHE.openPopup = function(popupName, title, callback, buttons) {
     TCHE.requestPage(path.join('popups', popupName + '.html'), function(result, xhr){
-      TCHE.openDialog($('<div></div>').html(xhr.responseText), title, [
+      TCHE.openDialog($('<div></div>').html(xhr.responseText), title, buttons || [
         {
           text: "Close",
           click: function() {
-            $( this ).dialog( "close" );
+            $(this).dialog("close");
           }
         }
       ]);
@@ -152,6 +152,24 @@ var TCHE = {};
         callback();
       }
     });
+  };
+
+  TCHE.openPopupForm = function(popupName, title, okCallback) {
+    TCHE.openPopup(popupName, title, false, [
+      {
+        text : "Confirm",
+        click : function(){
+          var canClose = true;
+          if (!!okCallback) {
+            canClose = okCallback() !== false;
+          }
+
+          if (canClose) {
+            $(this).dialog("close");
+          }
+        }
+      }
+    ]);
   };
 
   TCHE.openWindow = function(windowName, callback) {

@@ -12,51 +12,38 @@
       </div>
       <div class="panel-body">
         <div class="row">
-          <div class="col-lg-6">
+          <div class="">
             <form role="form">
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Name</label>
+                  <input class="form-control" type="text" placeholder="Name" id="edit-code-name">
+                </div>
 
-              <div class="form-group">
-                <label>Name</label>
-                <input class="form-control" type="text" placeholder="Name" id="edit-code-name">
-              </div>
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="panel panel-default">
+                      <div class="panel-heading">
+                        Code
+                      </div>
 
+                      <div class="table-responsive">
+                        <select multiple class="form-control game-code-list">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select>
+                      </div>
 
-              <div class="row">
-                <div class="col-lg-12">
-                  <div class="panel panel-default">
-                    <div class="panel-heading">
-                      Initialization
-                    </div>
-
-                    <div class="table-responsive">
-                      <table class="table table-bordered table-striped" id="edit-code-initialization">
-                        <tbody>
-                        </tbody>
-                      </table>
                     </div>
                   </div>
                 </div>
+
+                <button id="edit-code-save-btn" type="button" class="btn btn-info">Save</button>
+                <button id="edit-code-cancel-btn" type="button" class="btn btn-default">Close</button>
               </div>
-
-              <div class="row">
-                <div class="col-lg-12">
-                  <div class="panel panel-default">
-                    <div class="panel-heading">
-                      Main Code
-                    </div>
-
-                    <div class="table-responsive">
-                      <table class="table table-bordered table-striped" id="edit-code-body">
-                        <tbody>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <button id="edit-code-save-btn" type="button" class="btn btn-info">Save</button>
-              <button id="edit-code-cancel-btn" type="button" class="btn btn-default">Close</button>
             </form>
           </div>
         </div>
@@ -68,9 +55,6 @@
 
 <script type="text/javascript">
 $(function(){
-  TCHE.createCodeTable('edit-code-initialization', [], true);
-  TCHE.createCodeTable('edit-code-body', []);
-
   $('#code-btn').addClass('active');
   $('#edit-code-save-btn').on('click', function(){
     TCHE.saveNewCode();

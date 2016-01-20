@@ -71,7 +71,10 @@
 <script type="text/javascript">
 $(function(){
   TCHE.loadCodeList('code-table');
-  $('#new-code-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'edit-code'); });
+  $('#new-code-btn').on('click', function(event) { 
+    event.preventDefault();
+    TCHE.startNewCode();
+  });
 
   $('.code-delete').on('click', function(event) {
     event.preventDefault();

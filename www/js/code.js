@@ -30,12 +30,49 @@
     $('#' + tableId).children('tbody').append(line);
   };
 
-  TCHE.showCodeOptionsForInitialization = function() {
-    TCHE.openPopup('code-command-list', 'Add Command');
+  TCHE.registerCodeCommandEvents = function() {
+
   };
 
-  TCHE.showCodeOptions = function() {
+  TCHE.checkIfCodeOwnVariableExists = function(ownVariableName) {
+    if (!TCHE._currentCode) {
+      return false;
+    }
 
+    // if (!)
+  };
+
+  TCHE.registerCodeInitializationCommandEvents = function() {
+    $('#code-command-declare-own-variable').on('click', function(event){
+      event.preventDefault();
+      TCHE.openPopupForm('code-command-declare-own-variable', 'Declare Own Variable', function(){
+        var name = $('#code-command-declare-own-variable-name').val();
+
+        if (!name || !name.trim()) {
+          throw new Error("Please give your variable a name.");
+        }
+
+
+
+        // $('#code-command-declare-own-variable-confirm').on('click', function(){
+        //   $('#popup-declare-own-variable').dialog("close");
+        // });
+      });
+    });
+  };
+
+  TCHE.showCodeOptionsForInitialization = function(index) {
+    TCHE._currentCode.selectedIndex = index;
+    TCHE.openPopup('code-declaration-list', 'Add Command', function(){
+      TCHE.registerCodeInitializationCommandEvents();
+    });
+  };
+
+  TCHE.showCodeOptions = function(index) {
+    TCHE._currentCode.selectedIndex = index;
+    TCHE.openPopup('code-command-list', 'Add Command', function(){
+      TCHE.registerCodeCommandEvents();
+    });
   };
 
   TCHE.createCodeTable = function(tableId, code, init) {
@@ -52,22 +89,41 @@
     if (init) {
       $('#' + tableId).find('.code-add').on('click', function(event){
         event.preventDefault();
-        TCHE.showCodeOptionsForInitialization();
+
+        var index = event.currentTarget.dataset.index;
+        TCHE.showCodeOptionsForInitialization(index);
       });
     } else {
       $('#' + tableId).find('.code-add').on('click', function(event){
         event.preventDefault();
-        TCHE.showCodeOptions();
+        var index = event.currentTarget.dataset.index;
+        TCHE.showCodeOptions(index);
       });      
     }
   };
 
-  TCHE.saveNewCode = function () {
+  TCHE.saveCode = function () {
   };
 
   TCHE.removeCode = function(codeName) {
     delete TCHE.gameData.codeList[codeName];
     TCHE.markAsModified();
+  };
+
+  TCHE.startNewCode = function() {
+    TCHE._currentCode = {
+      name : '',
+      oldName : '',
+      initialization : [],
+      codeLines : [],
+      returnType : 'none',
+      selectedIndex : -1
+    };
+
+    TCHE.openWindow('edit-code', function(){
+      TCHE.createCodeTable('edit-code-initialization', TCHE._currentCode.initialization, true);
+      TCHE.createCodeTable('edit-code-body', TCHE._currentCode.codeLines);
+    });
   };
 
   TCHE.editCode = function(codeName) {
