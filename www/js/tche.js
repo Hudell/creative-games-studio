@@ -484,11 +484,59 @@ var TCHE = {};
     if (!TCHE.gameData.maps) {
       TCHE.gameData.maps = {};
     }
-    if (!TCHE.gameData.codeList) {
-      TCHE.gameData.codeList = {};
-    }
     if (!TCHE.gameData.objects) {
       TCHE.gameData.objects = {};
+    }
+    if (!TCHE.gameData.variables) {
+      TCHE.gameData.variables = {};
+    }
+    if (!TCHE.gameData.characters) {
+      TCHE.gameData.characters = {};
+    }
+    if (!TCHE.gameData.languages) {
+      TCHE.gameData.languages = {};
+    }
+    if (!TCHE.gameData.music) {
+      TCHE.gameData.music = {};
+    }
+    if (!TCHE.gameData.soundEffects) {
+      TCHE.gameData.soundEffects = {};
+    }
+    if (!TCHE.gameData.movies) {
+      TCHE.gameData.movies = {};
+    }
+    if (!TCHE.gameData.items) {
+      TCHE.gameData.items = {};
+    }
+    if (!TCHE.gameData.animations) {
+      TCHE.gameData.animations = {};
+    }
+    if (!TCHE.gameData.faces) {
+      TCHE.gameData.faces = {};
+    }
+    if (!TCHE.gameData.jobs) {
+      TCHE.gameData.jobs = {};
+    }
+    if (!TCHE.gameData.enemies) {
+      TCHE.gameData.enemies = {};
+    }
+    if (!TCHE.gameData.skills) {
+      TCHE.gameData.skills = {};
+    }
+    if (!TCHE.gameData.states) {
+      TCHE.gameData.states = {};
+    }
+    if (!TCHE.gameData.achievements) {
+      TCHE.gameData.achievements = {};
+    }
+    if (!TCHE.gameData.huds) {
+      TCHE.gameData.huds = {};
+    }
+    if (!TCHE.gameData.packages) {
+      TCHE.gameData.packages = {};
+    }
+    if (!TCHE.gameData.vehicles) {
+      TCHE.gameData.vehicles = {};
     }
 
     if (!TCHE.gameData.tcheScenes) {
@@ -543,6 +591,35 @@ var TCHE = {};
 
   TCHE.exit = function(){
     win.close();
+  };
+
+  TCHE.updateCounters = function() {
+    $('#map-count').html(Object.keys(TCHE.gameData.maps).length);
+    
+    $('#variable-count').html(Object.keys(TCHE.gameData.variables).length);
+    $('#object-count').html(Object.keys(TCHE.gameData.objects).length);
+    $('#sprite-count').html(Object.keys(TCHE.gameData.sprites).length);
+    $('#character-count').html(Object.keys(TCHE.gameData.characters).length);
+
+    $('#language-count').html(Object.keys(TCHE.gameData.languages).length);
+    $('#music-count').html(Object.keys(TCHE.gameData.music).length);
+    $('#sound-count').html(Object.keys(TCHE.gameData.soundEffects).length);
+    $('#movie-count').html(Object.keys(TCHE.gameData.movies).length);
+
+    $('#item-count').html(Object.keys(TCHE.gameData.items).length);
+    $('#animation-count').html(Object.keys(TCHE.gameData.animations).length);
+    $('#face-count').html(Object.keys(TCHE.gameData.faces).length);
+    $('#skin-count').html(Object.keys(TCHE.gameData.skins).length);
+
+    $('#class-count').html(Object.keys(TCHE.gameData.jobs).length);
+    $('#enemy-count').html(Object.keys(TCHE.gameData.enemies).length);
+    $('#skill-count').html(Object.keys(TCHE.gameData.skills).length);
+    $('#state-count').html(Object.keys(TCHE.gameData.states).length);
+
+    $('#achievement-count').html(Object.keys(TCHE.gameData.achievements).length);
+    $('#hud-count').html(Object.keys(TCHE.gameData.huds).length);
+    $('#package-count').html(Object.keys(TCHE.gameData.packages).length);
+    $('#vehicle-count').html(Object.keys(TCHE.gameData.vehicles).length);
   };
 
   TCHE.exitButton = function(){
