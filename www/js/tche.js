@@ -88,6 +88,20 @@ var TCHE = {};
     ]);
   };
 
+  TCHE.deepClone = function(obj) {
+    var result;
+    if (obj instanceof Array) {
+      return obj.map(function(i) { return TCHE.deepClone(i); });
+    } else if (obj && !obj.prototype && (typeof obj == 'object' || obj instanceof Object)) {
+      result = {};
+      for (var p in obj) {
+        result[p] = TCHE.deepClone(obj[p]);
+      }
+      return result;
+    }
+    return obj;
+  };
+
   TCHE.showMessage = function(message) {
     TCHE.openDialog($("<div></div>").html(message));
   };
@@ -136,13 +150,13 @@ var TCHE = {};
     $('#' + tableId).children('tbody').append(row);
   };
 
-  TCHE.openPopup = function(popupName, title, callback) {
+  TCHE.openPopup = function(popupName, title, callback, buttons) {
     TCHE.requestPage(path.join('popups', popupName + '.html'), function(result, xhr){
-      TCHE.openDialog($('<div></div>').html(xhr.responseText), title, [
+      TCHE.openDialog($('<div></div>').html(xhr.responseText), title, buttons || [
         {
           text: "Close",
           click: function() {
-            $( this ).dialog( "close" );
+            $(this).dialog("close");
           }
         }
       ]);
@@ -152,6 +166,24 @@ var TCHE = {};
         callback();
       }
     });
+  };
+
+  TCHE.openPopupForm = function(popupName, title, okCallback) {
+    TCHE.openPopup(popupName, title, false, [
+      {
+        text : "Confirm",
+        click : function(){
+          var canClose = true;
+          if (!!okCallback) {
+            canClose = okCallback() !== false;
+          }
+
+          if (canClose) {
+            $(this).dialog("close");
+          }
+        }
+      }
+    ]);
   };
 
   TCHE.openWindow = function(windowName, callback) {
@@ -225,6 +257,8 @@ var TCHE = {};
       throw new Error("There's no game loaded.");
     }
 
+    //If there's any save button visible on screen, click it.
+    $('.btn-save').click();
     TCHE.saveGameData();
     TCHE.markAsSaved();
   };
@@ -452,6 +486,9 @@ var TCHE = {};
     }
     if (!TCHE.gameData.codeList) {
       TCHE.gameData.codeList = {};
+    }
+    if (!TCHE.gameData.objects) {
+      TCHE.gameData.objects = {};
     }
 
     if (!TCHE.gameData.tcheScenes) {

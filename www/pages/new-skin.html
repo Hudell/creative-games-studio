@@ -23,7 +23,7 @@
                 <p class="help-block">Select the type of the Skin that you want to use.</p>
               </div>
 
-              <button id="new-skin-continue-btn" type="button" class="btn btn-primary">Continue</button>
+              <button id="new-skin-continue-btn" type="button" class="btn btn-save">Continue</button>
               <button id="new-skin-cancel-btn" type="button" class="btn btn-default">Cancel</button>
             </form>
           </div>
@@ -36,7 +36,6 @@
 
 <script type="text/javascript">
 $(function(){
-  $('#skins-btn').addClass('active');
   $('#new-skin-continue-btn').on('click', function(){
     TCHE.continueNewSkin();
   });
