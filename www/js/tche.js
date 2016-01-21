@@ -88,6 +88,20 @@ var TCHE = {};
     ]);
   };
 
+  TCHE.deepClone = function(obj) {
+    var result;
+    if (obj instanceof Array) {
+      return obj.map(function(i) { return TCHE.deepClone(i); });
+    } else if (obj && !obj.prototype && (typeof obj == 'object' || obj instanceof Object)) {
+      result = {};
+      for (var p in obj) {
+        result[p] = TCHE.deepClone(obj[p]);
+      }
+      return result;
+    }
+    return obj;
+  };
+
   TCHE.showMessage = function(message) {
     TCHE.openDialog($("<div></div>").html(message));
   };
@@ -243,6 +257,8 @@ var TCHE = {};
       throw new Error("There's no game loaded.");
     }
 
+    //If there's any save button visible on screen, click it.
+    $('.btn-save').click();
     TCHE.saveGameData();
     TCHE.markAsSaved();
   };
@@ -470,6 +486,9 @@ var TCHE = {};
     }
     if (!TCHE.gameData.codeList) {
       TCHE.gameData.codeList = {};
+    }
+    if (!TCHE.gameData.objects) {
+      TCHE.gameData.objects = {};
     }
 
     if (!TCHE.gameData.tcheScenes) {

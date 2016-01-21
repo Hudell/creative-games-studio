@@ -1,0 +1,56 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">New Object</h1>
+    </div>
+</div>
+<div class="row">
+  <div class="col-lg-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+          
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-lg-6">
+            <form role="form">
+
+              <div class="form-group">
+                <label>Name</label>
+                <input class="form-control" type="text" placeholder="Name" id="new-object-name">
+              </div>
+
+              <div class="form-group">
+                <label>Type</label>
+                <select id="objectType" class="form-control">
+                  <option value="Object">Object</option>
+                  <option value="Creature">Creature</option>
+                  <option value="NPC">NPC</option>
+                  <option value="Enemy">Enemy</option>
+                  <option value="Player">Player</option>
+                </select>
+                <p class="help-block">Select the type of the Object that you want to create.</p>
+              </div>
+
+              <button id="new-object-continue-btn" type="button" class="btn btn-primary">Continue</button>
+              <button id="new-object-cancel-btn" type="button" class="btn btn-default">Cancel</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+$(function(){
+  $('#new-object-continue-btn').on('click', function(event){
+    event.preventDefault();
+    TCHE.ObjectManager.continueNewObject();
+  });
+  $('#new-object-cancel-btn').on('click', function(event){
+    event.preventDefault();
+    TCHE.openWindow('objects');
+  });
+});
+</script>
