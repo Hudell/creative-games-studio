@@ -341,6 +341,17 @@ TCHE.ObjectManager = {};
     });
   };
 
+  namespace.fillObjectTypes = function(selectId) {
+    var list = namespace.getListOfObjects();
+
+    var element = $('#' + selectId);
+    element.html('');
+
+    for (var key in list) {
+      element.append('<option value="' + key + '">' +  key + '</option>');
+    }
+  };
+
   namespace.fillObjects = function(selectId) {
     var element = $('#' + selectId);
     element.html('');

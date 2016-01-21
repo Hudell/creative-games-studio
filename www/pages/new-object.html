@@ -44,6 +44,8 @@
 
 <script type="text/javascript">
 $(function(){
+  TCHE.ObjectManager.fillObjectTypes('objectType');
+
   $('#new-object-continue-btn').on('click', function(event){
     event.preventDefault();
     TCHE.ObjectManager.continueNewObject();
