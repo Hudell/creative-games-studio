@@ -150,8 +150,54 @@ TCHE.ObjectManager = {};
     namespace.refreshObjectSelectList();
   };
 
-  namespace.modifySelectedObjectCommand = function(){
+  namespace.getTeleportParams = function(){
+    var mapName = $('#code-command-teleport-map').val();
+    var x = $('#code-command-teleport-x').val();
+    var y = $('#code-command-teleport-y').val();
 
+    if (!mapName || !mapName.trim()) {
+      throw new Error("Please select a map to teleport to.");
+    }
+    if (x !== 0 && (!x || isNaN(x))) {
+      throw new Error("Invalid X position.");
+    }
+    
+    if (y !== 0 && (!y || isNaN(y))) {
+      throw new Error("Invalid Y position.");
+    }
+
+    return {
+      mapName : mapName,
+      x : x,
+      y : y
+    };
+  };
+
+  namespace.modifyCommand = function(command) {
+    switch(command.code) {
+      case 'teleport' :
+        TCHE.openPopupForm('code-command-teleport', 'Teleport', function(){
+          command.params = namespace.getTeleportParams();
+          namespace.closeCommandWindowAndRefresh(event);
+        }, function(){
+          TCHE.fillMaps('code-command-teleport-map');
+          
+          $('#code-command-teleport-map').val(command.params.mapName);
+          $('#code-command-teleport-x').val(command.params.x);
+          $('#code-command-teleport-y').val(command.params.y);
+        });
+
+        break;
+    }
+  };
+
+  namespace.modifySelectedObjectCommand = function(){
+    var selectedIndex = $('#edit-object-list')[0].selectedIndex;
+    var codeLines = namespace.getCurrentCodeLines();
+    if (selectedIndex >= 0 && selectedIndex < codeLines.length) {
+      var command = codeLines[selectedIndex];
+      namespace.modifyCommand(command);
+    }
   };
 
   namespace.getObjectCommandDescription = function(command) {
