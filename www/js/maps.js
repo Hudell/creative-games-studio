@@ -36,10 +36,12 @@
       throw new Error("Failed to parse map data.");
     }
 
+    var fileFolder = path.dirname(filePath);
+
     try {
       switch(type) {
         case 'tiled' :
-          TCHE.importTiledMapTilesets(mapData, filePath);
+          TCHE.importTiledMapTilesets(mapData, fileFolder);
           break;
       }
     }
