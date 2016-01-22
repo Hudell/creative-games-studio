@@ -22,6 +22,7 @@
     $('#edit-tiled-map-save').on('click', function(event){
       event.preventDefault();
       TCHE.saveMapData(mapName, mapData);
+      TCHE.openWindow('maps');
     });
 
     $('#edit-tiled-map-refresh').on('click', function(event){

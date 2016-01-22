@@ -24,7 +24,7 @@ TCHE.ObjectManager = {};
   namespace.addCodeLineToSelect = function(selectId, index, codeLine) {
     var type = '';
     if (!!codeLine) {
-      type = codeLine.object;
+      type = codeLine.code;
     }
 
     var line = '<option value="' + type + '">';
@@ -84,22 +84,52 @@ TCHE.ObjectManager = {};
   namespace.registerObjectCommandEvents = function() {
     $('#code-command-exit').on('click', function(event){
       event.preventDefault();
-
       namespace.addCommandToScreenObject({
-        object : 'exit'
+        code : 'exit'
       });
-
       namespace.closeCommandWindowAndRefresh(event);
     });
 
     $('#code-command-wait').on('click', function(event){
       event.preventDefault();
-
       namespace.addCommandToScreenObject({
-        object : 'wait'
+        code : 'wait'
+      });
+      namespace.closeCommandWindowAndRefresh(event);
+    });
+
+    $('#code-command-teleport').on('click', function(event){
+      event.preventDefault();
+
+      TCHE.openPopupForm('code-command-teleport', 'Teleport', function(){
+        var mapName = $('#code-command-teleport-map').val();
+        var x = $('#code-command-teleport-x').val();
+        var y = $('#code-command-teleport-y').val();
+
+        if (!mapName || !mapName.trim()) {
+          throw new Error("Please select a map to teleport to.");
+        }
+        if (x !== 0 && (!x || isNaN(x))) {
+          throw new Error("Invalid X position.");
+        }
+        
+        if (y !== 0 && (!y || isNaN(y))) {
+          throw new Error("Invalid Y position.");
+        }
+
+        namespace.addCommandToScreenObject({
+          code : 'teleport',
+          params : {
+            mapName : mapName,
+            x : x,
+            y : y
+          }
+        });
+        namespace.closeCommandWindowAndRefresh(event);
+      }, function(){
+        TCHE.fillMaps('code-command-teleport-map');        
       });
 
-      namespace.closeCommandWindowAndRefresh(event);
     });
   };
 
@@ -125,13 +155,15 @@ TCHE.ObjectManager = {};
   };
 
   namespace.getObjectCommandDescription = function(command) {
-    if (!command || !command.object) return '';
+    if (!command || !command.code) return '';
 
-    switch (command.object) {
+    switch (command.code) {
       case 'wait' :
         return 'Wait';
       case 'exit' :
         return 'Exit Code Block';
+      case 'teleport' :
+        return 'Teleport to map ' + command.params.mapName + ' at ' + command.params.x + ', ' + command.params.y;
       default :
         return '';
     }
@@ -237,14 +269,15 @@ TCHE.ObjectManager = {};
       name : 'Object',
       inherits : '',
       events : {
-        'When Player Approach' : true,
-        'When Player Touch' : true,
-        'When Player Trigger' : true,
-        'When Player Walks' : true,
-        'When Player Enter Map' : true,
-        'When Player Leave Map' : true,
-        'Every Frame' : true,
-        'Every 10 Frames' : true
+        'On Block Player' : true
+        // 'When Player Approach' : true,
+        // 'When Player Touch' : true,
+        // 'When Player Trigger' : true,
+        // 'When Player Walks' : true,
+        // 'When Player Enter Map' : true,
+        // 'When Player Leave Map' : true,
+        // 'Every Frame' : true,
+        // 'Every 10 Frames' : true
       }
     }, list);
   };
@@ -254,8 +287,8 @@ TCHE.ObjectManager = {};
       name : 'Creature',
       inherits : 'Object',
       events : {
-        'On Walk' : true,
-        'On Approach Player' : true
+        // 'On Walk' : true,
+        // 'On Approach Player' : true
       }
     }, list);
   };
@@ -273,9 +306,9 @@ TCHE.ObjectManager = {};
       name : 'Player',
       inherits : 'Creature',
       events : {
-        'On Key Press' : true,
-        'On Mouse Click' : true,
-        'On Screen Touch' : true
+        // 'On Key Press' : true,
+        // 'On Mouse Click' : true,
+        // 'On Screen Touch' : true
       }
     }, list);
   };
