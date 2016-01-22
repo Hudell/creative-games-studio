@@ -185,8 +185,6 @@ var TCHE = {};
   };
 
   TCHE.openWindow = function(windowName, callback) {
-    $('.menu-option').parent().removeClass('active');
-    
     if (windowName !== 'new-project') {
       if (!TCHE.isGameLoaded()) {
         TCHE.openWindow('new-project');
@@ -691,6 +689,8 @@ var TCHE = {};
     if (!!TCHE.loadedGame.folder) {
       TCHE.loadGameData();
     }
+
+    TCHE.fillMapLinks('map-editor-map-list');
 
     TCHE.win.maximize();
   };

@@ -17,6 +17,8 @@ body {
     #page-wrapper {
         position: inherit;
         margin: 0;
+        margin-left: 250px;
+        /*margin-right: 250px;*/
         padding: 0 30px;
         border-left: 1px solid #e7e7e7;
     }
@@ -115,6 +117,8 @@ body {
 }
 
 .sidebar .nav-second-level li a {
+    padding-top: 0;
+    padding-bottom: 0;
     padding-left: 37px;
 }
 
@@ -134,6 +138,20 @@ body {
     .navbar-top-links .dropdown-tasks,
     .navbar-top-links .dropdown-alerts {
         margin-left: auto;
+    }
+    
+    .sidebar-right {
+        position: absolute;
+        z-index: 1;
+        margin-top: 52px;
+        top: 0;
+        right: 0;
+    }
+}
+
+@media(max-width: 767px) {
+    .sidebar-right {
+        display: none;
     }
 }
 
@@ -460,4 +478,10 @@ table.dataTable thead .sorting:after {
 
 .hidden {
     display : none;
+}
+
+.ui-dialog {
+    max-width: 80%;
+    max-height: 80%;
+    overflow-y: scroll !important;
 }
