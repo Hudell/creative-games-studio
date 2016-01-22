@@ -613,7 +613,7 @@ function Trigger(el) {
         return this._x;
       },
       set: function set(value) {
-        this._x = value;
+        this._x = Math.round(value);
       }
     }, {
       key: 'y',
@@ -621,7 +621,7 @@ function Trigger(el) {
         return this._y;
       },
       set: function set(value) {
-        this._y = value;
+        this._y = Math.round(value);
       }
     }, {
       key: 'xDest',
@@ -661,7 +661,7 @@ function Trigger(el) {
         return this._width;
       },
       set: function set(value) {
-        this._width = value;
+        this._width = Math.round(value);
       }
     }, {
       key: 'height',
@@ -669,7 +669,7 @@ function Trigger(el) {
         return this._height;
       },
       set: function set(value) {
-        this._height = value;
+        this._height = Math.round(value);
       }
     }, {
       key: 'animationStep',
@@ -1970,6 +1970,26 @@ function Trigger(el) {
       value: function createLayers() {
         var mapSprite = this;
 
+        //Iterate over every layer to make sure there's a layer for the player
+        var lastObjectLayer;
+        var foundPlayerLayer = false;
+
+        this._map.mapData.layers.forEach(function (layer) {
+          if (layer.type == 'objectgroup') {
+            lastObjectLayer = layer;
+
+            if (layer.properties !== undefined && layer.properties.playerLayer !== undefined) {
+              foundPlayerLayer = true;
+            }
+          }
+        });
+
+        //If no playerLayer was found, set the last object layer as the player layer
+        if (!foundPlayerLayer && !!lastObjectLayer) {
+          lastObjectLayer.properties = lastObjectLayer.properties || {};
+          lastObjectLayer.properties.playerLayer = true;
+        }
+
         this._map.mapData.layers.forEach(function (layer) {
           switch (layer.type) {
             case 'tilelayer':
@@ -3077,7 +3097,7 @@ function Trigger(el) {
       key: 'changeScene',
       value: function changeScene(newSceneClass, params) {
         newScene = newSceneClass;
-        newSceneParams = params;
+        newSceneParams = params || {};
       }
     }, {
       key: 'start',
@@ -3582,7 +3602,20 @@ function Trigger(el) {
             TCHE.Validation.checkBasicFiles();
           }
 
-          TCHE.SceneManager.changeScene(TCHE.SceneTitle);
+          var initialScene = TCHE.data.game.initialScene;
+          if (!TCHE[initialScene]) {
+            initialScene = TCHE.SceneTitle;
+          } else {
+            initialScene = TCHE[initialScene];
+          }
+
+          var params = {};
+
+          if (initialScene == TCHE.SceneMap || initialScene.prototype instanceof TCHE.SceneMap) {
+            params.mapName = TCHE.data.game.initialMap;
+          }
+
+          TCHE.SceneManager.changeScene(initialScene, params);
         }
       }
     }]);
@@ -3633,12 +3666,12 @@ function Trigger(el) {
 
       var _this22 = _possibleConstructorReturn(this, Object.getPrototypeOf(SceneMap).call(this));
 
-      TCHE.globals.player.x = TCHE.data.game.player.x;
-      TCHE.globals.player.y = TCHE.data.game.player.y;
-      TCHE.globals.player.width = TCHE.data.game.player.width;
-      TCHE.globals.player.height = TCHE.data.game.player.height;
-      TCHE.globals.player.offsetX = TCHE.data.game.player.offsetX;
-      TCHE.globals.player.offsetY = TCHE.data.game.player.offsetY;
+      TCHE.globals.player.x = Number(TCHE.data.game.player.x || 0);
+      TCHE.globals.player.y = Number(TCHE.data.game.player.y || 0);
+      TCHE.globals.player.width = Number(TCHE.data.game.player.width || 0);
+      TCHE.globals.player.height = Number(TCHE.data.game.player.height || 0);
+      TCHE.globals.player.offsetX = Number(TCHE.data.game.player.offsetX || 0);
+      TCHE.globals.player.offsetY = Number(TCHE.data.game.player.offsetY || 0);
       TCHE.globals.player.sprite = TCHE.data.game.player.sprite;
 
       TCHE.globals.map.loadMap(params.mapName);
