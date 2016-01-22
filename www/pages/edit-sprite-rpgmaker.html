@@ -90,6 +90,7 @@
               </div>
 
               <button id="edit-rpgmaker-sprite-save" type="button" class="btn btn-primary">OK</button>
+              <button id="edit-rpgmaker-sprite-delete" type="button" class="btn btn-danger">Remove Sprite</button>
               <button id="edit-rpgmaker-sprite-cancel" type="button" class="btn btn-default">Go Back</button>
             </form>
           </div>
@@ -111,6 +112,12 @@ $(function(){
   $('#edit-rpgmaker-sprite-save').on('click', function(event){
     event.preventDefault();
     TCHE.saveOldRpgMakerSprite();
+  });
+
+  $('#edit-rpgmaker-sprite-delete').on('click', function(event){
+    event.preventDefault();
+    TCHE.removeCurrentRpgMakerSprite();
+    TCHE.openWindow('sprites');
   });
 
   $('#edit-rpgmaker-sprite-cancel').on('click', function(event){

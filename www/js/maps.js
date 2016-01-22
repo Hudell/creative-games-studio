@@ -1,5 +1,6 @@
 (function(){
   var path = require("path");
+  var fs = require('fs');
 
   TCHE.addMap = function(name, type) {
     var data = [];
@@ -26,11 +27,64 @@
     TCHE.openWindow(windowName);
   };
 
+  TCHE.doContinueImportMap = function(type, filePath) {
+    try {
+      var mapData = TCHE.loadJson(filePath);
+    }
+    catch (e) {
+      console.error(e);
+      throw new Error("Failed to parse map data.");
+    }
+
+    try {
+      switch(type) {
+        case 'tiled' :
+          TCHE.importTiledMapTilesets(mapData, filePath);
+          break;
+      }
+    }
+    catch(e) {
+      console.error(e);
+      throw new Error("Failed to import map tilesets.");
+    }
+
+    var mapName = path.basename(filePath);
+
+    try {
+      TCHE.saveJson(path.join(TCHE.loadedGame.folder, 'maps', mapName), mapData);
+    }
+    catch(e) {
+      console.error(e);
+      throw new Error("Failed to save the map.");
+    }
+
+    TCHE.gameData.maps[mapName] = type;
+    TCHE.markAsModified();
+    TCHE.openWindow('maps');
+  };
+
   TCHE.continueImportMap = function() {
     var type = $('#mapType').val();
-    var windowName = 'import-map-' + type;
+    var filePath = $('#import-map-file').val();
 
-    TCHE.openWindow(windowName);
+    if (!filePath || !filePath.trim()) {
+      throw new Error("Please select a map file to import.");
+    }
+
+    var mapName = path.basename(filePath);
+
+    if (TCHE.gameData.maps[mapName] !== undefined) {
+      TCHE.confirm('A map called ' + mapName + ' already exists. If you continue, it will be overwritten.', function(){
+        TCHE.doContinueImportMap(type, filePath);
+      });
+    } else {
+      TCHE.doContinueImportMap(type, filePath);
+    }
+  };
+
+  TCHE.removeCurrentMap = function() {
+    var name = $('#edit-tiled-map-name').val();
+    TCHE.removeMap(name);
   };
 
   TCHE.removeMap = function(mapName) {
@@ -67,4 +121,12 @@
       element.append('<option value="' + key + '">' +  key + '</option>');
     }
   };
+
+  TCHE.getMapData = function(mapName) {
+    return TCHE.loadJson(path.join(TCHE.loadedGame.folder, 'maps', mapName));
+  };
+
+  TCHE.saveMapData = function(mapName, mapData) {
+    TCHE.saveJson(path.join(TCHE.loadedGame.folder, 'maps', mapName), mapData);
+  }
 })();

@@ -29,6 +29,7 @@
               </div>
 
               <button id="edit-rpgmaker-skin-save" type="button" class="btn btn-primary">OK</button>
+              <button id="edit-rpgmaker-skin-delete" type="button" class="btn btn-danger">Remove Skin</button>
               <button id="edit-rpgmaker-skin-cancel" type="button" class="btn btn-default">Go Back</button>
             </form>
           </div>
@@ -41,8 +42,6 @@
 
 <script type="text/javascript">
 $(function(){
-  $('#skins-btn').addClass('active');
-
   $('#edit-rpgmaker-skin-image').on('change', function(){
     TCHE.onChooseRpgMakerSkinToEdit($('#edit-rpgmaker-skin-image').val());
   });
@@ -50,6 +49,12 @@ $(function(){
   $('#edit-rpgmaker-skin-save').on('click', function(event){
     event.preventDefault();
     TCHE.saveOldRpgMakerSkin();
+  });
+
+  $('#edit-rpgmaker-skin-delete').on('click', function(event){
+    event.preventDefault();
+    TCHE.removeCurrentRpgMakerSkin();
+    TCHE.openWindow('skins');
   });
 
   $('#edit-rpgmaker-skin-cancel').on('click', function(event){

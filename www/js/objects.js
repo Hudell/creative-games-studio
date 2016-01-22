@@ -157,6 +157,12 @@ TCHE.ObjectManager = {};
     var name = namespace._currentObject.name;
     TCHE.gameData.objects[name] = namespace._currentObject;
     TCHE.markAsModified();
+    TCHE.openWindow('objects');
+  };
+
+  namespace.removeCurrentObject = function() {
+    var name = $('#edit-object-name').val();
+    namespace.removeObject(name);
   };
 
   namespace.removeObject = function(objectName) {
@@ -355,6 +361,8 @@ TCHE.ObjectManager = {};
   namespace.fillObjects = function(selectId) {
     var element = $('#' + selectId);
     element.html('');
+
+    element.append('<option value=""></option>');
 
     var objects = TCHE.gameData.objects;
     for (var key in objects) {

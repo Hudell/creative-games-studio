@@ -53,8 +53,6 @@
               <tr>
                 <th>Name</th>
                 <th>Type</th>
-
-                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -73,15 +71,7 @@ $(function(){
   TCHE.ObjectManager.loadObjects('object-table');
   $('#new-object-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'new-object'); });
 
-  $('.object-delete').on('click', function(event) {
-    event.preventDefault();
-    var objectName = event.currentTarget.dataset.elementId;
-
-    TCHE.ObjectManager.removeObject(objectName);
-    TCHE.openWindow('objects');
-  });
-
-  $('.object-edit').on('click', function(event) {
+  $('.object-row').on('click', function(event) {
     event.preventDefault();
     var objectName = event.currentTarget.dataset.elementId;
 

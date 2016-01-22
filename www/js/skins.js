@@ -6,10 +6,8 @@
     data.push(name);
     data.push(skinData.type);
 
-    var image = skinData.image;
-    image = '<a href="#" class="skins-view" data-element-id="' + name + '" style="float:right"><i class="fa fa-search fa-fw"></i></a>' + image;
-
-    data.push(image);
+    var imagePath = path.join(TCHE.loadedGame.folder, skinData.image);
+    data.push('<img src="' + imagePath + '"/>');
 
     TCHE.addRowToTable('skins-table', data, 'skins', name);
   };
@@ -66,6 +64,8 @@
   TCHE.fillSkins = function(selectId) {
     var element = $('#' + selectId);
     element.html('');
+
+    element.append('<option value=""></option>');
 
     var skins = TCHE.gameData.skins;
     for (var key in skins) {

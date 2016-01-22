@@ -453,3 +453,11 @@ table.dataTable thead .sorting:after {
 
 
 .btn-save{color:#fff;background-color:#5bc0de;border-color:#46b8da}.btn-save.focus,.btn-save:focus{color:#fff;background-color:#31b0d5;border-color:#1b6d85}.btn-save:hover{color:#fff;background-color:#31b0d5;border-color:#269abc}.btn-save.active,.btn-save:active,.open>.dropdown-toggle.btn-save{color:#fff;background-color:#31b0d5;border-color:#269abc}.btn-save.active.focus,.btn-save.active:focus,.btn-save.active:hover,.btn-save:active.focus,.btn-save:active:focus,.btn-save:active:hover,.open>.dropdown-toggle.btn-save.focus,.open>.dropdown-toggle.btn-save:focus,.open>.dropdown-toggle.btn-save:hover{color:#fff;background-color:#269abc;border-color:#1b6d85}.btn-save.active,.btn-save:active,.open>.dropdown-toggle.btn-save{background-image:none}.btn-save.disabled.focus,.btn-save.disabled:focus,.btn-save.disabled:hover,.btn-save[disabled].focus,.btn-save[disabled]:focus,.btn-save[disabled]:hover,fieldset[disabled] .btn-save.focus,fieldset[disabled] .btn-save:focus,fieldset[disabled] .btn-save:hover{background-color:#5bc0de;border-color:#46b8da}.btn-save .badge{color:#5bc0de;background-color:#fff}
+
+.clickable {
+    cursor: pointer;
+}
+
+.hidden {
+    display : none;
+}

@@ -22,7 +22,7 @@ var TCHE = {};
 
   TCHE.requestPage = function(pageName, onSuccess, onError) {
     var mimeType = "text/html";
-    var filePath = './pages/' + pageName;
+    var filePath = path.join('pages', pageName);
 
     var xhr = new XMLHttpRequest();
     xhr.open('GET', filePath);
@@ -113,8 +113,7 @@ var TCHE = {};
 
   TCHE.loadJson = function(fileName) {
     if (!fs.existsSync(fileName)) {
-      console.log("File not found: ", fileName);
-      throw new Error("File not found");
+      throw new Error("File not found: " + fileName);
       return;
     }
 
@@ -124,6 +123,9 @@ var TCHE = {};
   };
 
   TCHE.saveJson = function(fileName, json) {
+    var dir = path.dirname(fileName);
+    TCHE.forceDirSync(dir);
+
     var content = JSON.stringify(json, null, '  ');
     fs.writeFileSync(fileName, content, {encoding : 'utf8'});
   };
@@ -133,7 +135,7 @@ var TCHE = {};
   }
 
   TCHE.addRowToTable = function(tableId, data, className, id) {
-    var row = '<tr>';
+    var row = '<tr class="' + className + '-row clickable" data-element-id="' + id + '">';
 
     data.forEach(function(col){
       row += '<td>';
@@ -141,10 +143,6 @@ var TCHE = {};
       row += '</td>';
     });
 
-    row += '<td>';
-    row += '<a href="#" class="' + className + '-edit" data-element-id="' + id + '"><i class="fa fa-edit fa-fw"></i></a>';
-    row += '<a href="#" class="' + className + '-delete" data-element-id="' + id + '"><i class="fa fa-remove fa-fw"></i></a>';
-    row += '</td>';
     row += '</tr>';
 
     $('#' + tableId).children('tbody').append(row);
@@ -168,8 +166,8 @@ var TCHE = {};
     });
   };
 
-  TCHE.openPopupForm = function(popupName, title, okCallback) {
-    TCHE.openPopup(popupName, title, false, [
+  TCHE.openPopupForm = function(popupName, title, okCallback, loadCallback) {
+    TCHE.openPopup(popupName, title, loadCallback || false, [
       {
         text : "Confirm",
         click : function(){
@@ -260,7 +258,14 @@ var TCHE = {};
     //If there's any save button visible on screen, click it.
     $('.btn-save').click();
     TCHE.saveGameData();
+    TCHE.copyEngineFiles();
     TCHE.markAsSaved();
+  };
+
+  TCHE.copyEngineFiles = function() {
+    var projectFolder = TCHE.loadedGame.folder;
+
+    TCHE.copyFolderSync(path.join('emptyGame', 'tche'), path.join(projectFolder, 'tche'));
   };
 
   TCHE.reloadProject = function() {
@@ -371,10 +376,14 @@ var TCHE = {};
       TCHE.forceDirSync(dirname);
     }
 
-    fs.mkdirSync(dirPath);
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath);
+    }
   };
 
   TCHE.copyFileSync = function(source, target) {
+    if (source == target) return;
+
     var targetFile = target;
 
     var dirname = path.dirname(target);
@@ -409,7 +418,7 @@ var TCHE = {};
   };
 
   TCHE.changeGameTitle = function(newTitle) {
-    $('#gameName').html(newTitle);
+    // $('#gameName').html(newTitle);
   };
 
   TCHE.changeGamePath = function(newPath) {

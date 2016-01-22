@@ -287,6 +287,11 @@
     $('#edit-rpgmaker-sprite-index-' + spriteData.index).prop('checked', 'checked');
   };
 
+  TCHE.removeCurrentRpgMakerSprite = function() {
+    var skinName = $('#edit-rpgmaker-sprite-name').val();
+    TCHE.removeSprite(skinName);
+  };
+
   TCHE.editRpgMakerSprite = function(spriteName) {
     TCHE.openWindow('edit-sprite-rpgmaker', function(){
       TCHE.loadRpgMakerSpriteData(spriteName);

@@ -20,7 +20,9 @@
               </div>
 
               <div>
-                To modify the map itself, download and use the <a href="http://mapeditor.org" target="_blank">Tiled Map Editor</a>.
+                To modify the map itself, download and use the <a href="http://mapeditor.org" target="_blank">Tiled Map Editor</a>. <br/>
+                <strong>Please note</strong>: Both Tiled and this window modify the same file, so if you change the map here you have to reload the map there. <br/>
+                If you make any changes to the map on Tiled, make sure to press the "Reload Map" button bellow so that you don't lose anything.
               </div>
 
             </form>
@@ -50,8 +52,6 @@
                 <th>Y</th>
                 <th>Width</th>
                 <th>Height</th>
-
-                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -63,7 +63,6 @@
   </div>
 </div>
 
-
 <div class="row">
   <div class="col-lg-12">
     <div class="panel panel-default">
@@ -74,7 +73,10 @@
         <div class="row">
           <div class="col-lg-6">
             <form role="form">
-              <!-- <button id="edit-tiled-map-save" type="button" class="btn btn-primary">OK</button> -->
+              <button id="edit-tiled-map-save" type="button" class="btn btn-save">Save Map</button>
+              <button id="edit-tiled-map-refresh" type="button" class="btn btn-default">Reload Map</button>
+
+              <button id="edit-tiled-map-delete" type="button" class="btn btn-danger">Remove Map</button>
               <button id="edit-tiled-map-cancel" type="button" class="btn btn-default">Go Back</button>
             </form>
           </div>
@@ -84,16 +86,13 @@
   </div>
 </div>
 
-
-
-
 <script type="text/javascript">
 $(function(){
-  $('#maps-btn').addClass('active');
-
-  $('#edit-tiled-map-save').on('click', function(event){
+  $('#edit-tiled-map-delete').on('click', function(event){
     event.preventDefault();
-    TCHE.saveOldTiledMap();
+
+    TCHE.removeCurrentMap();
+    TCHE.openWindow('maps');    
   });
 
   $('#edit-tiled-map-cancel').on('click', function(event){

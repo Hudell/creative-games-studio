@@ -31,9 +31,6 @@
         <i class="fa fa-file-o fa-fw"></i> New Sprite
       </a>
     </li>
-  </ul>
-
-  <ul class="nav navbar-top-links navbar-left">
     <li class="">
       <a id="import-sprite-btn" href="#">
         <i class="fa fa-folder fa-fw"></i> Import Sprite
@@ -75,9 +72,6 @@
                 <th>
                   Index
                 </th>
-                <th>
-                  Actions
-                </th>
               </tr>
             </thead>
             <tbody>
@@ -97,15 +91,7 @@ $(function(){
   $('#new-sprite-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'new-sprite'); });
   $('#import-sprite-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'import-sprite'); });
 
-  $('.sprites-delete').on('click', function(event) {
-    event.preventDefault();
-    var spriteName = event.currentTarget.dataset.elementId;
-
-    TCHE.removeSprite(spriteName);
-    TCHE.openWindow('sprites');
-  });
-
-  $('.sprites-edit').on('click', function(event) {
+  $('.sprites-row').on('click', function(event) {
     event.preventDefault();
     var spriteName = event.currentTarget.dataset.elementId;
 

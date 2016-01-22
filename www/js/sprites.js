@@ -6,10 +6,9 @@
     data.push(name);
     data.push(spriteData.type);
 
-    var image = spriteData.image;
-    image = '<a href="#" class="sprites-view" data-element-id="' + name + '" style="float:right"><i class="fa fa-search fa-fw"></i></a>' + image;
+    var imagePath = path.join(TCHE.loadedGame.folder, spriteData.image);
+    data.push('<img src="' + imagePath + '"/>');
 
-    data.push(image);
     data.push(spriteData.imageWidth || spriteData.width || 0);
     data.push(spriteData.imageHeight || spriteData.height || 0);
     data.push(spriteData.index || (spriteData.index === 0 ? 0 : ""));
@@ -69,6 +68,8 @@
   TCHE.fillSprites = function(selectId) {
     var element = $('#' + selectId);
     element.html('');
+
+    element.append('<option value=""></option>');
 
     var sprites = TCHE.gameData.sprites;
     for (var key in sprites) {

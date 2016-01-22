@@ -31,9 +31,7 @@
         <i class="fa fa-file-o fa-fw"></i> New Skin
       </a>
     </li>
-  </ul>
 
-  <ul class="nav navbar-top-links navbar-left">
     <li class="">
       <a id="import-skin-btn" href="#">
         <i class="fa fa-folder fa-fw"></i> Import Skin
@@ -66,9 +64,6 @@
                 <th>
                   Image
                 </th>
-                <th>
-                  Actions
-                </th>
               </tr>
             </thead>
             <tbody>
@@ -96,19 +91,11 @@ $(function(){
     TCHE.openWindow('skins');
   });
 
-  $('.skins-edit').on('click', function(event) {
+  $('.skins-row').on('click', function(event) {
     event.preventDefault();
     var skinName = event.currentTarget.dataset.elementId;
 
     TCHE.editSkin(skinName);
   });
-
-  $('.skins-view').on('click', function(event) {
-    event.preventDefault();
-    var skinName = event.currentTarget.dataset.elementId;
-
-    TCHE.viewSkinImage(skinName);
-  });
-
 });
 </script>

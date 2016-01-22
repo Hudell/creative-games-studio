@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-lg-12">
-        <h1 class="page-header">Edit Object</h1>
+        <h1 class="page-header">Edit Object Type</h1>
     </div>
 </div>
 
@@ -50,6 +50,7 @@
                 <p></p>
 
                 <button id="edit-object-save-btn" type="button" class="btn btn-save">Save</button>
+                <button id="edit-object-delete" type="button" class="btn btn-danger">Remove Object Type</button>
                 <button id="edit-object-cancel-btn" type="button" class="btn btn-default">Close</button>
               </div>
             </form>
@@ -63,11 +64,17 @@
 
 <script type="text/javascript">
 $(function(){
-  $('#object-btn').addClass('active');
-  $('#edit-object-save-btn').on('click', function(){
+  $('#edit-object-save-btn').on('click', function(event){
+    event.preventDefault();
     TCHE.ObjectManager.saveObject();
   });
+  $('#edit-object-delete').on('click', function(){
+    event.preventDefault();
+    TCHE.ObjectManager.removeCurrentObject();
+    TCHE.openWindow('objects');
+  });
   $('#edit-object-cancel-btn').on('click', function(){
+    event.preventDefault();
     TCHE.openWindow('objects');
   });
 

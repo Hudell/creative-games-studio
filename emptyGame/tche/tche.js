@@ -365,10 +365,6 @@ function Trigger(el) {
           if (!TCHE.data.game.sprites || TCHE.data.game.sprites.length === 0) {
             throw new Error("There's no sprite configured.");
           }
-
-          if (!TCHE.data.game.mainSkin || !TCHE.data.game.skins[TCHE.data.game.mainSkin]) {
-            throw new Error("The main skin is invalid.");
-          }
         } catch (e) {
           alert(e);
           TCHE.SceneManager.end();
@@ -1827,7 +1823,9 @@ function Trigger(el) {
       var _this12 = _possibleConstructorReturn(this, Object.getPrototypeOf(WindowSprite).call(this));
 
       if (skinName === undefined) {
-        skinName = TCHE.data.game.mainSkin;
+        if (!!TCHE.data.game.mainSkin) {
+          skinName = TCHE.data.game.mainSkin;
+        }
       }
 
       _this12.createBackground(skinName);
@@ -2557,7 +2555,7 @@ function Trigger(el) {
     }, {
       key: 'loadMapData',
       value: function loadMapData(mapName, mapType) {
-        var path = './maps/' + mapName + '.json';
+        var path = './maps/' + mapName;
         filesToLoad++;
 
         TCHE.maps[mapName] = null;
@@ -3191,25 +3189,35 @@ function Trigger(el) {
       key: 'drawSkinFrame',
       value: function drawSkinFrame(skinName, content) {
         var data = this.getSkinData(skinName);
-        this.getSkinType(data).drawSkinFrame(content, data);
+        if (!!data) {
+          this.getSkinType(data).drawSkinFrame(content, data);
+        }
       }
     }, {
       key: 'addSkinBackground',
       value: function addSkinBackground(skinName, windowObj, container) {
         var data = this.getSkinData(skinName);
-        this.getSkinType(data).addSkinBackground(windowObj, container, data);
+        if (!!data) {
+          this.getSkinType(data).addSkinBackground(windowObj, container, data);
+        }
       }
     }, {
       key: 'drawSkinCursor',
       value: function drawSkinCursor(skinName, content, x, y) {
         var data = this.getSkinData(skinName);
-        this.getSkinType(data).drawSkinCursor(data, content, x, y);
+        if (!!data) {
+          this.getSkinType(data).drawSkinCursor(data, content, x, y);
+        }
       }
     }, {
       key: 'getSkinCursorSize',
       value: function getSkinCursorSize(skinName) {
         var data = this.getSkinData(skinName);
-        return this.getSkinType(data).getSkinCursorSize(data);
+        if (!!data) {
+          return this.getSkinType(data).getSkinCursorSize(data);
+        } else {
+          return 0;
+        }
       }
     }]);
 
@@ -3505,10 +3513,10 @@ function Trigger(el) {
         this._messageText = "Loading";
 
         this._messageSprite = new PIXI.Text("");
-        this._messageSprite.anchor.x = 0;
+        this._messageSprite.anchor.x = 0.5;
         this._messageSprite.anchor.y = 0.5;
         this._messageSprite.position.y = Math.floor(TCHE.renderer.height / 2);
-        this._messageSprite.position.x = Math.floor(TCHE.renderer.width / 2 - this._messageSprite.width / 2);
+        this._messageSprite.position.x = Math.floor(TCHE.renderer.width / 2);
 
         this.addChild(this._messageSprite);
 

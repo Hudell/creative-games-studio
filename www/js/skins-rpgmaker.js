@@ -160,6 +160,11 @@
     $('#edit-rpgmaker-skin-index-' + skinData.index).prop('checked', 'checked');
   };
 
+  TCHE.removeCurrentRpgMakerSkin = function() {
+    var skinName = $('#edit-rpgmaker-skin-name').val();
+    TCHE.removeSkin(skinName);
+  };
+
   TCHE.editRpgMakerSkin = function(skinName) {
     TCHE.openWindow('edit-skin-rpgmaker', function(){
       TCHE.loadRpgMakerSkinData(skinName);
