@@ -115,6 +115,7 @@
   TCHE.fillMaps = function(selectId) {
     var element = $('#' + selectId);
     element.html('');
+    element.append('<option value=""></option>');
 
     var maps = TCHE.gameData.maps;
     for (var key in maps) {
