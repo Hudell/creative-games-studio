@@ -125,24 +125,6 @@
     }
   };
 
-  TCHE.fillMapLinks = function(ulId) {
-    var ul = $('#' + ulId);
-
-    ul.html('');
-
-    var maps = TCHE.gameData.maps;
-    for (var key in maps) {
-      ul.append('<li><a class="map-link" data-map-name="' + key + '" href="#">' + key + '</a></li>');
-    }
-
-    $('.map-link').on('click', function(event){
-      event.preventDefault();
-      var mapName = event.currentTarget.dataset.mapName;
-
-      TCHE.editMap(mapName);
-    });
-  }
-
   TCHE.getMapData = function(mapName) {
     return TCHE.loadJson(path.join(TCHE.loadedGame.folder, 'maps', mapName));
   };

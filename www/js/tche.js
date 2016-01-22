@@ -690,9 +690,27 @@ var TCHE = {};
       TCHE.loadGameData();
     }
 
-    TCHE.fillMapLinks('map-editor-map-list');
+    TCHE.fillRecentList('map-editor-map-list');
 
     TCHE.win.maximize();
+  };
+
+  TCHE.fillRecentList = function(ulId) {
+    var ul = $('#' + ulId);
+
+    ul.html('');
+
+    var maps = TCHE.gameData.maps;
+    for (var key in maps) {
+      ul.append('<li><a class="map-link" data-map-name="' + key + '" href="#"><i class="menu-option fa fa-globe fa-fw"></i> ' + key + '</a></li>');
+    }
+
+    $('.map-link').on('click', function(event){
+      event.preventDefault();
+      var mapName = event.currentTarget.dataset.mapName;
+
+      TCHE.editMap(mapName);
+    });
   };
 
   TCHE.fixLinks = function(){
