@@ -2,34 +2,34 @@
   var path = require("path");
   var fs = require('fs');
 
-  TCHE.addMap = function(name, type) {
+  STUDIO.addMap = function(name, type) {
     var data = [];
     data.push(name);
     data.push(type);
 
-    TCHE.addRowToTable('maps-table', data, 'maps', name);
+    STUDIO.addRowToTable('maps-table', data, 'maps', name);
   };
 
-  TCHE.loadMaps = function() {
-    if (!TCHE.gameData.maps) {
+  STUDIO.loadMaps = function() {
+    if (!STUDIO.gameData.maps) {
       return;
     }
 
-    for (var name in TCHE.gameData.maps) {
-      TCHE.addMap(name, TCHE.gameData.maps[name]);
+    for (var name in STUDIO.gameData.maps) {
+      STUDIO.addMap(name, STUDIO.gameData.maps[name]);
     }
   };
 
-  TCHE.continueNewMap = function () {
+  STUDIO.continueNewMap = function () {
     var type = $('#mapType').val();
     var windowName = 'new-map-' + type;
 
-    TCHE.openWindow(windowName);
+    STUDIO.openWindow(windowName);
   };
 
-  TCHE.doContinueImportMap = function(type, filePath) {
+  STUDIO.doContinueImportMap = function(type, filePath) {
     try {
-      var mapData = TCHE.loadJson(filePath);
+      var mapData = STUDIO.loadJson(filePath);
     }
     catch (e) {
       console.error(e);
@@ -41,7 +41,7 @@
     try {
       switch(type) {
         case 'tiled' :
-          TCHE.importTiledMapTilesets(mapData, fileFolder);
+          STUDIO.importTiledMapTilesets(mapData, fileFolder);
           break;
       }
     }
@@ -53,19 +53,19 @@
     var mapName = path.basename(filePath);
 
     try {
-      TCHE.saveJson(path.join(TCHE.loadedGame.folder, 'maps', mapName), mapData);
+      STUDIO.saveJson(path.join(STUDIO.loadedGame.folder, 'maps', mapName), mapData);
     }
     catch(e) {
       console.error(e);
       throw new Error("Failed to save the map.");
     }
 
-    TCHE.gameData.maps[mapName] = type;
-    TCHE.markAsModified();
-    TCHE.openWindow('maps');
+    STUDIO.gameData.maps[mapName] = type;
+    STUDIO.markAsModified();
+    STUDIO.openWindow('maps');
   };
 
-  TCHE.continueImportMap = function() {
+  STUDIO.continueImportMap = function() {
     var type = $('#mapType').val();
     var filePath = $('#import-map-file').val();
 
@@ -75,72 +75,72 @@
 
     var mapName = path.basename(filePath);
 
-    if (TCHE.gameData.maps[mapName] !== undefined) {
-      TCHE.confirm('A map called ' + mapName + ' already exists. If you continue, it will be overwritten.', function(){
-        TCHE.doContinueImportMap(type, filePath);
+    if (STUDIO.gameData.maps[mapName] !== undefined) {
+      STUDIO.confirm('A map called ' + mapName + ' already exists. If you continue, it will be overwritten.', function(){
+        STUDIO.doContinueImportMap(type, filePath);
       });
     } else {
-      TCHE.doContinueImportMap(type, filePath);
+      STUDIO.doContinueImportMap(type, filePath);
     }
   };
 
-  TCHE.removeCurrentMap = function() {
+  STUDIO.removeCurrentMap = function() {
     var name = $('#edit-tiled-map-name').val();
-    TCHE.removeMap(name);
+    STUDIO.removeMap(name);
   };
 
-  TCHE.removeMap = function(mapName) {
-    delete TCHE.gameData.maps[mapName];
-    TCHE.markAsModified();
+  STUDIO.removeMap = function(mapName) {
+    delete STUDIO.gameData.maps[mapName];
+    STUDIO.markAsModified();
   };
 
-  TCHE.viewMapImage = function(mapName) {
-    var image = TCHE.gameData.maps[mapName].image;
-    var imagePath = path.join(TCHE.loadedGame.folder, image);
+  STUDIO.viewMapImage = function(mapName) {
+    var image = STUDIO.gameData.maps[mapName].image;
+    var imagePath = path.join(STUDIO.loadedGame.folder, image);
 
-    TCHE.openDialog($('<div><img src="' + imagePath + '"></img></div>'), image);
+    STUDIO.openDialog($('<div><img src="' + imagePath + '"></img></div>'), image);
   };
 
-  TCHE.editMap = function(mapName) {
-    if (!TCHE.gameData.maps[mapName]) {
+  STUDIO.editMap = function(mapName) {
+    if (!STUDIO.gameData.maps[mapName]) {
       throw new Error("Map " + mapName + " not found.");
     }
 
-    var mapType = TCHE.gameData.maps[mapName];
+    var mapType = STUDIO.gameData.maps[mapName];
     switch (mapType) {
       case 'tiled' :
-        TCHE.editTiledMap(mapName);
+        STUDIO.editTiledMap(mapName);
         break;
     }
   };
 
-  TCHE.fillMaps = function(selectId) {
+  STUDIO.fillMaps = function(selectId) {
     var element = $('#' + selectId);
     element.html('');
     element.append('<option value=""></option>');
 
-    var maps = TCHE.gameData.maps;
+    var maps = STUDIO.gameData.maps;
     for (var key in maps) {
       element.append('<option value="' + key + '">' +  key + '</option>');
     }
   };
 
-  TCHE.fillMapLinks = function(ulId) {
+  STUDIO.fillMapLinks = function(ulId) {
     var element = $('#' + ulId);
     element.html('');
 
-    var maps = TCHE.gameData.maps;
+    var maps = STUDIO.gameData.maps;
     for (var key in maps) {
       element.append('<li><a class="recent-link" data-type="map" data-name="' + key + '" href="#"><i class="menu-option fa fa-globe fa-fw"></i> ' + key + '</a></li>');
     }
   };
 
-  TCHE.getMapData = function(mapName) {
-    return TCHE.loadJson(path.join(TCHE.loadedGame.folder, 'maps', mapName));
+  STUDIO.getMapData = function(mapName) {
+    return STUDIO.loadJson(path.join(STUDIO.loadedGame.folder, 'maps', mapName));
   };
 
-  TCHE.saveMapData = function(mapName, mapData) {
-    TCHE.saveJson(path.join(TCHE.loadedGame.folder, 'maps', mapName), mapData);
-    TCHE.addRecentObject('map', mapName);
+  STUDIO.saveMapData = function(mapName, mapData) {
+    STUDIO.saveJson(path.join(STUDIO.loadedGame.folder, 'maps', mapName), mapData);
+    STUDIO.addRecentObject('map', mapName);
   }
 })();

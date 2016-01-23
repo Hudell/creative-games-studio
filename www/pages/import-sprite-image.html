@@ -62,15 +62,15 @@ $(function(){
   $('#sprites-btn').addClass('active');
 
   $('#import-image-sprite-image').on('change', function(){
-    TCHE.onChooseImageSpriteToImport($('#import-image-sprite-image').val());
+    STUDIO.onChooseImageSpriteToImport($('#import-image-sprite-image').val());
   });
 
   $('#import-image-sprite-save').on('click', function(){
-    TCHE.importImageSprite();
+    STUDIO.importImageSprite();
   });
 
   $('#import-image-sprite-cancel').on('click', function(){
-    TCHE.openWindow('import-sprite');
+    STUDIO.openWindow('import-sprite');
   });
 });
 </script>

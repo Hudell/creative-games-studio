@@ -72,14 +72,14 @@
 
 <script type="text/javascript">
 $(function(){
-  TCHE.loadMaps();
+  STUDIO.loadMaps();
 
-  $('#import-map-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'import-map'); });
+  $('#import-map-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'import-map'); });
 
   $('.maps-row').on('click', function(event) {
     var mapName = event.currentTarget.dataset.elementId;
 
-    TCHE.editMap(mapName);
+    STUDIO.editMap(mapName);
   });
 });
 </script>

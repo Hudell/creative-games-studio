@@ -1,2 +1,1 @@
-# tche-editor
-Tche Editor
+# Creative Games Studio

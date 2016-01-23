@@ -79,23 +79,23 @@
 
 <script type="text/javascript">
 $(function(){
-  TCHE.loadSkins();
-  $('#new-skin-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'new-skin'); });
-  $('#import-skin-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'import-skin'); });
+  STUDIO.loadSkins();
+  $('#new-skin-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'new-skin'); });
+  $('#import-skin-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'import-skin'); });
 
   $('.skins-delete').on('click', function(event) {
     event.preventDefault();
     var skinName = event.currentTarget.dataset.elementId;
 
-    TCHE.removeSkin(skinName);
-    TCHE.openWindow('skins');
+    STUDIO.removeSkin(skinName);
+    STUDIO.openWindow('skins');
   });
 
   $('.skins-row').on('click', function(event) {
     event.preventDefault();
     var skinName = event.currentTarget.dataset.elementId;
 
-    TCHE.editSkin(skinName);
+    STUDIO.editSkin(skinName);
   });
 });
 </script>

@@ -45,15 +45,15 @@ $(function(){
   $('#skins-btn').addClass('active');
 
   $('#new-rpgmaker-skin-image').on('change', function(){
-    TCHE.onChooseRpgMakerSkin($('#new-rpgmaker-skin-image').val());
+    STUDIO.onChooseRpgMakerSkin($('#new-rpgmaker-skin-image').val());
   });
 
   $('#new-rpgmaker-skin-save').on('click', function(){
-    TCHE.saveNewRpgMakerSkin();
+    STUDIO.saveNewRpgMakerSkin();
   });
 
   $('#new-rpgmaker-skin-cancel').on('click', function(){
-    TCHE.openWindow('new-skin');
+    STUDIO.openWindow('new-skin');
   });
 });
 </script>

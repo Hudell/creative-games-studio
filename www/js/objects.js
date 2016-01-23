@@ -1,4 +1,4 @@
-TCHE.ObjectManager = {};
+STUDIO.ObjectManager = {};
 
 (function(namespace){
   var path = require("path");
@@ -8,16 +8,16 @@ TCHE.ObjectManager = {};
     data.push(name);
     data.push('Object');
 
-    TCHE.addRowToTable(selector, data, 'object', name);
+    STUDIO.addRowToTable(selector, data, 'object', name);
   };
 
   namespace.loadObjects = function(selector) {
-    if (!TCHE.gameData.objects) {
+    if (!STUDIO.gameData.objects) {
       return;
     }
 
-    for (var name in TCHE.gameData.objects) {
-      namespace.addObject(selector, name, TCHE.gameData.objects[name]);
+    for (var name in STUDIO.gameData.objects) {
+      namespace.addObject(selector, name, STUDIO.gameData.objects[name]);
     }
   };
 
@@ -101,7 +101,7 @@ TCHE.ObjectManager = {};
     $('#code-command-teleport').on('click', function(event){
       event.preventDefault();
 
-      TCHE.openPopupForm('code-command-teleport', 'Teleport', function(){
+      STUDIO.openPopupForm('code-command-teleport', 'Teleport', function(){
         var mapName = $('#code-command-teleport-map').val();
         var x = $('#code-command-teleport-x').val();
         var y = $('#code-command-teleport-y').val();
@@ -127,7 +127,7 @@ TCHE.ObjectManager = {};
         });
         namespace.closeCommandWindowAndRefresh(event);
       }, function(){
-        TCHE.fillMaps('code-command-teleport-map');        
+        STUDIO.fillMaps('code-command-teleport-map');        
       });
 
     });
@@ -176,11 +176,11 @@ TCHE.ObjectManager = {};
   namespace.modifyCommand = function(command) {
     switch(command.code) {
       case 'teleport' :
-        TCHE.openPopupForm('code-command-teleport', 'Teleport', function(){
+        STUDIO.openPopupForm('code-command-teleport', 'Teleport', function(){
           command.params = namespace.getTeleportParams();
           namespace.closeCommandWindowAndRefresh(event);
         }, function(){
-          TCHE.fillMaps('code-command-teleport-map');
+          STUDIO.fillMaps('code-command-teleport-map');
           
           $('#code-command-teleport-map').val(command.params.mapName);
           $('#code-command-teleport-x').val(command.params.x);
@@ -216,7 +216,7 @@ TCHE.ObjectManager = {};
   };
 
   namespace.showObjectOptions = function() {
-    TCHE.openPopup('code-command-list', 'Add Command', function(){
+    STUDIO.openPopup('code-command-list', 'Add Command', function(){
       namespace.registerObjectCommandEvents();
     });
   };
@@ -233,11 +233,11 @@ TCHE.ObjectManager = {};
 
   namespace.saveObject = function () {
     var name = namespace._currentObject.name;
-    TCHE.gameData.objects[name] = namespace._currentObject;
-    TCHE.addRecentObject('object', name);
+    STUDIO.gameData.objects[name] = namespace._currentObject;
+    STUDIO.addRecentObject('object', name);
     
-    TCHE.markAsModified();
-    TCHE.openWindow('objects');
+    STUDIO.markAsModified();
+    STUDIO.openWindow('objects');
   };
 
   namespace.removeCurrentObject = function() {
@@ -246,8 +246,8 @@ TCHE.ObjectManager = {};
   };
 
   namespace.removeObject = function(objectName) {
-    delete TCHE.gameData.objects[objectName];
-    TCHE.markAsModified();
+    delete STUDIO.gameData.objects[objectName];
+    STUDIO.markAsModified();
   };
 
   namespace.continueNewObject = function() {
@@ -256,7 +256,7 @@ TCHE.ObjectManager = {};
       throw new Error("Please give this object a name.");
     }
 
-    if (TCHE.gameData.objects[name] !== undefined) {
+    if (STUDIO.gameData.objects[name] !== undefined) {
       throw new Error("An object called " + name + " already exists.");
     }
 
@@ -271,8 +271,8 @@ TCHE.ObjectManager = {};
       events : {}
     };
 
-    TCHE.gameData.objects[name] = objectData;
-    TCHE.markAsModified();
+    STUDIO.gameData.objects[name] = objectData;
+    STUDIO.markAsModified();
 
     namespace.editObject(name);
   };
@@ -281,7 +281,7 @@ TCHE.ObjectManager = {};
     if (list[objectData.name] !== undefined) return;
     
     if (list[objectData.inherits] === undefined && objectData.inherits !== '') {
-      var parent = TCHE.gameData.objects[objectData.inherits];
+      var parent = STUDIO.gameData.objects[objectData.inherits];
       if (!parent) return;
 
       namespace.addTcheObjectToObjectList(parent, list);
@@ -375,8 +375,8 @@ TCHE.ObjectManager = {};
   namespace.getListOfObjects = function() {
     var list = namespace.getListOfDefaultObjects();
 
-    for (var key in TCHE.gameData.objects) {
-      namespace.addTcheObjectToObjectList(TCHE.gameData.objects[key], list);
+    for (var key in STUDIO.gameData.objects) {
+      namespace.addTcheObjectToObjectList(STUDIO.gameData.objects[key], list);
     }
 
     return list;
@@ -416,12 +416,12 @@ TCHE.ObjectManager = {};
   };
 
   namespace.editObject = function(objectName) {
-    if (!TCHE.gameData.objects[objectName]) {
+    if (!STUDIO.gameData.objects[objectName]) {
       throw new Error("Object " + objectName + " not found.");
     }
 
-    namespace._currentObject = TCHE.deepClone(TCHE.gameData.objects[objectName]);
-    TCHE.openWindow('edit-object', function(){
+    namespace._currentObject = STUDIO.deepClone(STUDIO.gameData.objects[objectName]);
+    STUDIO.openWindow('edit-object', function(){
       $('#edit-object-name').val(objectName);
       namespace.loadObjectEventsToScreen();
       namespace.refreshObjectSelectList();
@@ -445,7 +445,7 @@ TCHE.ObjectManager = {};
 
     element.append('<option value=""></option>');
 
-    var objects = TCHE.gameData.objects;
+    var objects = STUDIO.gameData.objects;
     for (var key in objects) {
       element.append('<option value="' + key + '">' +  key + '</option>');
     }
@@ -455,9 +455,9 @@ TCHE.ObjectManager = {};
     var element = $('#' + ulId);
     element.html('');
 
-    var objects = TCHE.gameData.objects;
+    var objects = STUDIO.gameData.objects;
     for (var key in objects) {
       element.append('<li><a class="recent-link" data-type="object" data-name="' + key + '" href="#"><i class="menu-option fa fa-umbrella fa-fw"></i> ' + key + '</a></li>');
     }
   };
-})(TCHE.ObjectManager);
+})(STUDIO.ObjectManager);

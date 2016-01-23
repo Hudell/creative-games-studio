@@ -66,47 +66,47 @@
 $(function(){
   $('#edit-object-save-btn').on('click', function(event){
     event.preventDefault();
-    TCHE.ObjectManager.saveObject();
+    STUDIO.ObjectManager.saveObject();
   });
   $('#edit-object-delete').on('click', function(){
     event.preventDefault();
-    TCHE.ObjectManager.removeCurrentObject();
-    TCHE.openWindow('objects');
+    STUDIO.ObjectManager.removeCurrentObject();
+    STUDIO.openWindow('objects');
   });
   $('#edit-object-cancel-btn').on('click', function(){
     event.preventDefault();
-    TCHE.openWindow('objects');
+    STUDIO.openWindow('objects');
   });
 
   $('#edit-object-add-btn').on('click', function(event){
     event.preventDefault();
-    TCHE.ObjectManager.showObjectOptions();
+    STUDIO.ObjectManager.showObjectOptions();
   });
 
   $('#edit-object-remove-btn').on('click', function(event){
     event.preventDefault();
-    TCHE.ObjectManager.removeSelectedObjectCommand();
+    STUDIO.ObjectManager.removeSelectedObjectCommand();
   });
 
   $('#edit-object-modify-btn').on('click', function(event){
     event.preventDefault();
-    TCHE.ObjectManager.modifySelectedObjectCommand();
+    STUDIO.ObjectManager.modifySelectedObjectCommand();
   });
 
   $('#edit-object-list').on('dblclick', function(event){
-    TCHE.ObjectManager.showObjectOptions();
+    STUDIO.ObjectManager.showObjectOptions();
   });
 
   $('#edit-object-list').on('keydown', function(event){
     if (event.keyCode == 8 || event.keyCode == 46) {
-      TCHE.ObjectManager.removeSelectedObjectCommand();
+      STUDIO.ObjectManager.removeSelectedObjectCommand();
     } else if (event.keyCode == 32) {
-      TCHE.ObjectManager.modifySelectedObjectCommand();
+      STUDIO.ObjectManager.modifySelectedObjectCommand();
     }
   });
 
   $('#edit-object-event').on('change', function(){
-    TCHE.ObjectManager.refreshObjectSelectList();
+    STUDIO.ObjectManager.refreshObjectSelectList();
   });
 
 });

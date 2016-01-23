@@ -51,15 +51,15 @@ $(function(){
   $('#skins-btn').addClass('active');
 
   $('#import-rpgmaker-skin-image').on('change', function(){
-    TCHE.onChooseRpgMakerSkinToImport($('#import-rpgmaker-skin-image').val());
+    STUDIO.onChooseRpgMakerSkinToImport($('#import-rpgmaker-skin-image').val());
   });
 
   $('#import-rpgmaker-skin-save').on('click', function(){
-    TCHE.importRpgMakerSkin();
+    STUDIO.importRpgMakerSkin();
   });
 
   $('#import-rpgmaker-skin-cancel').on('click', function(){
-    TCHE.openWindow('import-skin');
+    STUDIO.openWindow('import-skin');
   });
 });
 </script>

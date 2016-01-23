@@ -55,15 +55,15 @@ $(function(){
   $('#sprites-btn').addClass('active');
 
   $('#new-image-sprite-image').on('change', function(){
-    TCHE.onChooseImageSprite($('#new-image-sprite-image').val());
+    STUDIO.onChooseImageSprite($('#new-image-sprite-image').val());
   });
 
   $('#new-image-sprite-save').on('click', function(){
-    TCHE.saveNewImageSprite();
+    STUDIO.saveNewImageSprite();
   });
 
   $('#new-image-sprite-cancel').on('click', function(){
-    TCHE.openWindow('new-sprite');
+    STUDIO.openWindow('new-sprite');
   });
 });
 </script>

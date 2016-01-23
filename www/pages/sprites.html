@@ -87,22 +87,22 @@
 
 <script type="text/javascript">
 $(function(){
-  TCHE.loadSprites();
-  $('#new-sprite-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'new-sprite'); });
-  $('#import-sprite-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'import-sprite'); });
+  STUDIO.loadSprites();
+  $('#new-sprite-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'new-sprite'); });
+  $('#import-sprite-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'import-sprite'); });
 
   $('.sprites-row').on('click', function(event) {
     event.preventDefault();
     var spriteName = event.currentTarget.dataset.elementId;
 
-    TCHE.editSprite(spriteName);
+    STUDIO.editSprite(spriteName);
   });
 
   $('.sprites-view').on('click', function(event) {
     event.preventDefault();
     var spriteName = event.currentTarget.dataset.elementId;
 
-    TCHE.viewSpriteImage(spriteName);
+    STUDIO.viewSpriteImage(spriteName);
   });
 
 });

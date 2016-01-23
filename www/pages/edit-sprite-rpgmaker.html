@@ -106,23 +106,23 @@ $(function(){
   $('#sprites-btn').addClass('active');
 
   $('#edit-rpgmaker-sprite-image').on('change', function(){
-    TCHE.onChooseRpgMakerSpriteToEdit($('#edit-rpgmaker-sprite-image').val());
+    STUDIO.onChooseRpgMakerSpriteToEdit($('#edit-rpgmaker-sprite-image').val());
   });
 
   $('#edit-rpgmaker-sprite-save').on('click', function(event){
     event.preventDefault();
-    TCHE.saveOldRpgMakerSprite();
+    STUDIO.saveOldRpgMakerSprite();
   });
 
   $('#edit-rpgmaker-sprite-delete').on('click', function(event){
     event.preventDefault();
-    TCHE.removeCurrentRpgMakerSprite();
-    TCHE.openWindow('sprites');
+    STUDIO.removeCurrentRpgMakerSprite();
+    STUDIO.openWindow('sprites');
   });
 
   $('#edit-rpgmaker-sprite-cancel').on('click', function(event){
     event.preventDefault();
-    TCHE.openWindow('sprites');
+    STUDIO.openWindow('sprites');
   });
 });
 </script>

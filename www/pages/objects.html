@@ -68,14 +68,14 @@
 
 <script type="text/javascript">
 $(function(){
-  TCHE.ObjectManager.loadObjects('object-table');
-  $('#new-object-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'new-object'); });
+  STUDIO.ObjectManager.loadObjects('object-table');
+  $('#new-object-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'new-object'); });
 
   $('.object-row').on('click', function(event) {
     event.preventDefault();
     var objectName = event.currentTarget.dataset.elementId;
 
-    TCHE.ObjectManager.editObject(objectName);
+    STUDIO.ObjectManager.editObject(objectName);
   });
 });
 </script>

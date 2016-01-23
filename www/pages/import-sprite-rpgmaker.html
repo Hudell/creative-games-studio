@@ -100,15 +100,15 @@ $(function(){
   $('#sprites-btn').addClass('active');
 
   $('#import-rpgmaker-sprite-image').on('change', function(){
-    TCHE.onChooseRpgMakerSpriteToImport($('#import-rpgmaker-sprite-image').val());
+    STUDIO.onChooseRpgMakerSpriteToImport($('#import-rpgmaker-sprite-image').val());
   });
 
   $('#import-rpgmaker-sprite-save').on('click', function(){
-    TCHE.importRpgMakerSprite();
+    STUDIO.importRpgMakerSprite();
   });
 
   $('#import-rpgmaker-sprite-cancel').on('click', function(){
-    TCHE.openWindow('import-sprite');
+    STUDIO.openWindow('import-sprite');
   });
 });
 </script>

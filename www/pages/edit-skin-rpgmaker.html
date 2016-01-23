@@ -43,23 +43,23 @@
 <script type="text/javascript">
 $(function(){
   $('#edit-rpgmaker-skin-image').on('change', function(){
-    TCHE.onChooseRpgMakerSkinToEdit($('#edit-rpgmaker-skin-image').val());
+    STUDIO.onChooseRpgMakerSkinToEdit($('#edit-rpgmaker-skin-image').val());
   });
 
   $('#edit-rpgmaker-skin-save').on('click', function(event){
     event.preventDefault();
-    TCHE.saveOldRpgMakerSkin();
+    STUDIO.saveOldRpgMakerSkin();
   });
 
   $('#edit-rpgmaker-skin-delete').on('click', function(event){
     event.preventDefault();
-    TCHE.removeCurrentRpgMakerSkin();
-    TCHE.openWindow('skins');
+    STUDIO.removeCurrentRpgMakerSkin();
+    STUDIO.openWindow('skins');
   });
 
   $('#edit-rpgmaker-skin-cancel').on('click', function(event){
     event.preventDefault();
-    TCHE.openWindow('skins');
+    STUDIO.openWindow('skins');
   });
 });
 </script>

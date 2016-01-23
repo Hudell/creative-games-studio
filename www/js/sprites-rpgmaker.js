@@ -1,13 +1,13 @@
 (function(){
   var path = require("path");
 
-  TCHE.goToRpgMakerSpriteImportScreen = function(filePath) {
-    TCHE.showMessage('File will need to be imported.');
+  STUDIO.goToRpgMakerSpriteImportScreen = function(filePath) {
+    STUDIO.showMessage('File will need to be imported.');
   };
 
-  TCHE.onChooseRpgMakerSpriteToImport = function(filePath) {
-    if (TCHE.isFileImported(filePath)) {
-      TCHE.showMessage('The selected image was already imported.');
+  STUDIO.onChooseRpgMakerSpriteToImport = function(filePath) {
+    if (STUDIO.isFileImported(filePath)) {
+      STUDIO.showMessage('The selected image was already imported.');
       $('#import-rpgmaker-sprite-image').val('');
       return;
     }
@@ -28,7 +28,7 @@
     $('#import-rpgmaker-sprite-image-preview').html(img);
   };
 
-  TCHE.makeRpgMakerSpriteSetSiteMap = function(selector, img){
+  STUDIO.makeRpgMakerSpriteSetSiteMap = function(selector, img){
     var sitemap = "<map name='spritemap'>";
 
     var width = img[0].width;
@@ -59,9 +59,9 @@
     });
   };
 
-  TCHE.onChooseRpgMakerSprite = function(filePath) {
-    if (!TCHE.isFileImported(filePath)) {
-      TCHE.goToRpgMakerSpriteImportScreen(filePath);
+  STUDIO.onChooseRpgMakerSprite = function(filePath) {
+    if (!STUDIO.isFileImported(filePath)) {
+      STUDIO.goToRpgMakerSpriteImportScreen(filePath);
       return;
     }
 
@@ -73,15 +73,15 @@
       $('#new-rpgmaker-sprite-width').val(width);
       $('#new-rpgmaker-sprite-height').val(height);
 
-      TCHE.makeRpgMakerSpriteSetSiteMap('new', img);
+      STUDIO.makeRpgMakerSpriteSetSiteMap('new', img);
     });
 
     $('#new-rpgmaker-sprite-image-preview').html(img);
   };
 
-  TCHE.onChooseRpgMakerSpriteToEdit = function(filePath) {
-    if (!TCHE.isFileImported(filePath)) {
-      TCHE.goToRpgMakerSpriteImportScreen(filePath);
+  STUDIO.onChooseRpgMakerSpriteToEdit = function(filePath) {
+    if (!STUDIO.isFileImported(filePath)) {
+      STUDIO.goToRpgMakerSpriteImportScreen(filePath);
       return;
     }
 
@@ -93,19 +93,19 @@
       $('#edit-rpgmaker-sprite-width').val(width);
       $('#edit-rpgmaker-sprite-height').val(height);
 
-      TCHE.makeRpgMakerSpriteSetSiteMap('edit', img);
+      STUDIO.makeRpgMakerSpriteSetSiteMap('edit', img);
     });
 
     $('#edit-rpgmaker-sprite-image-preview').html(img);
   };
 
-  TCHE.saveNewRpgMakerSprite = function() {
+  STUDIO.saveNewRpgMakerSprite = function() {
     var imageFile = $('#new-rpgmaker-sprite-image').val();
     if (!imageFile || !imageFile.trim()) {
       throw new Error("Select a file to use.");
     }
 
-    if (!TCHE.isFileImported(imageFile)) {
+    if (!STUDIO.isFileImported(imageFile)) {
       throw new Error("The selected image file was not imported.");
     }
 
@@ -129,16 +129,16 @@
       throw new Error("Invalid Index.");
     }
 
-    if (TCHE.gameData.sprites[spriteName] !== undefined) {
+    if (STUDIO.gameData.sprites[spriteName] !== undefined) {
       throw new Error("A sprite called " + spriteName + " already exists.");
     }
 
-    var imageRelativePath = imageFile.replace(TCHE.loadedGame.folder, '');
+    var imageRelativePath = imageFile.replace(STUDIO.loadedGame.folder, '');
     while (imageRelativePath.length > 0 && (imageRelativePath.substr(0, 1) == "\\" || imageRelativePath.substr(0, 1) == '/')) {
       imageRelativePath = imageRelativePath.slice(1, imageRelativePath.length);
     }
 
-    TCHE.gameData.sprites[spriteName] = {
+    STUDIO.gameData.sprites[spriteName] = {
       "type" : "rpgmaker",
       "image" : imageRelativePath,
       "imageWidth" : width,
@@ -146,18 +146,18 @@
       "index" : index
     };
 
-    TCHE.addRecentObject('sprite', spriteName);
-    TCHE.markAsModified();
-    TCHE.openWindow('sprites');
+    STUDIO.addRecentObject('sprite', spriteName);
+    STUDIO.markAsModified();
+    STUDIO.openWindow('sprites');
   };
 
-  TCHE.importRpgMakerSprite = function() {
+  STUDIO.importRpgMakerSprite = function() {
     var imageFile = $('#import-rpgmaker-sprite-image').val();
     if (!imageFile || !imageFile.trim()) {
       throw new Error("Select a file to import.");
     }
 
-    if (TCHE.isFileImported(imageFile)) {
+    if (STUDIO.isFileImported(imageFile)) {
       throw new Error("The selected image file was already imported.");
     }
 
@@ -182,13 +182,13 @@
         continue;
       }
 
-      if (TCHE.gameData.sprites[name] !== undefined) {
+      if (STUDIO.gameData.sprites[name] !== undefined) {
         throw new Error("A sprite called " + name + " already exists.");
       }
     }
 
-    var newPath = path.join(TCHE.loadedGame.folder, newName);
-    TCHE.copyFileSync(imageFile, newPath);
+    var newPath = path.join(STUDIO.loadedGame.folder, newName);
+    STUDIO.copyFileSync(imageFile, newPath);
 
     for (var i = 0; i < 8; i++) {
       var name = $('#import-rpgmaker-sprite-' + i).val();
@@ -196,7 +196,7 @@
         continue;
       }
 
-      TCHE.gameData.sprites[name] = {
+      STUDIO.gameData.sprites[name] = {
         "type" : "rpgmaker",
         "image" : newName,
         "imageWidth" : width,
@@ -205,28 +205,28 @@
       };      
     }
 
-    TCHE.markAsModified();
-    TCHE.openWindow('sprites');
+    STUDIO.markAsModified();
+    STUDIO.openWindow('sprites');
   };
 
 
-  TCHE.saveOldRpgMakerSprite = function(){
+  STUDIO.saveOldRpgMakerSprite = function(){
     var spriteName = $('#edit-rpgmaker-sprite-name').val();
     if (!spriteName || !spriteName.trim) {
       throw new Error("I forgot what sprite you were modifying. Try again.");
     }
 
-    var data = TCHE.gameData.sprites[spriteName];
+    var data = STUDIO.gameData.sprites[spriteName];
     if (!data) {
       throw new Error("I couldn't find the existing sprite data.");
     }
 
     var imageFile = $('#edit-rpgmaker-sprite-image').val();
     if (!imageFile || !imageFile.trim()) {
-      imageFile = path.join(TCHE.loadedGame.folder, data.image);
+      imageFile = path.join(STUDIO.loadedGame.folder, data.image);
     }
 
-    if (!TCHE.isFileImported(imageFile)) {
+    if (!STUDIO.isFileImported(imageFile)) {
       throw new Error("The selected image file was not imported.");
     }
 
@@ -245,7 +245,7 @@
       throw new Error("Invalid Index.");
     }
 
-    var imageRelativePath = imageFile.replace(TCHE.loadedGame.folder, '');
+    var imageRelativePath = imageFile.replace(STUDIO.loadedGame.folder, '');
     while (imageRelativePath.length > 0 && (imageRelativePath.substr(0, 1) == "\\" || imageRelativePath.substr(0, 1) == '/')) {
       imageRelativePath = imageRelativePath.slice(1, imageRelativePath.length);
     }
@@ -255,7 +255,7 @@
     data.imageHeight = height;
     data.index = index;
 
-    TCHE.gameData.sprites[spriteName] = {
+    STUDIO.gameData.sprites[spriteName] = {
       "type" : "rpgmaker",
       "image" : imageRelativePath,
       "imageWidth" : width,
@@ -263,15 +263,15 @@
       "index" : index
     };
 
-    TCHE.addRecentObject('sprite', spriteName);
-    TCHE.markAsModified();
-    TCHE.openWindow('sprites');
+    STUDIO.addRecentObject('sprite', spriteName);
+    STUDIO.markAsModified();
+    STUDIO.openWindow('sprites');
   };
 
-  TCHE.loadRpgMakerSpriteData = function(spriteName) {
-    var spriteData = TCHE.gameData.sprites[spriteName];
+  STUDIO.loadRpgMakerSpriteData = function(spriteName) {
+    var spriteData = STUDIO.gameData.sprites[spriteName];
 
-    var fullImagePath = path.join(TCHE.loadedGame.folder, spriteData.image);
+    var fullImagePath = path.join(STUDIO.loadedGame.folder, spriteData.image);
 
     var img = $("<img src='" + fullImagePath + "'>");
     img.on('load', function(){
@@ -281,7 +281,7 @@
       $('#edit-rpgmaker-sprite-width').val(width);
       $('#edit-rpgmaker-sprite-height').val(height);
 
-      TCHE.makeRpgMakerSpriteSetSiteMap('edit', img);
+      STUDIO.makeRpgMakerSpriteSetSiteMap('edit', img);
     });
     $('#edit-rpgmaker-sprite-image-preview').html(img);
     
@@ -289,14 +289,14 @@
     $('#edit-rpgmaker-sprite-index-' + spriteData.index).prop('checked', 'checked');
   };
 
-  TCHE.removeCurrentRpgMakerSprite = function() {
+  STUDIO.removeCurrentRpgMakerSprite = function() {
     var skinName = $('#edit-rpgmaker-sprite-name').val();
-    TCHE.removeSprite(skinName);
+    STUDIO.removeSprite(skinName);
   };
 
-  TCHE.editRpgMakerSprite = function(spriteName) {
-    TCHE.openWindow('edit-sprite-rpgmaker', function(){
-      TCHE.loadRpgMakerSpriteData(spriteName);
+  STUDIO.editRpgMakerSprite = function(spriteName) {
+    STUDIO.openWindow('edit-sprite-rpgmaker', function(){
+      STUDIO.loadRpgMakerSpriteData(spriteName);
     });
   };
 })();

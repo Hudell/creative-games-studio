@@ -62,24 +62,24 @@
 <script type="text/javascript">
 $(function(){
   $('#settings-game-save').on('click', function(){
-    TCHE.saveGameSettings();
+    STUDIO.saveGameSettings();
   });
   $('#settings-game-cancel').on('click', function(){
-    TCHE.openWindow('settings');
+    STUDIO.openWindow('settings');
   });
 
-  TCHE.fillMaps('settings-game-initial-map');
-  TCHE.fillScenes('settings-game-initial-scene');
-  TCHE.fillSkins('settings-game-main-skin');
+  STUDIO.fillMaps('settings-game-initial-map');
+  STUDIO.fillScenes('settings-game-initial-scene');
+  STUDIO.fillSkins('settings-game-main-skin');
 
-  TCHE.loadGameSettings();
+  STUDIO.loadGameSettings();
 
-  $('#settings-game-name').val(TCHE.gameData.name);
-  $('#settings-game-resolution-width').val(TCHE.gameData.resolution.width);
-  $('#settings-game-resolution-height').val(TCHE.gameData.resolution.height);
-  $('#settings-game-screen-height').val(TCHE.gameData.resolution.screenHeight);
-  $('#settings-game-screen-width').val(TCHE.gameData.resolution.screenWidth);
-  $('#settings-game-initial-scene').val(TCHE.gameData.initialScene);
-  $('#settings-game-initial-map').val(TCHE.gameData.initialMap);
+  $('#settings-game-name').val(STUDIO.gameData.name);
+  $('#settings-game-resolution-width').val(STUDIO.gameData.resolution.width);
+  $('#settings-game-resolution-height').val(STUDIO.gameData.resolution.height);
+  $('#settings-game-screen-height').val(STUDIO.gameData.resolution.screenHeight);
+  $('#settings-game-screen-width').val(STUDIO.gameData.resolution.screenWidth);
+  $('#settings-game-initial-scene').val(STUDIO.gameData.initialScene);
+  $('#settings-game-initial-map').val(STUDIO.gameData.initialMap);
 });
 </script>

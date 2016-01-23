@@ -1,13 +1,13 @@
 (function(){
   var path = require("path");
 
-  TCHE.goToImageSpriteImportScreen = function(filePath) {
-    TCHE.showMessage('File will need to be imported.');
+  STUDIO.goToImageSpriteImportScreen = function(filePath) {
+    STUDIO.showMessage('File will need to be imported.');
   };
 
-  TCHE.onChooseImageSpriteToImport = function(filePath) {
-    if (TCHE.isFileImported(filePath)) {
-      TCHE.showMessage('The selected image was already imported.');
+  STUDIO.onChooseImageSpriteToImport = function(filePath) {
+    if (STUDIO.isFileImported(filePath)) {
+      STUDIO.showMessage('The selected image was already imported.');
       $('#import-image-sprite-image').val('');
       return;
     }
@@ -28,9 +28,9 @@
     $('#import-image-sprite-image-preview').html(img);
   };
 
-  TCHE.onChooseImageSprite = function(filePath) {
-    if (!TCHE.isFileImported(filePath)) {
-      TCHE.goToImageSpriteImportScreen(filePath);
+  STUDIO.onChooseImageSprite = function(filePath) {
+    if (!STUDIO.isFileImported(filePath)) {
+      STUDIO.goToImageSpriteImportScreen(filePath);
       return;
     }
 
@@ -46,13 +46,13 @@
     $('#new-image-sprite-image-preview').html(img);
   };
 
-  TCHE.saveNewImageSprite = function() {
+  STUDIO.saveNewImageSprite = function() {
     var imageFile = $('#new-image-sprite-image').val();
     if (!imageFile || !imageFile.trim()) {
       throw new Error("Select a file to use.");
     }
 
-    if (!TCHE.isFileImported(imageFile)) {
+    if (!STUDIO.isFileImported(imageFile)) {
       throw new Error("The selected image file was not imported.");
     }
 
@@ -71,33 +71,33 @@
       throw new Error("Invalid image height.");
     }
 
-    if (TCHE.gameData.sprites[spriteName] !== undefined) {
+    if (STUDIO.gameData.sprites[spriteName] !== undefined) {
       throw new Error("A sprite called " + spriteName + " already exists.");
     }
 
-    var imageRelativePath = imageFile.replace(TCHE.loadedGame.folder, '');
+    var imageRelativePath = imageFile.replace(STUDIO.loadedGame.folder, '');
     while (imageRelativePath.length > 0 && (imageRelativePath.substr(0, 1) == "\\" || imageRelativePath.substr(0, 1) == '/')) {
       imageRelativePath = imageRelativePath.slice(1, imageRelativePath.length);
     }
 
-    TCHE.gameData.sprites[spriteName] = {
+    STUDIO.gameData.sprites[spriteName] = {
       "type" : "image",
       "image" : imageRelativePath,
       "width" : width,
       "height" : height
     };
 
-    TCHE.markAsModified();
-    TCHE.openWindow('sprites');
+    STUDIO.markAsModified();
+    STUDIO.openWindow('sprites');
   };
 
-  TCHE.importImageSprite = function() {
+  STUDIO.importImageSprite = function() {
     var imageFile = $('#import-image-sprite-image').val();
     if (!imageFile || !imageFile.trim()) {
       throw new Error("Select a file to import.");
     }
 
-    if (TCHE.isFileImported(imageFile)) {
+    if (STUDIO.isFileImported(imageFile)) {
       throw new Error("The selected image file was already imported.");
     }
 
@@ -118,16 +118,16 @@
 
     var name = $('#import-image-sprite-name').val();
     if (!!name && !!name.trim()) {
-      if (TCHE.gameData.sprites[name] !== undefined) {
+      if (STUDIO.gameData.sprites[name] !== undefined) {
         throw new Error("A sprite called " + name + " already exists.");
       }
     }
 
-    var newPath = path.join(TCHE.loadedGame.folder, newName);
-    TCHE.copyFileSync(imageFile, newPath);
+    var newPath = path.join(STUDIO.loadedGame.folder, newName);
+    STUDIO.copyFileSync(imageFile, newPath);
 
     if (!!name && !!name.trim()) {
-      TCHE.gameData.sprites[name] = {
+      STUDIO.gameData.sprites[name] = {
         "type" : "image",
         "image" : newName,
         "width" : width,
@@ -136,7 +136,7 @@
     }
 
 
-    TCHE.markAsModified();    
-    TCHE.openWindow('sprites');
+    STUDIO.markAsModified();    
+    STUDIO.openWindow('sprites');
   };
 })();

@@ -1,52 +1,52 @@
 (function(){
   var path = require("path");
 
-  TCHE.saveSettings = function(){
+  STUDIO.saveSettings = function(){
   };
 
-  TCHE.saveGameSettings = function(){
-    TCHE.gameData.initialScene = $('#settings-game-initial-scene').val();
-    TCHE.gameData.initialMap = $('#settings-game-initial-map').val();
-    TCHE.gameData.mainSkin = $('#settings-game-main-skin').val();
-    TCHE.gameData.resolution.width = $('#settings-game-resolution-width').val();
-    TCHE.gameData.resolution.height = $('#settings-game-resolution-height').val();
-    TCHE.gameData.resolution.screenWidth = $('#settings-game-screen-width').val();
-    TCHE.gameData.resolution.screenHeight = $('#settings-game-screen-height').val();
+  STUDIO.saveGameSettings = function(){
+    STUDIO.gameData.initialScene = $('#settings-game-initial-scene').val();
+    STUDIO.gameData.initialMap = $('#settings-game-initial-map').val();
+    STUDIO.gameData.mainSkin = $('#settings-game-main-skin').val();
+    STUDIO.gameData.resolution.width = $('#settings-game-resolution-width').val();
+    STUDIO.gameData.resolution.height = $('#settings-game-resolution-height').val();
+    STUDIO.gameData.resolution.screenWidth = $('#settings-game-screen-width').val();
+    STUDIO.gameData.resolution.screenHeight = $('#settings-game-screen-height').val();
 
-    TCHE.markAsModified();
-    TCHE.openWindow('settings');
+    STUDIO.markAsModified();
+    STUDIO.openWindow('settings');
   };
 
-  TCHE.savePlayerSettings = function(){
-    TCHE.gameData.player.sprite = $('#settings-player-sprite').val();
-    TCHE.gameData.player.x = $('#settings-player-x').val();
-    TCHE.gameData.player.y = $('#settings-player-y').val();
-    TCHE.gameData.player.offsetX = $('#settings-player-hitbox-x').val();
-    TCHE.gameData.player.offsetY = $('#settings-player-hitbox-y').val();
-    TCHE.gameData.player.width = $('#settings-player-hitbox-width').val();
-    TCHE.gameData.player.height = $('#settings-player-hitbox-height').val();
+  STUDIO.savePlayerSettings = function(){
+    STUDIO.gameData.player.sprite = $('#settings-player-sprite').val();
+    STUDIO.gameData.player.x = $('#settings-player-x').val();
+    STUDIO.gameData.player.y = $('#settings-player-y').val();
+    STUDIO.gameData.player.offsetX = $('#settings-player-hitbox-x').val();
+    STUDIO.gameData.player.offsetY = $('#settings-player-hitbox-y').val();
+    STUDIO.gameData.player.width = $('#settings-player-hitbox-width').val();
+    STUDIO.gameData.player.height = $('#settings-player-hitbox-height').val();
 
-    TCHE.markAsModified();
-    TCHE.openWindow('settings');
+    STUDIO.markAsModified();
+    STUDIO.openWindow('settings');
   };
 
-  TCHE.loadGameSettings = function(){
-    $('#settings-game-initial-scene').val(TCHE.gameData.initialScene);
-    $('#settings-game-initial-map').val(TCHE.gameData.initialMap);
-    $('#settings-game-main-skin').val(TCHE.gameData.mainSkin);
-    $('#settings-game-resolution-width').val(TCHE.gameData.resolution.width);
-    $('#settings-game-resolution-height').val(TCHE.gameData.resolution.height);
-    $('#settings-game-screen-width').val(TCHE.gameData.resolution.screenWidth);
-    $('#settings-game-screen-height').val(TCHE.gameData.resolution.screenHeight);
+  STUDIO.loadGameSettings = function(){
+    $('#settings-game-initial-scene').val(STUDIO.gameData.initialScene);
+    $('#settings-game-initial-map').val(STUDIO.gameData.initialMap);
+    $('#settings-game-main-skin').val(STUDIO.gameData.mainSkin);
+    $('#settings-game-resolution-width').val(STUDIO.gameData.resolution.width);
+    $('#settings-game-resolution-height').val(STUDIO.gameData.resolution.height);
+    $('#settings-game-screen-width').val(STUDIO.gameData.resolution.screenWidth);
+    $('#settings-game-screen-height').val(STUDIO.gameData.resolution.screenHeight);
   };
 
-  TCHE.loadPlayerSettings = function(){
-    $('#settings-player-sprite').val(TCHE.gameData.player.sprite);
-    $('#settings-player-x').val(TCHE.gameData.player.x);
-    $('#settings-player-y').val(TCHE.gameData.player.y);
-    $('#settings-player-hitbox-x').val(TCHE.gameData.player.offsetX);
-    $('#settings-player-hitbox-y').val(TCHE.gameData.player.offsetY);
-    $('#settings-player-hitbox-width').val(TCHE.gameData.player.width);
-    $('#settings-player-hitbox-height').val(TCHE.gameData.player.height);
+  STUDIO.loadPlayerSettings = function(){
+    $('#settings-player-sprite').val(STUDIO.gameData.player.sprite);
+    $('#settings-player-x').val(STUDIO.gameData.player.x);
+    $('#settings-player-y').val(STUDIO.gameData.player.y);
+    $('#settings-player-hitbox-x').val(STUDIO.gameData.player.offsetX);
+    $('#settings-player-hitbox-y').val(STUDIO.gameData.player.offsetY);
+    $('#settings-player-hitbox-width').val(STUDIO.gameData.player.width);
+    $('#settings-player-hitbox-height').val(STUDIO.gameData.player.height);
   };
 })();

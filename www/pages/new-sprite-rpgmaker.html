@@ -104,15 +104,15 @@ $(function(){
   $('#sprites-btn').addClass('active');
 
   $('#new-rpgmaker-sprite-image').on('change', function(){
-    TCHE.onChooseRpgMakerSprite($('#new-rpgmaker-sprite-image').val());
+    STUDIO.onChooseRpgMakerSprite($('#new-rpgmaker-sprite-image').val());
   });
 
   $('#new-rpgmaker-sprite-save').on('click', function(){
-    TCHE.saveNewRpgMakerSprite();
+    STUDIO.saveNewRpgMakerSprite();
   });
 
   $('#new-rpgmaker-sprite-cancel').on('click', function(){
-    TCHE.openWindow('new-sprite');
+    STUDIO.openWindow('new-sprite');
   });
 });
 </script>

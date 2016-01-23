@@ -59,14 +59,14 @@
 
 <script type="text/javascript">
 $(function(){
-  TCHE.fillSprites('settings-player-sprite');
-  TCHE.loadPlayerSettings();
+  STUDIO.fillSprites('settings-player-sprite');
+  STUDIO.loadPlayerSettings();
 
   $('#settings-player-save').on('click', function(){
-    TCHE.savePlayerSettings();
+    STUDIO.savePlayerSettings();
   });
   $('#settings-player-cancel').on('click', function(){
-    TCHE.openWindow('settings');
+    STUDIO.openWindow('settings');
   });
 });
 </script>

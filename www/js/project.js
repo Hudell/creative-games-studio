@@ -2,7 +2,7 @@
   var fs = require('fs');
   var path = require('path');
 
-  TCHE.saveNewProject = function(){
+  STUDIO.saveNewProject = function(){
     var name = $('#new-project-name').val();
     if (!name || !name.trim()) {
       throw new Error("We know this is the hardest part, but you need a name for your project.");
@@ -21,33 +21,33 @@
     var fullFolder = path.join(parentFolder, folder);
 
     if (fs.existsSync(fullFolder)) {
-      TCHE.confirm("The folder already exists. Any existing project files will be overwritten.", function(){
-        TCHE.doSaveNewProject(name, fullFolder);
+      STUDIO.confirm("The folder already exists. Any existing project files will be overwritten.", function(){
+        STUDIO.doSaveNewProject(name, fullFolder);
       });
     } else {
-      TCHE.doSaveNewProject(name, fullFolder);
+      STUDIO.doSaveNewProject(name, fullFolder);
     }
   };
 
-  TCHE.doSaveNewProject = function(name, fullFolder){
-    TCHE.copyFolderSync('emptyGame', fullFolder);
-    TCHE.openProject(fullFolder);
+  STUDIO.doSaveNewProject = function(name, fullFolder){
+    STUDIO.copyFolderSync('emptyGame', fullFolder);
+    STUDIO.openProject(fullFolder);
 
-    TCHE.gameData.name = name;
-    TCHE.saveProject();
+    STUDIO.gameData.name = name;
+    STUDIO.saveProject();
 
-    TCHE.changeGameTitle(name);
+    STUDIO.changeGameTitle(name);
   };
 
-  TCHE.selectNewProjectFolder = function(newFolder) {
+  STUDIO.selectNewProjectFolder = function(newFolder) {
     $('#new-project-parent-folder').val(newFolder);
   };
 
-  TCHE.pickNewProjectFolder = function() {
+  STUDIO.pickNewProjectFolder = function() {
     var dialog = $("<input type='file' nwdirectory>");
 
     dialog.on('change', function(){
-      TCHE.selectNewProjectFolder(dialog.val());
+      STUDIO.selectNewProjectFolder(dialog.val());
     });
 
     dialog.click();

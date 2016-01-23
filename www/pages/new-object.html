@@ -44,15 +44,15 @@
 
 <script type="text/javascript">
 $(function(){
-  TCHE.ObjectManager.fillObjectTypes('objectType');
+  STUDIO.ObjectManager.fillObjectTypes('objectType');
 
   $('#new-object-continue-btn').on('click', function(event){
     event.preventDefault();
-    TCHE.ObjectManager.continueNewObject();
+    STUDIO.ObjectManager.continueNewObject();
   });
   $('#new-object-cancel-btn').on('click', function(event){
     event.preventDefault();
-    TCHE.openWindow('objects');
+    STUDIO.openWindow('objects');
   });
 });
 </script>
