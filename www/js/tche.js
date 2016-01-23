@@ -308,6 +308,18 @@ var TCHE = {};
       title : TCHE.gameData.name,
       toolbar : true
     });
+
+    try {
+      newWin.focus();
+    }
+    catch(e) {
+    }
+
+    try {
+      newWin.setPosition("center");
+    }
+    catch(e) {
+    }
   };
 
   TCHE.playProjectButton = function(){
