@@ -72,4 +72,14 @@
       element.append('<option value="' + key + '">' +  key + '</option>');
     }
   };
+
+  TCHE.fillSkinLinks = function(ulId) {
+    var element = $('#' + ulId);
+    element.html('');
+
+    var skins = TCHE.gameData.skins;
+    for (var key in skins) {
+      element.append('<li><a class="recent-link" data-type="skin" data-name="' + key + '" href="#"><i class="menu-option fa fa-tint fa-fw"></i> ' + key + '</a></li>');
+    }
+  };
 })();

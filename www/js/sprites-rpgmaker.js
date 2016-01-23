@@ -146,6 +146,7 @@
       "index" : index
     };
 
+    TCHE.addRecentObject('sprite', spriteName);
     TCHE.markAsModified();
     TCHE.openWindow('sprites');
   };
@@ -262,6 +263,7 @@
       "index" : index
     };
 
+    TCHE.addRecentObject('sprite', spriteName);
     TCHE.markAsModified();
     TCHE.openWindow('sprites');
   };

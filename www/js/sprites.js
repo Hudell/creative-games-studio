@@ -76,4 +76,14 @@
       element.append('<option value="' + key + '">' +  key + '</option>');
     }
   };
+
+  TCHE.fillSpriteLinks = function(ulId) {
+    var element = $('#' + ulId);
+    element.html('');
+
+    var sprites = TCHE.gameData.sprites;
+    for (var key in sprites) {
+      element.append('<li><a class="recent-link" data-type="sprite" data-name="' + key + '" href="#"><i class="menu-option fa fa-image fa-fw"></i> ' + key + '</a></li>');
+    }
+  };
 })();

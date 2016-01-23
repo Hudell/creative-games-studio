@@ -234,6 +234,8 @@ TCHE.ObjectManager = {};
   namespace.saveObject = function () {
     var name = namespace._currentObject.name;
     TCHE.gameData.objects[name] = namespace._currentObject;
+    TCHE.addRecentObject('object', name);
+    
     TCHE.markAsModified();
     TCHE.openWindow('objects');
   };
@@ -446,6 +448,16 @@ TCHE.ObjectManager = {};
     var objects = TCHE.gameData.objects;
     for (var key in objects) {
       element.append('<option value="' + key + '">' +  key + '</option>');
+    }
+  };
+
+  namespace.fillObjectLinks = function(ulId) {
+    var element = $('#' + ulId);
+    element.html('');
+
+    var objects = TCHE.gameData.objects;
+    for (var key in objects) {
+      element.append('<li><a class="recent-link" data-type="object" data-name="' + key + '" href="#"><i class="menu-option fa fa-umbrella fa-fw"></i> ' + key + '</a></li>');
     }
   };
 })(TCHE.ObjectManager);

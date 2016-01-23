@@ -125,11 +125,22 @@
     }
   };
 
+  TCHE.fillMapLinks = function(ulId) {
+    var element = $('#' + ulId);
+    element.html('');
+
+    var maps = TCHE.gameData.maps;
+    for (var key in maps) {
+      element.append('<li><a class="recent-link" data-type="map" data-name="' + key + '" href="#"><i class="menu-option fa fa-globe fa-fw"></i> ' + key + '</a></li>');
+    }
+  };
+
   TCHE.getMapData = function(mapName) {
     return TCHE.loadJson(path.join(TCHE.loadedGame.folder, 'maps', mapName));
   };
 
   TCHE.saveMapData = function(mapName, mapData) {
     TCHE.saveJson(path.join(TCHE.loadedGame.folder, 'maps', mapName), mapData);
+    TCHE.addRecentObject('map', mapName);
   }
 })();

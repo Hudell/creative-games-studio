@@ -16,7 +16,8 @@ var TCHE = {};
 
   TCHE.gameData = undefined;
   TCHE.loadedGame = {
-    folder : ""
+    folder : "",
+    recentObjects : []
   };
   TCHE.modified = false;
 
@@ -199,8 +200,10 @@ var TCHE = {};
     }
 
     TCHE.requestPage(windowName + '.html', function(result, xhr){
+      TCHE._windowName = windowName;
       $('#page-wrapper').html(xhr.responseText);
 
+      TCHE.fillSidebar();
       TCHE.fixLinks();
 
       if (!!callback) {
@@ -213,11 +216,11 @@ var TCHE = {};
 
   TCHE.changeLoadedPath = function(newPath) {
     if (!TCHE.loadedGame) {
-      TCHE.loadedGame = TCHE.loadJson('loadedGame.json');
+      TCHE.loadLoadedGameInfo();
     }
 
     TCHE.loadedGame.folder = newPath;
-    TCHE.saveJson('loadedGame.json', TCHE.loadedGame);
+    TCHE.saveLoadedGame();
 
     TCHE.changeGamePath(newPath);
   };
@@ -258,6 +261,7 @@ var TCHE = {};
     TCHE.saveGameData();
     TCHE.copyEngineFiles();
     TCHE.markAsSaved();
+    TCHE.saveLoadedGame();
   };
 
   TCHE.copyEngineFiles = function() {
@@ -423,6 +427,34 @@ var TCHE = {};
     win.title = 'TCHE Editor - ' + newPath;
   };
 
+  TCHE.indexOfObjectOnRecentList = function(type, objectName) {
+    for (var i = 0; i < TCHE.loadedGame.recentObjects.length; i++) {
+      var item = TCHE.loadedGame.recentObjects[i];
+      if (item.type == type && item.name == objectName) {
+        return i;
+      }
+    }
+
+    return -1;
+  };
+
+  TCHE.addRecentObject = function(type, objectName) {
+    var index = TCHE.indexOfObjectOnRecentList(type, objectName);
+    if (index < 0 && TCHE.loadedGame.recentObjects.length >= 10) {
+      index = 0;
+    }
+
+    if (index >= 0) {
+      TCHE.loadedGame.recentObjects.splice(index, 1);
+    }
+
+    TCHE.loadedGame.recentObjects.push({type : type, name : objectName});
+  };
+
+  TCHE.saveLoadedGame = function() {
+    TCHE.saveJson('loadedGame.json', TCHE.loadedGame);
+  };
+
   TCHE.loadLoadedGameInfo = function() {
     try {
       TCHE.loadedGame = TCHE.loadJson('loadedGame.json');
@@ -432,6 +464,7 @@ var TCHE = {};
       throw e;
     }
 
+    TCHE.loadedGame.recentObjects = TCHE.loadedGame.recentObjects || [];
     TCHE.changeGamePath(TCHE.loadedGame.folder);
   };
 
@@ -597,7 +630,7 @@ var TCHE = {};
   };
 
   TCHE.exit = function(){
-    win.close();
+    TCHE.win.close();
   };
 
   TCHE.updateCounters = function() {
@@ -644,13 +677,32 @@ var TCHE = {};
     $('#index-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'index'); });
     
     $('#maps-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'maps'); });
-    $('#code-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'code'); });
-    $('#plugins-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'plugins'); });
+    $('#objects-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'objects'); });
+    $('#variables-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'variables'); });
+    $('#sprites-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'sprites'); });
+    $('#characters-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'characters'); });
     
-    $('#menu-characters-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'characters'); });
-    $('#menu-objects-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'objects'); });
-    $('#menu-sprites-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'sprites'); });
-    $('#menu-variables-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'variables'); });
+    $('#languages-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'languages'); });
+    $('#music-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'music'); });
+    $('#sounds-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'sounds'); });
+    $('#movies-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'movies'); });
+    
+    $('#items-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'items'); });
+    $('#animations-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'animations'); });
+    $('#faces-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'faces'); });
+    $('#skins-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'skins'); });
+
+    $('#classes-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'classes'); });
+    $('#enemies-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'enemies'); });
+    $('#skills-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'skills'); });
+    $('#states-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'states'); });
+    
+    $('#achievements-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'achievements'); });
+    $('#huds-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'huds'); });
+    $('#packages-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'packages'); });
+    $('#vehicles-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'vehicles'); });
+
+    $('#plugins-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'plugins'); });
     
     $('#settings-player-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'settings-player'); });
     $('#settings-game-btn').on('click', function(event) { TCHE.eventOpenWindow(event, 'settings-game'); });
@@ -680,7 +732,7 @@ var TCHE = {};
 
     $('#exit-btn').on('click', function(event) {
       event.preventDefault();
-      TCHE.exitButon();
+      TCHE.exitButton();
     });
 
     TCHE.openWindow('index');
@@ -690,9 +742,95 @@ var TCHE = {};
       TCHE.loadGameData();
     }
 
-    TCHE.fillRecentList('map-editor-map-list');
-
+    TCHE.fillSidebar();
     TCHE.win.maximize();
+  };
+
+  TCHE.getCurrentContext = function() {
+    var windowName = TCHE._windowName;
+    if (!windowName) {
+      return 'index';
+    }
+
+    if (windowName.indexOf('map') >= 0) {
+      return 'maps';
+    }
+
+    if (windowName.indexOf('object') >= 0) {
+      return 'objects';
+    }
+
+    if (windowName.indexOf('sprite') >= 0) {
+      return 'sprites';
+    }
+
+    if (windowName.indexOf('skin') >= 0) {
+      return 'skins';
+    }
+
+    return 'index';
+  };
+
+  TCHE.addListToContextArea = function(listId, listCaption, listIcon) {
+    var html = '<ul class="nav"><li><a id="' + listId + '-btn" href="#"><i class="fa fa-fw ' + listIcon + '"></i> ' + listCaption + '<span class="fa arrow"></span></a><ul class="nav nav-second-level" id="' + listId + '"></ul></li></ul>';
+    $('#context-content').append(html);
+  };
+
+  TCHE.fillContextContent = function() {
+    var context = TCHE.getCurrentContext();
+
+    $('#context-content').html('');
+    switch(context) {
+      case 'index' :
+      case 'maps' :
+        TCHE.addListToContextArea('context-map-list', 'Maps', 'fa-globe');
+        TCHE.fillMapLinks('context-map-list');
+        $('#context-map-list-btn').on('click', function(event){
+          event.preventDefault();
+          TCHE.openWindow('maps');
+        });
+        break;
+
+      case 'sprites' :
+        TCHE.addListToContextArea('context-sprite-list', 'Sprites', 'fa-image');
+        TCHE.fillSpriteLinks('context-sprite-list');
+        $('#context-sprite-list-btn').on('click', function(event){
+          event.preventDefault();
+          TCHE.openWindow('sprites');
+        });
+        break;
+
+      case 'skins' :
+        TCHE.addListToContextArea('context-skin-list', 'Skins', 'fa-tint');
+        TCHE.fillSkinLinks('context-skin-list');
+        $('#context-skin-list-btn').on('click', function(event){
+          event.preventDefault();
+          TCHE.openWindow('skins');
+        });
+        break;
+
+      case 'objects' :
+        TCHE.addListToContextArea('context-object-list', 'Objects', 'fa-umbrella');
+        TCHE.ObjectManager.fillObjectLinks('context-object-list');
+        $('#context-object-list-btn').on('click', function(event){
+          event.preventDefault();
+          TCHE.openWindow('objects');
+        });
+        break;
+    }
+  };
+
+  TCHE.fillSidebar = function() {
+    TCHE.fillRecentList('map-editor-map-list');
+    TCHE.fillContextContent();
+
+    $('.recent-link').on('click', function(event){
+      event.preventDefault();
+      var name = event.currentTarget.dataset.name;
+      var type = event.currentTarget.dataset.type;
+
+      TCHE.editObject(type, name);
+    });
   };
 
   TCHE.fillRecentList = function(ulId) {
@@ -700,17 +838,46 @@ var TCHE = {};
 
     ul.html('');
 
-    var maps = TCHE.gameData.maps;
-    for (var key in maps) {
-      ul.append('<li><a class="map-link" data-map-name="' + key + '" href="#"><i class="menu-option fa fa-globe fa-fw"></i> ' + key + '</a></li>');
+    var list = TCHE.loadedGame.recentObjects;
+
+    for (var i = 0; i < list.length; i++) {
+      var item = list[i];
+      var icon = 'fa-copy';
+
+      switch (item.type) {
+        case 'map' :
+          icon = 'fa-globe';
+          break;
+        case 'skin' :
+          icon = 'fa-tint';
+          break;
+        case 'sprite' :
+          icon = 'fa-image';
+          break;
+        case 'object' :
+          icon = 'fa-umbrella';
+          break;
+      }
+
+      ul.append('<li><a class="recent-link" data-type="' + item.type + '" data-name="' + item.name + '" href="#"><i class="menu-option fa ' + icon + ' fa-fw"></i> ' + item.name + '</a></li>');
     }
+  };
 
-    $('.map-link').on('click', function(event){
-      event.preventDefault();
-      var mapName = event.currentTarget.dataset.mapName;
-
-      TCHE.editMap(mapName);
-    });
+  TCHE.editObject = function(objectType, objectName) {
+    switch(objectType) {
+      case 'map' :
+        TCHE.editMap(objectName);
+        break;
+      case 'skin' :
+        TCHE.editSkin(objectName);
+        break;
+      case 'sprite' :
+        TCHE.editSprite(objectName);
+        break;
+      case 'object' :
+        TCHE.ObjectManager.editObject(objectName);
+        break;
+    }
   };
 
   TCHE.fixLinks = function(){

@@ -69,6 +69,7 @@
       "image" : imageRelativePath
     };
 
+    TCHE.addRecentObject('skin', skinName);
     TCHE.markAsModified();
     TCHE.openWindow('skins');
   };
@@ -145,6 +146,7 @@
       "image" : imageRelativePath
     };
 
+    TCHE.addRecentObject('skin', skinName);
     TCHE.markAsModified();
     TCHE.openWindow('skins');
   };
