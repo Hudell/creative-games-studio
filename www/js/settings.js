@@ -12,6 +12,7 @@
     STUDIO.gameData.resolution.height = $('#settings-game-resolution-height').val();
     STUDIO.gameData.resolution.screenWidth = $('#settings-game-screen-width').val();
     STUDIO.gameData.resolution.screenHeight = $('#settings-game-screen-height').val();
+    STUDIO.gameData.resolution.useDynamicResolution = $('#settings-game-resolution-use-dynamic-resolution')[0].checked;
 
     STUDIO.markAsModified();
     STUDIO.openWindow('settings');
@@ -38,6 +39,7 @@
     $('#settings-game-resolution-height').val(STUDIO.gameData.resolution.height);
     $('#settings-game-screen-width').val(STUDIO.gameData.resolution.screenWidth);
     $('#settings-game-screen-height').val(STUDIO.gameData.resolution.screenHeight);
+    $('#settings-game-resolution-use-dynamic-resolution')[0].checked = STUDIO.gameData.resolution.useDynamicResolution;
   };
 
   STUDIO.loadPlayerSettings = function(){

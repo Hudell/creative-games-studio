@@ -5,6 +5,19 @@
     STUDIO.showMessage('File will need to be imported.');
   };
 
+  STUDIO.showImageSpritePreview = function(filePath, prefix) {
+    var img = $("<img src='" + filePath + "'>");
+    img.on('load', function(){
+      var width = img[0].width;
+      var height = img[0].height;
+
+      $('#' + prefix + '-image-sprite-width').val(width);
+      $('#' + prefix + '-image-sprite-height').val(height);
+    });
+
+    $('#' + prefix + '-image-sprite-image-preview').html(img);
+  };
+
   STUDIO.onChooseImageSpriteToImport = function(filePath) {
     if (STUDIO.isFileImported(filePath)) {
       STUDIO.showMessage('The selected image was already imported.');
@@ -16,16 +29,7 @@
     var newPath = path.join('assets', 'sprites', baseName);
     $('#import-image-sprite-new-name').val(newPath);
 
-    var img = $("<img src='" + filePath + "'>");
-    img.on('load', function(){
-      var width = img[0].width;
-      var height = img[0].height;
-
-      $('#import-image-sprite-width').val(width);
-      $('#import-image-sprite-height').val(height);
-    });
-
-    $('#import-image-sprite-image-preview').html(img);
+    STUDIO.showImageSpritePreview(filePath, 'import');
   };
 
   STUDIO.onChooseImageSprite = function(filePath) {
@@ -34,51 +38,93 @@
       return;
     }
 
-    var img = $("<img src='" + filePath + "'>");
-    img.on('load', function(){
-      var width = img[0].width;
-      var height = img[0].height;
-
-      $('#new-image-sprite-width').val(width);
-      $('#new-image-sprite-height').val(height);
-    });
-
-    $('#new-image-sprite-image-preview').html(img);
+    STUDIO.showImageSpritePreview(filePath, 'new');
   };
 
-  STUDIO.saveNewImageSprite = function() {
-    var imageFile = $('#new-image-sprite-image').val();
+  STUDIO.onChooseImageSpriteToEdit = function(filePath) {
+    if (!STUDIO.isFileImported(filePath)) {
+      STUDIO.goToImageSpriteImportScreen(filePath);
+      return;
+    }
+
+    STUDIO.showImageSpritePreview(filePath, 'edit');
+  };
+
+  STUDIO.validateImageSpriteData = function(prefix, requireImage) {
+    var imageFile = $('#' + prefix + '-image-sprite-image').val();
     if (!imageFile || !imageFile.trim()) {
-      throw new Error("Select a file to use.");
+      if (requireImage) {
+        throw new Error("Select a file to use.");
+      }
+    } else {
+      if (!STUDIO.isFileImported(imageFile.trim())) {
+        throw new Error("The selected image file was not imported.");
+      }
     }
 
-    if (!STUDIO.isFileImported(imageFile)) {
-      throw new Error("The selected image file was not imported.");
+    var width = $('#' + prefix + '-image-sprite-width').val();
+    if (isNaN(width) || width == 0) {
+      throw new Error("Invalid image width.");
     }
 
+    var height = $('#' + prefix + '-image-sprite-height').val();
+    if (isNaN(height) || height == 0) {
+      throw new Error("Invalid image height.");
+    }
+  };
+
+  STUDIO.saveOldImageSprite = function() {
+    var spriteName = $('#edit-image-sprite-name').val();
+    if (!spriteName || !spriteName.trim) {
+      throw new Error("I forgot what sprite you were modifying, sorry.");
+    }
+
+    STUDIO.validateImageSpriteData('edit');
+
+    var data = STUDIO.gameData.sprites[spriteName];
+
+    if (!data) {
+      throw new Error("I couldn't find the existing sprite data.");
+    }
+
+    var imageFile = $('#edit-image-sprite-image').val().trim();
+    var width = $('#edit-image-sprite-width').val();
+    var height = $('#edit-image-sprite-height').val();
+    var imageRelativePath = STUDIO.getImageRelativePath(imageFile);
+
+    data.type = 'image';
+    data.image = imageRelativePath;
+    data.width = width;
+    data.height = height;
+
+    STUDIO.gameData.sprites[spriteName] = data;
+
+    STUDIO.addRecentObject('sprite', spriteName);
+    STUDIO.markAsModified();
+    STUDIO.openWindow('sprites');
+  };
+
+  STUDIO.removeCurrentImageSprite = function() {
+    var skinName = $('#edit-image-sprite-name').val();
+    STUDIO.removeSprite(skinName);
+  };  
+
+  STUDIO.saveNewImageSprite = function() {
     var spriteName = $('#new-image-sprite-name').val();
     if (!spriteName || !spriteName.trim) {
       throw new Error("You need to give this sprite a name.");
     }
 
-    var width = $('#new-image-sprite-width').val();
-    if (isNaN(width) || width == 0) {
-      throw new Error("Invalid image width.");
-    }
-
-    var height = $('#new-image-sprite-height').val();
-    if (isNaN(height) || height == 0) {
-      throw new Error("Invalid image height.");
-    }
+    STUDIO.validateImageSpriteData('new');
 
     if (STUDIO.gameData.sprites[spriteName] !== undefined) {
       throw new Error("A sprite called " + spriteName + " already exists.");
     }
 
-    var imageRelativePath = imageFile.replace(STUDIO.loadedGame.folder, '');
-    while (imageRelativePath.length > 0 && (imageRelativePath.substr(0, 1) == "\\" || imageRelativePath.substr(0, 1) == '/')) {
-      imageRelativePath = imageRelativePath.slice(1, imageRelativePath.length);
-    }
+    var imageFile = $('#new-image-sprite-image').val().trim();
+    var width = $('#new-image-sprite-width').val();
+    var height = $('#new-image-sprite-height').val();
+    var imageRelativePath = STUDIO.getImageRelativePath(imageFile);
 
     STUDIO.gameData.sprites[spriteName] = {
       "type" : "image",
@@ -87,6 +133,7 @@
       "height" : height
     };
 
+    STUDIO.addRecentObject('sprite', spriteName);
     STUDIO.markAsModified();
     STUDIO.openWindow('sprites');
   };
@@ -135,8 +182,21 @@
       };
     }
 
-
     STUDIO.markAsModified();    
     STUDIO.openWindow('sprites');
   };
+
+  STUDIO.loadImageSpriteData = function(spriteName) {
+    var spriteData = STUDIO.gameData.sprites[spriteName];
+    var fullImagePath = path.join(STUDIO.loadedGame.folder, spriteData.image);
+
+    STUDIO.showImageSpritePreview(fullImagePath, 'edit');
+    $('#edit-image-sprite-name').val(spriteName);
+  };
+
+  STUDIO.editImageSprite = function(spriteName) {
+    STUDIO.openWindow('edit-sprite-image', function(){
+      STUDIO.loadImageSpriteData(spriteName);
+    });
+  };  
 })();

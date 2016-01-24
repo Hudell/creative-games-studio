@@ -201,7 +201,20 @@ var STUDIO = {};
 
     STUDIO.requestPage(windowName + '.html', function(result, xhr){
       STUDIO._windowName = windowName;
-      $('#page-wrapper').html(xhr.responseText);
+
+      var id = 'content-wrapper';
+      var html = xhr.responseText;
+      
+      if (windowName == 'map-editor') {
+        id = 'editor-wrapper';
+        $('#map-editor-buttons').removeClass('hidden');
+      } else {
+        $('#map-editor-buttons').addClass('hidden');
+      }
+
+      html = '<div id="' + id + '">' + html + '</div>';
+
+      $('#page-wrapper').html(html);
 
       STUDIO.fillSidebar();
       STUDIO.fixLinks();
@@ -210,8 +223,45 @@ var STUDIO = {};
         callback();
       }
     });
+  };
 
-    $('#' + windowName + '-btn').addClass('active');
+  STUDIO.openMapEditor = function(mapName, callback) {
+    var mapData = STUDIO.getMapData(mapName);
+    if (!mapData) {
+      throw new Error("Couldn't find map " + mapName + " data.");
+    }
+
+    //Copy the map data to the mapEditor folder
+    STUDIO.MapEditor.saveMapToEditor(mapName, mapData);
+
+    STUDIO.openWindow('map-editor', function(){
+      var editorWidth = window.innerWidth - 500;
+      var editorHeight = window.innerHeight - 52;
+      
+      $('#editor-wrapper').css('height', editorHeight + 'px');
+      $('.map-editor').css('width', editorWidth + 'px');
+      $('.map-editor').css('height', editorHeight + 'px');
+
+      var mapWidth = mapData.width * mapData.tilewidth;
+      var mapHeight = mapData.height * mapData.tileheight;
+
+      var iframe = $('.map-editor').children('iframe');
+
+      if (mapWidth < editorWidth) {
+        mapWidth = editorWidth;
+      }
+      if (mapHeight < editorHeight) {
+        mapHeight = editorHeight;
+      }
+
+      iframe.css('width', mapWidth);
+      iframe.css('height', mapHeight);
+
+      if (!!callback) {
+        callback();
+      }
+    });
+    
   };
 
   STUDIO.changeLoadedPath = function(newPath) {
@@ -604,8 +654,9 @@ var STUDIO = {};
 
     STUDIO.gameData.resolution.width = STUDIO.gameData.resolution.width || 640;
     STUDIO.gameData.resolution.height = STUDIO.gameData.resolution.height || 360;
-    STUDIO.gameData.resolution.screenWidth = STUDIO.gameData.resolution.screenWidth || 640;
-    STUDIO.gameData.resolution.screenHeight = STUDIO.gameData.resolution.screenHeight || 360;
+    STUDIO.gameData.resolution.screenWidth = STUDIO.gameData.resolution.screenWidth || 1280;
+    STUDIO.gameData.resolution.screenHeight = STUDIO.gameData.resolution.screenHeight || 720;
+    STUDIO.gameData.resolution.useDynamicResolution = STUDIO.gameData.resolution.useDynamicResolution || false;
     STUDIO.gameData.name = STUDIO.gameData.name || "Untitled Project";
     STUDIO.gameData.initialMap = STUDIO.gameData.initialMap || "";
     STUDIO.gameData.initialScene = STUDIO.gameData.initialScene || "SceneTitle";
@@ -721,6 +772,15 @@ var STUDIO = {};
     $('#settings-steam-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'settings-steam'); });
     $('#settings-time-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'settings-time'); });
 
+    $('#mapeditor-brush-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeToolToBrush(); });
+    $('#mapeditor-line-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeToolToLine(); });
+    $('#mapeditor-autotiles-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeToolToAutoTile(); });
+    $('#mapeditor-tint-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeToolToTint(); });
+    $('#mapeditor-eraser-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeToolToEraser(); });
+    $('#mapeditor-picker-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeToolToPicker(); });
+    $('#mapeditor-zoomin-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.zoomIn(); });
+    $('#mapeditor-zoomout-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.zoomOut(); });
+
     $('#open-btn').on('click', function(event) {
       event.preventDefault();
       STUDIO.openProjectDialog();
@@ -764,6 +824,10 @@ var STUDIO = {};
       return 'index';
     }
 
+    if (windowName == 'map-editor') {
+      return 'map-editor';
+    }
+
     if (windowName.indexOf('map') >= 0) {
       return 'maps';
     }
@@ -789,12 +853,16 @@ var STUDIO = {};
   };
 
   STUDIO.fillContextContent = function() {
+    $('#context-content').html('');
+
+    if (!STUDIO.isGameLoaded()) return;
+
     var context = STUDIO.getCurrentContext();
 
-    $('#context-content').html('');
     switch(context) {
       case 'index' :
       case 'maps' :
+      case 'map-editor' :
         STUDIO.addListToContextArea('context-map-list', 'Maps', 'fa-globe');
         STUDIO.fillMapLinks('context-map-list');
         $('#context-map-list-btn').on('click', function(event){
@@ -813,7 +881,7 @@ var STUDIO = {};
         break;
 
       case 'skins' :
-        STUDIO.addListToContextArea('context-skin-list', 'Skins', 'fa-tint');
+        STUDIO.addListToContextArea('context-skin-list', 'Skins', 'fa-sticky-note-o');
         STUDIO.fillSkinLinks('context-skin-list');
         $('#context-skin-list-btn').on('click', function(event){
           event.preventDefault();
@@ -833,7 +901,15 @@ var STUDIO = {};
   };
 
   STUDIO.fillSidebar = function() {
-    STUDIO.fillRecentList('map-editor-map-list');
+    if (STUDIO._windowName == 'map-editor') {
+      // $('#side-menu').addClass('hidden');
+      // $('#tileset-menu').removeClass('hidden');
+    } else {
+      // $('#side-menu').removeClass('hidden');
+      // $('#tileset-menu').addClass('hidden');
+    }
+      STUDIO.fillRecentList('recent-list');
+
     STUDIO.fillContextContent();
 
     $('.recent-link').on('click', function(event){
@@ -843,6 +919,15 @@ var STUDIO = {};
 
       STUDIO.editObject(type, name);
     });
+  };
+
+  STUDIO.removeFileExtension = function(fileName) {
+    if (fileName.indexOf(".") < 0) return fileName;
+
+    var list = fileName.split('.');
+    list.pop();
+
+    return list.join('.');
   };
 
   STUDIO.fillRecentList = function(ulId) {
@@ -861,7 +946,7 @@ var STUDIO = {};
           icon = 'fa-globe';
           break;
         case 'skin' :
-          icon = 'fa-tint';
+          icon = 'fa-sticky-note-o';
           break;
         case 'sprite' :
           icon = 'fa-image';
@@ -871,7 +956,12 @@ var STUDIO = {};
           break;
       }
 
-      ul.append('<li><a class="recent-link" data-type="' + item.type + '" data-name="' + item.name + '" href="#"><i class="menu-option fa ' + icon + ' fa-fw"></i> ' + item.name + '</a></li>');
+      var visibleName = item.name;
+      if (item.type == 'map') {
+        visibleName = STUDIO.removeFileExtension(visibleName);
+      }
+
+      ul.append('<li><a class="recent-link" data-type="' + item.type + '" data-name="' + item.name + '" href="#"><i class="menu-option fa ' + icon + ' fa-fw"></i> ' + visibleName + '</a></li>');
     }
   };
 
@@ -890,6 +980,15 @@ var STUDIO = {};
         STUDIO.ObjectManager.editObject(objectName);
         break;
     }
+  };
+
+  STUDIO.getImageRelativePath = function(imageFile) {
+    var imageRelativePath = imageFile.replace(STUDIO.loadedGame.folder, '');
+    while (imageRelativePath.length > 0 && (imageRelativePath.substr(0, 1) == "\\" || imageRelativePath.substr(0, 1) == '/')) {
+      imageRelativePath = imageRelativePath.slice(1, imageRelativePath.length);
+    }
+
+    return imageRelativePath;
   };
 
   STUDIO.fixLinks = function(){

@@ -1,0 +1,75 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Modify Image Sprite</h1>
+    </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+          
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-lg-6">
+            <form role="form">
+              <div class="form-group">
+                <label>Image</label>
+                <input type="file" id="edit-image-sprite-image">
+                <p class="help-block">Select the Image to use. Leave empty to keep the current image.</p>
+              </div>
+
+              <div class="form-group preview-image" id="edit-image-sprite-image-preview">
+              </div>
+
+              <div class="form-group">
+                <label>Name</label>
+                <input class="form-control" type="text" placeholder="Name" id="edit-image-sprite-name" disabled>
+              </div>
+
+              <div class="form-group">
+                <label>Image Width</label>
+                <input class="form-control" type="text" placeholder="Width" disabled id="edit-image-sprite-width">
+              </div>
+
+              <div class="form-group">
+                <label>Image Height</label>
+                <input class="form-control" type="text" placeholder="Height" disabled id="edit-image-sprite-height">
+              </div>
+
+              <button id="edit-image-sprite-save" type="button" class="btn btn-primary">OK</button>
+              <button id="edit-image-sprite-delete" type="button" class="btn btn-danger">Remove Sprite</button>
+              <button id="edit-image-sprite-cancel" type="button" class="btn btn-default">Go Back</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+$(function(){
+  $('#edit-image-sprite-image').on('change', function(){
+    STUDIO.onChooseImageSpriteToEdit($('#edit-image-sprite-image').val());
+  });
+
+  $('#edit-image-sprite-save').on('click', function(event){
+    event.preventDefault();
+    STUDIO.saveOldImageSprite();
+  });
+
+  $('#edit-image-sprite-delete').on('click', function(event){
+    event.preventDefault();
+    STUDIO.removeCurrentImageSprite();
+    STUDIO.openWindow('sprites');
+  });
+
+  $('#edit-image-sprite-cancel').on('click', function(event){
+    event.preventDefault();
+    STUDIO.openWindow('sprites');
+  });
+});
+</script>

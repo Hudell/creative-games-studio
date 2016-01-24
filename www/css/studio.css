@@ -1,25 +1,39 @@
 body {
     background-color: #f8f8f8;
     overflow-x: hidden;
+    min-height: 100%;
 }
 
 #wrapper {
     width: 100%;
 }
 
-#page-wrapper {
+#content-wrapper {
     padding: 0 15px;
     min-height: 568px;
     background-color: #fff;
 }
 
 @media(min-width:768px) {
-    #page-wrapper {
+    #content-wrapper {
         position: inherit;
         margin: 0;
         margin-left: 250px;
-        /*margin-right: 250px;*/
         padding: 0 30px;
+        border-left: 1px solid #e7e7e7;
+    }
+}
+
+#editor-wrapper {
+    min-height: 568px;
+    background-color: #fff;
+}
+
+@media(min-width:768px) {
+    #editor-wrapper {
+        position: inherit;
+        margin: 0;
+        margin-left: 250px;
         border-left: 1px solid #e7e7e7;
     }
 }
@@ -505,4 +519,85 @@ table.dataTable thead .sorting:after {
 
 .yellow-color {
     color: #f0ad4e;
+}
+
+.map-editor {
+    position: absolute;
+    margin-right: 250px;
+    overflow: scroll;
+}
+
+.map-editor iframe {
+    border: 0;
+    width: 4000px;
+}
+
+.map-editor-sidebar {
+    width: 250px;
+    position: absolute;
+    right: 0;
+}
+
+
+.sidebar-toolbar {
+    margin-right: 0;
+}
+
+.sidebar-toolbar li {
+    display: inline-block;
+}
+
+.sidebar-toolbar li:last-child {
+    /*margin-right: 15px;*/
+}
+
+.sidebar-toolbar li a {
+    padding: 15px;
+    min-height: 50px;
+}
+
+.sidebar-toolbar .dropdown-menu li {
+    display: block;
+}
+
+.sidebar-toolbar .dropdown-menu li:last-child {
+    margin-right: 0;
+}
+
+.sidebar-toolbar .dropdown-menu li a {
+    padding: 3px 20px;
+    min-height: 0;
+}
+
+.sidebar-toolbar .dropdown-menu li a div {
+    white-space: normal;
+}
+
+.sidebar-toolbar .dropdown-messages,
+.sidebar-toolbar .dropdown-tasks,
+.sidebar-toolbar .dropdown-alerts {
+    width: 310px;
+    min-width: 0;
+}
+
+.sidebar-toolbar .dropdown-messages {
+    margin-left: 5px;
+}
+
+.sidebar-toolbar .dropdown-tasks {
+    margin-left: -59px;
+}
+
+.sidebar-toolbar .dropdown-alerts {
+    margin-left: -123px;
+}
+
+.sidebar-toolbar .dropdown-user {
+    right: 0;
+    left: auto;
+}
+
+.map-editor-tileset {
+    width: 250px;
+    overflow-x: scroll;
 }

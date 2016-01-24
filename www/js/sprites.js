@@ -62,6 +62,9 @@
       case 'rpgmaker' :
         STUDIO.editRpgMakerSprite(spriteName);
         break;
+      case 'image' :
+        STUDIO.editImageSprite(spriteName);
+        break;
     }
   };
 

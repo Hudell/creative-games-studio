@@ -120,7 +120,7 @@
 
                         <li>
                             <a id="skins-btn" href="#">
-                                <i class="fa fa-tint fa-fw"></i> Skins
+                                <i class="fa fa-sticky-note-o fa-fw"></i> Skins
                             </a>
                         </li>
 
@@ -180,7 +180,7 @@
 
                 <li>
                     <a id="plugins-btn" href="#">
-                        <i class="fa fa-magic fa-fw"></i>
+                        <i class="fa fa-diamond fa-fw"></i>
                     </a>
                 </li>
                 <li class="dropdown">
@@ -211,6 +211,61 @@
                     </ul>
                 </li>
             </ul>
+
+            <ul class="nav navbar-top-links navbar-left hidden" id="map-editor-buttons">
+
+
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="map-editor-brush-types">
+                        <i class="fa fa-paint-brush fa-fw red-color"></i> <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-studio">
+                        <li>
+                            <a id="mapeditor-brush-btn" href="#">
+                                <i class="fa fa-paint-brush fa-fw"></i> Brush
+                            </a>
+                        </li>
+                        <li>
+                            <a id="mapeditor-autotiles-btn" href="#">
+                                <i class="fa fa-magic fa-fw"></i> Auto Tiles
+                            </a>
+                        </li>
+                        <li>
+                            <a id="mapeditor-line-btn" href="#">
+                                <i class="fa fa-square-o fa-fw"></i> Square
+                            </a>
+                        </li>
+                        <li>
+                            <a id="mapeditor-tint-btn" href="#">
+                                <i class="fa fa-tint fa-fw"></i> Tint
+                            </a>
+                        </li>
+                        <li>
+                            <a id="mapeditor-eraser-btn" href="#">
+                                <i class="fa fa-eraser fa-fw"></i> Eraser
+                            </a>
+                        </li>
+                        <li>
+                            <a id="mapeditor-picker-btn" href="#">
+                                <i class="fa fa-eyedropper fa-fw"></i> Color Picker
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a id="mapeditor-zoomin-btn" href="#">
+                        <i class="fa fa-search-plus fa-fw red-color"></i>
+                    </a>
+                </li>
+                <li>
+                    <a id="mapeditor-zoomout-btn" href="#">
+                        <i class="fa fa-search-minus fa-fw red-color"></i>
+                    </a>
+                </li>
+            </ul>
+
+
             <ul class="nav navbar-top-links navbar-right">
                 <li>
                     <a id="new-btn" href="#">
@@ -250,7 +305,7 @@
                 <ul class="nav" id="side-menu">
                     <li>
                         <a href="#"><i class="fa fa-magnet fa-fw"></i> Recent <span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level" id="map-editor-map-list">
+                        <ul class="nav nav-second-level" id="recent-list">
                         </ul>
                     </li>
                 </ul>
@@ -262,7 +317,8 @@
         </div>
 
         <div id="page-wrapper">
-            
+            <div id="content-wrapper">
+            </div>
         </div>
     </div>
 
@@ -275,6 +331,7 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="js/studio.js"></script>
+    <script src="js/map-editor.js"></script>
     <script src="js/project.js"></script>
     <script src="js/sprites.js"></script>
     <script src="js/sprites-rpgmaker.js"></script>

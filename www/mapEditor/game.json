@@ -1,0 +1,60 @@
+{
+  "player": {
+    "sprite": "",
+    "x": 0,
+    "y": 0,
+    "width": 32,
+    "height": 25,
+    "offsetX": 0,
+    "offsetY": 0
+  },
+  "sprites": {
+    "transparent": {
+      "type": "image",
+      "image": "assets\\sprites\\transparent.png",
+      "width": "32",
+      "height": "32"
+    }
+  },
+  "name": "Map Editor",
+  "initialMap": "map.json",
+  "mainSkin": "system",
+  "resolution": {
+    "width": "640",
+    "height": "360",
+    "screenWidth": "640",
+    "screenHeight": "360",
+    "useDynamicResolution": true
+  },
+  "maps": {
+    "map.json": "tiled"
+  },
+  "skins": {},
+  "sounds": {},
+  "objects": {},
+  "variables": {},
+  "characters": {},
+  "languages": {},
+  "music": {},
+  "soundEffects": {},
+  "movies": {},
+  "items": {},
+  "animations": {},
+  "faces": {},
+  "jobs": {},
+  "enemies": {},
+  "skills": {},
+  "states": {},
+  "achievements": {},
+  "huds": {},
+  "packages": {},
+  "vehicles": {},
+  "tcheScenes": [
+    "SceneMap",
+    "SceneTitle"
+  ],
+  "gameScenes": [
+    "SceneMapEditor"
+  ],
+  "initialScene": "SceneMapEditor"
+}

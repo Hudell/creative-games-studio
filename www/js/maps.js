@@ -4,7 +4,7 @@
 
   STUDIO.addMap = function(name, type) {
     var data = [];
-    data.push(name);
+    data.push(STUDIO.removeFileExtension(name));
     data.push(type);
 
     STUDIO.addRowToTable('maps-table', data, 'maps', name);
@@ -106,12 +106,13 @@
       throw new Error("Map " + mapName + " not found.");
     }
 
-    var mapType = STUDIO.gameData.maps[mapName];
-    switch (mapType) {
-      case 'tiled' :
-        STUDIO.editTiledMap(mapName);
-        break;
-    }
+    STUDIO.openMapEditor(mapName);
+    // var mapType = STUDIO.gameData.maps[mapName];
+    // switch (mapType) {
+    //   case 'tiled' :
+    //     STUDIO.editTiledMap(mapName);
+    //     break;
+    // }
   };
 
   STUDIO.fillMaps = function(selectId) {
@@ -131,7 +132,8 @@
 
     var maps = STUDIO.gameData.maps;
     for (var key in maps) {
-      element.append('<li><a class="recent-link" data-type="map" data-name="' + key + '" href="#"><i class="menu-option fa fa-globe fa-fw"></i> ' + key + '</a></li>');
+      var name = STUDIO.removeFileExtension(key);
+      element.append('<li><a class="recent-link" data-type="map" data-name="' + key + '" href="#"><i class="menu-option fa fa-globe fa-fw"></i> ' + name + '</a></li>');
     }
   };
 

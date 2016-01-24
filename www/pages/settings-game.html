@@ -33,20 +33,33 @@
                                 </select>
                             </div>
                             <div class="form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" id="settings-game-resolution-use-dynamic-resolution" value="">Use Dynamic Resolution
+                                    </label>
+                                    <p class="help-block">With Dynamic Resolution enabled, the engine will always display as much content as possible on screen, instead of using fixed sizes.</p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
                                 <label>Resolution Width</label>
                                 <input class="form-control" placeholder="0" type="number" id="settings-game-resolution-width">
+                                <p class="help-block">This value will be ignored if Dynamic Resolution is enabled.</p>
                             </div>
                             <div class="form-group">
                                 <label>Resolution Height</label>
                                 <input class="form-control" placeholder="0" type="number" id="settings-game-resolution-height">
+                                <p class="help-block">This value will be ignored if Dynamic Resolution is enabled.</p>
                             </div>
                             <div class="form-group">
                                 <label>Screen Width</label>
                                 <input class="form-control" placeholder="0" type="number" id="settings-game-screen-width">
+                                <p class="help-block">This value will be ignored if Dynamic Resolution is enabled.</p>
                             </div>
                             <div class="form-group">
                                 <label>Screen Height</label>
                                 <input class="form-control" placeholder="0" type="number" id="settings-game-screen-height">
+                                <p class="help-block">This value will be ignored if Dynamic Resolution is enabled.</p>
                             </div>
 
                             <button id="settings-game-save" type="button" class="btn btn-save">OK</button>
