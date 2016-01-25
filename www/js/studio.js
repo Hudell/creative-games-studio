@@ -751,7 +751,6 @@ var STUDIO = {};
     $('#mapeditor-brush-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeToolToBrush(); });
     $('#mapeditor-autotiles-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeToolToAutoTile(); });
     $('#mapeditor-eraser-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeToolToEraser(); });
-    $('#mapeditor-picker-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeToolToPicker(); });
 
     $('#mapeditor-zoomin-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.zoomIn(); });
     $('#mapeditor-zoomout-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.zoomOut(); });

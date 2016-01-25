@@ -191,10 +191,6 @@ STUDIO.MapEditor = {};
     namespace.changeTool('eraser', 'eraser');
   };
 
-  namespace.changeToolToPicker = function() {
-    namespace.changeTool('picker', 'eyedropper');
-  };
-
   namespace.changeDrawTypeToTile = function() {
     namespace.changeDrawType('tile', 'map-pin');
   };

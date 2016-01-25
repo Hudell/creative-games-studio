@@ -40,6 +40,8 @@ TCHE.MapEditor = function() {
           y : pos.y
         };
       }
+    } else if (TCHE.InputManager.isRightMouseClicked()) {
+      ns.pickPos(pos.x, pos.y);
     } else {
       if (!!ns._clickedPos) {
         ns.changeRectangle(ns._clickedPos.x, ns._clickedPos.y, pos.x, pos.y);
@@ -102,14 +104,8 @@ TCHE.MapEditor = function() {
     }
   };
 
-  ns.changeTile = function(x, y) {
-    if (ns._currentTileId < 0) return;
-
+  ns.pickPos = function(x, y) {
     var mapData = TCHE.globals.map._mapData;
-
-    if (ns._currentLayerIndex >= mapData.layers.length) {
-      ns._currentLayerIndex = 0;
-    }
     if (mapData.layers.length <= 0) return;
     var layer = mapData.layers[ns._currentLayerIndex];
     if (layer.type != "tilelayer") return;
@@ -125,21 +121,58 @@ TCHE.MapEditor = function() {
 
     var index = totalColumns * row + column;
 
+    ns._currentTileId = layer.data[index];
+  };
+
+  ns.changeTile = function(x, y) {
+    if (ns._currentTileId < 0) return;
+
+    var mapData = TCHE.globals.map._mapData;
+
+    if (ns._currentLayerIndex >= mapData.layers.length) {
+      ns._currentLayerIndex = 0;
+    }
+    if (mapData.layers.length <= 0) return;
+    var layer = mapData.layers[ns._currentLayerIndex];
+    if (layer.type != "tilelayer") return;
+
+    var tileWidth = mapData.tilewidth;
+    var tileHeight = mapData.tileheight;
+
+    var totalColumns = mapData.width;
+    var totalRows = mapData.height;
+
     var tileset = mapData.tilesets[ns._currentTilesetIndex];
     var columns = tileset.imagewidth / tileWidth;
 
+    var column;
+    var row;
+    var index;
+
     switch(ns._currentTool) {
       case 'pencil' :
+        column = Math.floor(x / tileWidth);
+        row = Math.floor(y / tileHeight);
+        index = totalColumns * row + column;
+
         layer.data[index] = ns._currentTileId;
         break;
       case 'brush' :
+        column = Math.floor(x / (tileWidth * ns._currentBrushSize)) * ns._currentBrushSize;
+        row = Math.floor(y / (tileHeight * ns._currentBrushSize)) * ns._currentBrushSize;
+        index = totalColumns * row + column;
+
         layer.data[index] = ns._currentTileId;
         layer.data[index + 1] = ns._currentTileId + 1;
         layer.data[index + totalColumns] = ns._currentTileId + columns;
         layer.data[index + totalColumns + 1] = ns._currentTileId + columns + 1;
         break;
       case 'eraser' :
-        layer.data[index] = 0;
+        column = Math.floor(x / tileWidth);
+        row = Math.floor(y / tileHeight);
+        index = totalColumns * row + column;
+
+        layer.data[index] = 0; 
         break;
     }
 
