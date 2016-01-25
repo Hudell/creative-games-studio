@@ -590,3 +590,11 @@ table.dataTable thead .sorting:after {
     overflow-x: scroll;
     overflow-y: scroll;
 }
+
+.navbar-left {
+    font-size : 0;
+}
+
+.navbar-left li {
+    font-size : 14px;
+}
