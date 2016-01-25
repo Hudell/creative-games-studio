@@ -7,7 +7,11 @@
   SceneMapEditor.prototype.constructor = SceneMapEditor;
 
   SceneMapEditor.prototype.update = function(){
-    
+    if (TCHE.InputManager.isLeftMouseClicked()) {
+      var pos = TCHE.InputManager.currentMousePos();
+      TCHE.MapEditor.changeTile(pos.x, pos.y);
+      this.recreateLayers();
+    }
   };
 
   SceneMapEditor.prototype.recreateLayers = function() {

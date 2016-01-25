@@ -10,7 +10,9 @@ STUDIO.MapEditor = {};
   namespace.mapZoomLevel = 1;
   namespace._currentTool = 'brush';
   namespace._currentDrawType = 'tile';
-  namespace._currentTilesetIndex = false;
+  namespace._currentTilesetIndex = -1;
+  namespace._pickedRow = 0;
+  namespace._pickedColumn = 0;
 
   namespace.openMapEditor = function(mapName, callback) {
     var mapData = STUDIO.getMapData(mapName);
@@ -133,6 +135,10 @@ STUDIO.MapEditor = {};
     namespace._pickedRow = 0;
 
     namespace.refreshTilesetWindow();
+
+    var mapEditor = $('iframe')[0].contentWindow.TCHE.MapEditor;
+
+    mapEditor.setSelectedTool(namespace._currentTool);
   };
 
   namespace.changeDrawType = function(drawType, iconClass) {
@@ -140,16 +146,48 @@ STUDIO.MapEditor = {};
     $('#map-editor-draw-types').html('<i class="fa fa-' + iconClass + ' fa-fw red-color"></i> <i class="fa fa-caret-down"></i>');
   };
 
+  namespace.convertPickedTileFromPencilToBrush = function() {
+    //Nothing needs to be done
+  };
+
+  namespace.convertPickedTileFromBrushToPencil = function() {
+    if (namespace._pickedColumn % 2 == 1) {
+      namespace._pickedColumn -= 1;
+    }
+
+    if (namespace._pickedRow % 2 == 1) {
+      namespace._pickedRow -= 1;
+    }
+  };
+
   namespace.changeToolToPencil = function() {
+    if (namespace._currentTool == 'brush') {
+      namespace.convertPickedTileFromBrushToPencil();
+    }
+
     namespace.changeTool('pencil', 'pencil');
+    namespace.applyPickedTile();
   };
 
   namespace.changeToolToBrush = function() {
+    if (namespace._currentTool == 'pencil') {
+      namespace.convertPickedTileFromPencilToBrush();
+    }
+
     namespace.changeTool('brush', 'paint-brush');
+    namespace.applyPickedTile();
   };
 
   namespace.changeToolToAutoTile = function() {
     namespace.changeTool('auto-tile', 'magic');
+  };
+
+  namespace.changeToolToEraser = function() {
+    namespace.changeTool('eraser', 'eraser');
+  };
+
+  namespace.changeToolToPicker = function() {
+    namespace.changeTool('picker', 'eyedropper');
   };
 
   namespace.changeDrawTypeToTile = function() {
@@ -162,14 +200,6 @@ STUDIO.MapEditor = {};
 
   namespace.changeDrawTypeToTint = function() {
     namespace.changeDrawType('tint', 'tint');
-  };
-
-  namespace.changeToolToEraser = function() {
-    namespace.changeTool('eraser', 'eraser');
-  };
-
-  namespace.changeToolToPicker = function() {
-    namespace.changeTool('picker', 'eyedropper');
   };
 
   namespace.zoomIn = function() {
@@ -195,6 +225,18 @@ STUDIO.MapEditor = {};
     for (var i = 0; i < layers.length; i++) {
       list.append('<li><a class="map-editor-layer-link" data-index="' + i + '" href="#"><i class="fa fa-eye fa-fw layer-icon"></i> ' + layers[i].name + '</a></li>');
     }
+
+    $('.map-editor-layer-link').on('click', function(event) {
+      event.preventDefault();
+
+      var link = $(event.currentTarget);
+      var layerIndex = event.currentTarget.dataset.index;
+      namespace.changeLayerIndex(layerIndex);
+    });
+  };
+
+  namespace.changeLayerIndex = function(index) {
+    $('iframe')[0].contentWindow.TCHE.MapEditor.setSelectedLayer(index);
   };
 
   namespace.loadTilesetList = function() {
@@ -279,9 +321,14 @@ STUDIO.MapEditor = {};
     namespace._pickedColumn = Number(column);
     namespace._pickedRow = Number(row);
 
-    var size = namespace.getFakeTileSize();
+    namespace.applyPickedTile();
+  };
 
-    $('iframe')[0].contentWindow.TCHE.MapEditor.setSelectedTile(namespace._currentTilesetIndex, column, row, size.width, size.height);
+  namespace.applyPickedTile = function() {
+    var size = namespace.getFakeTileSize();
+    var mapEditor = $('iframe')[0].contentWindow.TCHE.MapEditor;
+
+    mapEditor.setSelectedTile(namespace._currentTilesetIndex, namespace._pickedColumn, namespace._pickedRow, size.width, size.height);
   };
 
   namespace.openTileset = function(tileset) {

@@ -5,9 +5,23 @@ TCHE.MapEditor = function() {
   ns._currentTileId = -1;
   ns._currentTilesetIndex = -1;
   ns._currentBrushSize = 1;
+  ns._currentLayerIndex = 0;
+  ns._currentTool = 'brush';
+
+  ns.setSelectedLayer = function(index) {
+    ns._currentLayerIndex = index;
+  };
+
+  ns.setSelectedTool = function(tool) {
+    ns._currentTool = tool;
+  };
 
   ns.setSelectedTile = function(tilesetIndex, column, row, tileWidth, tileHeight) {
     var mapData = TCHE.globals.map._mapData;
+
+    if (tilesetIndex < 0) return;
+    if (tilesetIndex >= mapData.tilesets.length) return;
+
     var tileset = mapData.tilesets[tilesetIndex];
 
     var x = column * tileWidth;
@@ -33,28 +47,41 @@ TCHE.MapEditor = function() {
     if (ns._currentTileId < 0) return;
 
     var mapData = TCHE.globals.map._mapData;
+
+    if (ns._currentLayerIndex >= mapData.layers.length) {
+      ns._currentLayerIndex = 0;
+    }
+    if (mapData.layers.length <= 0) return;
+    var layer = mapData.layers[ns._currentLayerIndex];
+    if (layer.type != "tilelayer") return;
+
     var tileWidth = mapData.tilewidth;
     var tileHeight = mapData.tileheight;
 
-    var column = Math.floor(x / tileWidth);
-    var row = Math.floor(y / tileHeight);
+    var column = Math.floor(x / (tileWidth * ns._currentBrushSize)) * ns._currentBrushSize;
+    var row = Math.floor(y / (tileHeight * ns._currentBrushSize)) * ns._currentBrushSize;
 
     var totalColumns = mapData.width;
     var totalRows = mapData.height;
 
     var index = totalColumns * row + column;
-    var layer = mapData.layers[mapData.layers.length -1];
 
-    layer.data[index] = ns._currentTileId;
-    if (ns._currentBrushSize == 2) {
+    var tileset = mapData.tilesets[ns._currentTilesetIndex];
+    var columns = tileset.imagewidth / tileWidth;
+
+    switch(ns._currentTool) {
+      case 'pencil' :
+        layer.data[index] = ns._currentTileId;
+        break;
+      case 'brush' :
+        layer.data[index] = ns._currentTileId;
         layer.data[index + 1] = ns._currentTileId + 1;
-
-        index += totalColumns;
-        var tileset = mapData.tilesets[ns._currentTilesetIndex];
-        var columns = tileset.imagewidth / tileWidth;
-
-        layer.data[index] = ns._currentTileId + columns;
-        layer.data[index + 1] = ns._currentTileId + columns + 1;
+        layer.data[index + totalColumns] = ns._currentTileId + columns;
+        layer.data[index + totalColumns + 1] = ns._currentTileId + columns + 1;
+        break;
+      case 'eraser' :
+        layer.data[index] = 0;
+        break;
     }
 
     //Kills the layer texture from the cache to force a new render
