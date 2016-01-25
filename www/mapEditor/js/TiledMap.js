@@ -7,4 +7,10 @@
 
     oldCreateLayers.call(this);
   };
+
+  TCHE.TiledMap.prototype.refreshLayers = function() {
+    this.removeChildren();
+    this._layers = [];
+    this.createLayers();    
+  };
 })();

@@ -186,6 +186,8 @@ var STUDIO = {};
   };
 
   STUDIO.openWindow = function(windowName, callback) {
+    STUDIO.MapEditor.closeTilesets();
+
     if (windowName !== 'new-project') {
       if (!STUDIO.isGameLoaded()) {
         STUDIO.openWindow('new-project');
@@ -215,6 +217,7 @@ var STUDIO = {};
       html = '<div id="' + id + '">' + html + '</div>';
 
       $('#page-wrapper').html(html);
+      $('#content-wrapper').height(window.innerHeight - 52);
 
       STUDIO.fillSidebar();
       STUDIO.fixLinks();
@@ -226,42 +229,7 @@ var STUDIO = {};
   };
 
   STUDIO.openMapEditor = function(mapName, callback) {
-    var mapData = STUDIO.getMapData(mapName);
-    if (!mapData) {
-      throw new Error("Couldn't find map " + mapName + " data.");
-    }
-
-    //Copy the map data to the mapEditor folder
-    STUDIO.MapEditor.saveMapToEditor(mapName, mapData);
-
-    STUDIO.openWindow('map-editor', function(){
-      var editorWidth = window.innerWidth - 500;
-      var editorHeight = window.innerHeight - 52;
-      
-      $('#editor-wrapper').css('height', editorHeight + 'px');
-      $('.map-editor').css('width', editorWidth + 'px');
-      $('.map-editor').css('height', editorHeight + 'px');
-
-      var mapWidth = mapData.width * mapData.tilewidth;
-      var mapHeight = mapData.height * mapData.tileheight;
-
-      var iframe = $('.map-editor').children('iframe');
-
-      if (mapWidth < editorWidth) {
-        mapWidth = editorWidth;
-      }
-      if (mapHeight < editorHeight) {
-        mapHeight = editorHeight;
-      }
-
-      iframe.css('width', mapWidth);
-      iframe.css('height', mapHeight);
-
-      if (!!callback) {
-        callback();
-      }
-    });
-    
+    STUDIO.MapEditor.openMapEditor(mapName, callback);
   };
 
   STUDIO.changeLoadedPath = function(newPath) {
@@ -321,6 +289,8 @@ var STUDIO = {};
   };
 
   STUDIO.reloadProject = function() {
+    STUDIO.MapEditor.closeTilesets();
+
     location.reload();
   };
 
@@ -486,7 +456,7 @@ var STUDIO = {};
   };
 
   STUDIO.changeGamePath = function(newPath) {
-    win.title = 'Creative Games Studio - ' + newPath;
+    win.title = 'Creative Studio - ' + newPath;
   };
 
   STUDIO.indexOfObjectOnRecentList = function(type, objectName) {
@@ -693,7 +663,8 @@ var STUDIO = {};
   };
 
   STUDIO.exit = function(){
-    STUDIO.win.close();
+    STUDIO.MapEditor.closeTilesets();
+    STUDIO.win.close(true);
   };
 
   STUDIO.updateCounters = function() {
@@ -772,12 +743,16 @@ var STUDIO = {};
     $('#settings-steam-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'settings-steam'); });
     $('#settings-time-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'settings-time'); });
 
+    $('#mapeditor-tile-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeDrawTypeToTile(); });
+    $('#mapeditor-line-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeDrawTypeToLine(); });
+    $('#mapeditor-tint-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeDrawTypeToTint(); });
+    
+    $('#mapeditor-pencil-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeToolToPencil(); });
     $('#mapeditor-brush-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeToolToBrush(); });
-    $('#mapeditor-line-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeToolToLine(); });
     $('#mapeditor-autotiles-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeToolToAutoTile(); });
-    $('#mapeditor-tint-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeToolToTint(); });
     $('#mapeditor-eraser-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeToolToEraser(); });
     $('#mapeditor-picker-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeToolToPicker(); });
+
     $('#mapeditor-zoomin-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.zoomIn(); });
     $('#mapeditor-zoomout-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.zoomOut(); });
 
@@ -815,7 +790,16 @@ var STUDIO = {};
     }
 
     STUDIO.fillSidebar();
-    STUDIO.win.maximize();
+
+    win.on('close', function(){
+      STUDIO.exitButton();
+    });
+
+    window.addEventListener('resize', function(){
+      $('#content-wrapper').height(window.innerHeight - 52);
+      $('#editor-wrapper').height(window.innerHeight - 52);
+    });
+    // STUDIO.win.maximize();
   };
 
   STUDIO.getCurrentContext = function() {

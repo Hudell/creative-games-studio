@@ -1,1 +1,1 @@
-# Creative Games Studio
+# Creative Studio

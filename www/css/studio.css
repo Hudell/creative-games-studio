@@ -1,7 +1,9 @@
 body {
     background-color: #f8f8f8;
     overflow-x: hidden;
-    min-height: 100%;
+    overflow-y: hidden;
+    height: 100%;
+    width: 100%;
 }
 
 #wrapper {
@@ -10,32 +12,24 @@ body {
 
 #content-wrapper {
     padding: 0 15px;
-    min-height: 568px;
+    /*min-height: 568px;*/
     background-color: #fff;
-}
-
-@media(min-width:768px) {
-    #content-wrapper {
-        position: inherit;
-        margin: 0;
-        margin-left: 250px;
-        padding: 0 30px;
-        border-left: 1px solid #e7e7e7;
-    }
+    position: inherit;
+    margin: 0;
+    margin-left: 250px;
+    padding: 0 30px;
+    border-left: 1px solid #e7e7e7;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 #editor-wrapper {
-    min-height: 568px;
+    /*min-height: 568px;*/
     background-color: #fff;
-}
-
-@media(min-width:768px) {
-    #editor-wrapper {
-        position: inherit;
-        margin: 0;
-        margin-left: 250px;
-        border-left: 1px solid #e7e7e7;
-    }
+    position: inherit;
+    margin: 0;
+    margin-left: 250px;
+    border-left: 1px solid #e7e7e7;
 }
 
 .navbar-top-links {
@@ -140,33 +134,25 @@ body {
     padding-left: 52px;
 }
 
-@media(min-width:768px) {
-    .sidebar {
-        z-index: 1;
-        position: absolute;
-        width: 250px;
-        /*margin-top: 51px;*/
-    }
-
-    .navbar-top-links .dropdown-messages,
-    .navbar-top-links .dropdown-tasks,
-    .navbar-top-links .dropdown-alerts {
-        margin-left: auto;
-    }
-    
-    .sidebar-right {
-        position: absolute;
-        z-index: 1;
-        margin-top: 52px;
-        top: 0;
-        right: 0;
-    }
+.sidebar {
+    z-index: 1;
+    position: absolute;
+    width: 250px;
+    /*margin-top: 51px;*/
 }
 
-@media(max-width: 767px) {
-    .sidebar-right {
-        display: none;
-    }
+.navbar-top-links .dropdown-messages,
+.navbar-top-links .dropdown-tasks,
+.navbar-top-links .dropdown-alerts {
+    margin-left: auto;
+}
+
+.sidebar-right {
+    position: absolute;
+    z-index: 1;
+    margin-top: 52px;
+    top: 0;
+    right: 0;
 }
 
 .btn-outline {
@@ -522,9 +508,10 @@ table.dataTable thead .sorting:after {
 }
 
 .map-editor {
-    position: absolute;
+    position: static;
     margin-right: 250px;
     overflow: scroll;
+    height: 100%;
 }
 
 .map-editor iframe {
@@ -536,6 +523,7 @@ table.dataTable thead .sorting:after {
     width: 250px;
     position: absolute;
     right: 0;
+    top: 52px;
 }
 
 
@@ -600,4 +588,5 @@ table.dataTable thead .sorting:after {
 .map-editor-tileset {
     width: 250px;
     overflow-x: scroll;
+    overflow-y: scroll;
 }

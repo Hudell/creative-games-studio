@@ -10,8 +10,13 @@
     
   };
 
-  SceneMapEditor.prototype.processClick = function(pos) {
+  SceneMapEditor.prototype.recreateLayers = function() {
+    this._mapSprite.refreshLayers();
+  };
 
+  SceneMapEditor.prototype.processClick = function(pos) {
+    TCHE.MapEditor.changeTile(pos.x, pos.y);
+    this.recreateLayers();
   };
 
   TCHE.registerClass('SceneMapEditor', SceneMapEditor);
