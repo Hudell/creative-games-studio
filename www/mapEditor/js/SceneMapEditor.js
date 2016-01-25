@@ -7,9 +7,8 @@
   SceneMapEditor.prototype.constructor = SceneMapEditor;
 
   SceneMapEditor.prototype.update = function(){
-    if (TCHE.InputManager.isLeftMouseClicked()) {
-      var pos = TCHE.InputManager.currentMousePos();
-      TCHE.MapEditor.changeTile(pos.x, pos.y);
+    TCHE.MapEditor.update();
+    if (TCHE.MapEditor.needsRedraw()) {
       this.recreateLayers();
     }
   };
@@ -19,8 +18,8 @@
   };
 
   SceneMapEditor.prototype.processClick = function(pos) {
-    TCHE.MapEditor.changeTile(pos.x, pos.y);
-    this.recreateLayers();
+    // TCHE.MapEditor.changeTile(pos.x, pos.y);
+    // this.recreateLayers();
   };
 
   TCHE.registerClass('SceneMapEditor', SceneMapEditor);

@@ -7,6 +7,9 @@ TCHE.MapEditor = function() {
   ns._currentBrushSize = 1;
   ns._currentLayerIndex = 0;
   ns._currentTool = 'brush';
+  ns._currentDrawType = 'tile';
+  ns._clickedPos = false;
+  ns._needsRedraw = false;
 
   ns.setSelectedLayer = function(index) {
     ns._currentLayerIndex = index;
@@ -14,6 +17,35 @@ TCHE.MapEditor = function() {
 
   ns.setSelectedTool = function(tool) {
     ns._currentTool = tool;
+  };
+
+  ns.setSelectedDrawType = function(drawType) {
+    ns._currentDrawType = drawType;
+  };
+
+  ns.needsRedraw = function() {
+    return ns._needsRedraw;
+  };
+
+  ns.update = function() {
+    ns._needsRedraw = false;
+    var pos = TCHE.InputManager.currentMousePos();
+
+    if (TCHE.InputManager.isLeftMouseClicked()) {
+      if (ns._currentDrawType != 'rectangle') {
+        ns.changeTile(pos.x, pos.y);
+      } else if (!ns._clickedPos) {
+        ns._clickedPos = {
+          x : pos.x,
+          y : pos.y
+        };
+      }
+    } else {
+      if (!!ns._clickedPos) {
+        ns.changeRectangle(ns._clickedPos.x, ns._clickedPos.y, pos.x, pos.y);
+        ns._clickedPos = false;
+      }
+    }
   };
 
   ns.setSelectedTile = function(tilesetIndex, column, row, tileWidth, tileHeight) {
@@ -41,6 +73,33 @@ TCHE.MapEditor = function() {
 
     ns._currentTileId = tileId;
     ns._currentTilesetIndex = tilesetIndex;
+  };
+
+  ns.changeRectangle = function(x, y, x2, y2) {
+    var left = x;
+    var right = x2;
+    var top = y;
+    var bottom = y2;
+
+    if (left > right) {
+      right = x;
+      left = x2;
+    }
+
+    if (top > bottom) {
+      top = y2;
+      bottom = y;
+    }
+
+    var mapData = TCHE.globals.map._mapData;
+    var tileWidth = mapData.tilewidth;
+    var tileHeight = mapData.tileheight;
+
+    for (var tileX = left; tileX <= right; tileX += tileWidth) {
+      for (var tileY = top; tileY <= bottom; tileY += tileHeight) {
+        ns.changeTile(tileX, tileY);
+      }
+    }
   };
 
   ns.changeTile = function(x, y) {
@@ -86,5 +145,6 @@ TCHE.MapEditor = function() {
 
     //Kills the layer texture from the cache to force a new render
     TCHE.TileManager.saveLayerTextureCache(TCHE.globals.map._mapName, layer.name, false);
+    ns._needsRedraw = true;
   };
 })(TCHE.MapEditor);
