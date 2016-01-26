@@ -5,6 +5,27 @@
     STUDIO.showMessage('File will need to be imported.');
   };
 
+  STUDIO.loadRpgMakerSpriteImage = function(imagePath, prefix) {
+    var img = $("<img src='" + imagePath + "'>");
+    img.on('load', function(){
+      var width = img[0].width;
+      var height = img[0].height;
+
+      $('#' + prefix + '-rpgmaker-sprite-width').val(width);
+      $('#' + prefix + '-rpgmaker-sprite-height').val(height);
+
+      var maxWidth = $('img').parents('.preview-image').width();
+      maxWidth -= 20;
+      if (width > maxWidth) {
+        img.css('max-width', maxWidth);
+      }
+
+      STUDIO.makeRpgMakerSpriteSetSiteMap(prefix, img);
+    });
+
+    $('#' + prefix + '-rpgmaker-sprite-image-preview').html(img);
+  }
+
   STUDIO.onChooseRpgMakerSpriteToImport = function(filePath) {
     if (STUDIO.isFileImported(filePath)) {
       STUDIO.showMessage('The selected image was already imported.');
@@ -16,16 +37,7 @@
     var newPath = path.join('assets', 'sprites', baseName);
     $('#import-rpgmaker-sprite-new-name').val(newPath);
 
-    var img = $("<img src='" + filePath + "'>");
-    img.on('load', function(){
-      var width = img[0].width;
-      var height = img[0].height;
-
-      $('#import-rpgmaker-sprite-width').val(width);
-      $('#import-rpgmaker-sprite-height').val(height);
-    });
-
-    $('#import-rpgmaker-sprite-image-preview').html(img);
+    STUDIO.loadRpgMakerSpriteImage(filePath, 'import');
   };
 
   STUDIO.makeRpgMakerSpriteSetSiteMap = function(selector, img){
@@ -65,18 +77,7 @@
       return;
     }
 
-    var img = $("<img src='" + filePath + "'>");
-    img.on('load', function(){
-      var width = img[0].width;
-      var height = img[0].height;
-
-      $('#new-rpgmaker-sprite-width').val(width);
-      $('#new-rpgmaker-sprite-height').val(height);
-
-      STUDIO.makeRpgMakerSpriteSetSiteMap('new', img);
-    });
-
-    $('#new-rpgmaker-sprite-image-preview').html(img);
+    STUDIO.loadRpgMakerSpriteImage(filePath, 'new');
   };
 
   STUDIO.onChooseRpgMakerSpriteToEdit = function(filePath) {
@@ -85,18 +86,7 @@
       return;
     }
 
-    var img = $("<img src='" + filePath + "'>");
-    img.on('load', function(){
-      var width = img[0].width;
-      var height = img[0].height;
-
-      $('#edit-rpgmaker-sprite-width').val(width);
-      $('#edit-rpgmaker-sprite-height').val(height);
-
-      STUDIO.makeRpgMakerSpriteSetSiteMap('edit', img);
-    });
-
-    $('#edit-rpgmaker-sprite-image-preview').html(img);
+    STUDIO.loadRpgMakerSpriteImage(filePath, 'edit');
   };
 
   STUDIO.saveNewRpgMakerSprite = function() {
@@ -273,17 +263,7 @@
 
     var fullImagePath = path.join(STUDIO.loadedGame.folder, spriteData.image);
 
-    var img = $("<img src='" + fullImagePath + "'>");
-    img.on('load', function(){
-      var width = img[0].width;
-      var height = img[0].height;
-
-      $('#edit-rpgmaker-sprite-width').val(width);
-      $('#edit-rpgmaker-sprite-height').val(height);
-
-      STUDIO.makeRpgMakerSpriteSetSiteMap('edit', img);
-    });
-    $('#edit-rpgmaker-sprite-image-preview').html(img);
+    STUDIO.loadRpgMakerSpriteImage(fullImagePath, 'edit');
     
     $('#edit-rpgmaker-sprite-name').val(spriteName);
     $('#edit-rpgmaker-sprite-index-' + spriteData.index).prop('checked', 'checked');

@@ -13,11 +13,11 @@ var STUDIO = {};
   var win = gui.Window.get();
   STUDIO.win = win;
 
-
   STUDIO.gameData = undefined;
   STUDIO.loadedGame = {
-    folder : "",
-    recentObjects : []
+    folder : ""
+  };
+  STUDIO.modifiedMaps = {
   };
   STUDIO.modified = false;
 
@@ -277,6 +277,7 @@ var STUDIO = {};
     //If there's any save button visible on screen, click it.
     $('.btn-save').click();
     STUDIO.saveGameData();
+    STUDIO.saveMaps();
     STUDIO.copyEngineFiles();
     STUDIO.markAsSaved();
     STUDIO.saveLoadedGame();
@@ -435,9 +436,40 @@ var STUDIO = {};
     fs.writeFileSync(targetFile, fs.readFileSync(source));
   };
 
+  STUDIO.loadMaps = function() {
+    STUDIO.modifiedMaps = {};
+  };
+
+  STUDIO.saveMaps = function() {
+    for (var mapName in STUDIO.modifiedMaps) {
+      STUDIO.saveMapData(mapName);
+    }
+  };
+
+  STUDIO.changeMap = function(mapName, mapData) {
+    STUDIO.markAsModified();
+    STUDIO.modifiedMaps[mapName] = mapData;
+  };
+
+  STUDIO.getMapData = function(mapName) {
+    if (!!STUDIO.modifiedMaps[mapName]) {
+      return STUDIO.modifiedMaps[mapName];
+    }
+
+    return STUDIO.loadJson(path.join(STUDIO.loadedGame.folder, 'maps', mapName));
+  };
+
+  STUDIO.saveMapData = function(mapName) {
+    var mapData = STUDIO.getMapData(mapName);
+
+    STUDIO.saveJson(path.join(STUDIO.loadedGame.folder, 'maps', mapName), mapData);
+    STUDIO.addRecentObject('map', mapName);    
+  };
+
   STUDIO.loadProject = function(folderPath) {
     STUDIO.changeLoadedPath(folderPath);
     STUDIO.loadGameData();
+    STUDIO.loadMaps();
     STUDIO.markAsSaved();
   };
 
@@ -460,8 +492,11 @@ var STUDIO = {};
   };
 
   STUDIO.indexOfObjectOnRecentList = function(type, objectName) {
-    for (var i = 0; i < STUDIO.loadedGame.recentObjects.length; i++) {
-      var item = STUDIO.loadedGame.recentObjects[i];
+    if (!STUDIO.gameData) return -1;
+    if (!STUDIO.gameData.recentObjects) return -1;
+
+    for (var i = 0; i < STUDIO.gameData.recentObjects.length; i++) {
+      var item = STUDIO.gameData.recentObjects[i];
       if (item.type == type && item.name == objectName) {
         return i;
       }
@@ -471,16 +506,21 @@ var STUDIO = {};
   };
 
   STUDIO.addRecentObject = function(type, objectName) {
+    if (!STUDIO.gameData) return;
+    if (!STUDIO.gameData.recentObjects) {
+      STUDIO.gameData.recentObjects = [];
+    }
+
     var index = STUDIO.indexOfObjectOnRecentList(type, objectName);
-    if (index < 0 && STUDIO.loadedGame.recentObjects.length >= 10) {
+    if (index < 0 && STUDIO.gameData.recentObjects.length >= 10) {
       index = 0;
     }
 
     if (index >= 0) {
-      STUDIO.loadedGame.recentObjects.splice(index, 1);
+      STUDIO.gameData.recentObjects.splice(index, 1);
     }
 
-    STUDIO.loadedGame.recentObjects.push({type : type, name : objectName});
+    STUDIO.gameData.recentObjects.push({type : type, name : objectName});
   };
 
   STUDIO.saveLoadedGame = function() {
@@ -496,7 +536,6 @@ var STUDIO = {};
       throw e;
     }
 
-    STUDIO.loadedGame.recentObjects = STUDIO.loadedGame.recentObjects || [];
     STUDIO.changeGamePath(STUDIO.loadedGame.folder);
   };
 
@@ -538,6 +577,9 @@ var STUDIO = {};
   };
 
   STUDIO.validateGameData = function() {
+    if (!STUDIO.gameData.recentObjects) {
+      STUDIO.gameData.recentObjects = [];
+    }
     if (!STUDIO.gameData.skins) {
       STUDIO.gameData.skins = {};
     }
@@ -914,11 +956,14 @@ var STUDIO = {};
   };
 
   STUDIO.fillRecentList = function(ulId) {
+    if (!STUDIO.gameData) return;
+    if (!STUDIO.gameData.recentObjects) return;
+
     var ul = $('#' + ulId);
 
     ul.html('');
 
-    var list = STUDIO.loadedGame.recentObjects;
+    var list = STUDIO.gameData.recentObjects;
 
     for (var i = 0; i < list.length; i++) {
       var item = list[i];

@@ -21,7 +21,8 @@
 
     $('#edit-tiled-map-save').on('click', function(event){
       event.preventDefault();
-      STUDIO.saveMapData(mapName, mapData);
+      STUDIO.changeMap(mapName, mapData);
+      STUDIO.saveMapData(mapName);
       STUDIO.openWindow('maps');
     });
 

@@ -136,13 +136,4 @@
       element.append('<li><a class="recent-link" data-type="map" data-name="' + key + '" href="#"><i class="menu-option fa fa-globe fa-fw"></i> ' + name + '</a></li>');
     }
   };
-
-  STUDIO.getMapData = function(mapName) {
-    return STUDIO.loadJson(path.join(STUDIO.loadedGame.folder, 'maps', mapName));
-  };
-
-  STUDIO.saveMapData = function(mapName, mapData) {
-    STUDIO.saveJson(path.join(STUDIO.loadedGame.folder, 'maps', mapName), mapData);
-    STUDIO.addRecentObject('map', mapName);
-  }
 })();

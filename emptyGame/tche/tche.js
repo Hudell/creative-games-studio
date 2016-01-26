@@ -3134,9 +3134,9 @@ function Trigger(el) {
       key: 'clear',
       value: function clear() {
         keyStates = {};
-        mouseClicked[0] = false;
-        mouseClicked[1] = false;
-        mouseClicked[2] = false;
+        for (var i = 0; i < mouseClicked.length; i++) {
+          mouseClicked[i] = false;
+        }
         mousePos = { x: 0, y: 0 };
       }
     }, {
@@ -3188,6 +3188,13 @@ function Trigger(el) {
         mousePos = pos;
       }
     }, {
+      key: 'processMouseOut',
+      value: function processMouseOut() {
+        for (var i = 0; i < mouseClicked.length; i++) {
+          mouseClicked[i] = false;
+        }
+      }
+    }, {
       key: 'processMouseUp',
       value: function processMouseUp(pos, button) {
         mouseClicked[button] = false;
@@ -3224,6 +3231,10 @@ function Trigger(el) {
       var pos = getMousePos(this, evt);
 
       TCHE.InputManager.processMouseMove(pos);
+    });
+
+    TCHE.renderer.view.addEventListener("mouseout", function (evt) {
+      TCHE.InputManager.processMouseOut();
     });
 
     TCHE.renderer.view.addEventListener("mouseup", function (evt) {

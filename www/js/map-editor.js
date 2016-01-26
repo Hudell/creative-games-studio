@@ -51,13 +51,24 @@ STUDIO.MapEditor = {};
       namespace.loadTilesetList();
       namespace.loadLayerList();
       namespace.refreshTilesetWindow();
-      // namespace.openTileset();
+
+      $('.map-editor').find('iframe')[0].contentWindow.onMapChange = namespace.onMapChange;
 
       if (!!callback) {
         callback();
       }
-    });
-    
+    });    
+  };
+
+  namespace.onMapChange = function(mapData) {
+    var mapName = namespace._currentMapName;
+
+    namespace._currentMapData = mapData;
+    STUDIO.changeMap(mapName, mapData);
+  };
+
+  namespace.getMapEditor = function() {
+    return $('.map-editor').find('iframe')[0].contentWindow.TCHE.MapEditor;
   };
 
   namespace.attachEvents = function() {
@@ -69,6 +80,11 @@ STUDIO.MapEditor = {};
     $('#map-editor-tileset-zoom-out').on('click', function(event) {
       event.preventDefault();
       namespace.decreaseTilesetZoom();
+    });
+
+    $('#map-editor-new-layer-btn').on('click', function(event) {
+      event.preventDefault();
+      namespace.createNewLayer();
     });
   };
 
@@ -127,10 +143,6 @@ STUDIO.MapEditor = {};
     namespace.updateTilesetZoom();
   };
 
-  namespace.getMapEditor = function() {
-    return $('iframe')[0].contentWindow.TCHE.MapEditor;
-  };
-
   namespace.changeTool = function(toolName, iconClass) {
     namespace._currentTool = toolName;
     $('#map-editor-tool-types').html('<i class="fa fa-' + iconClass + ' fa-fw red-color"></i> <i class="fa fa-caret-down"></i>');
@@ -140,8 +152,7 @@ STUDIO.MapEditor = {};
 
     namespace.refreshTilesetWindow();
 
-    var mapEditor = namespace.getMapEditor();
-    mapEditor.setSelectedTool(namespace._currentTool);
+    namespace.getMapEditor().setSelectedTool(namespace._currentTool);
   };
 
   namespace.changeDrawType = function(drawType, iconClass) {
@@ -224,7 +235,18 @@ STUDIO.MapEditor = {};
 
     var layers = namespace._currentMapData.layers;
     for (var i = 0; i < layers.length; i++) {
-      list.append('<li><a class="map-editor-layer-link" data-index="' + i + '" href="#"><i class="fa fa-eye fa-fw layer-icon"></i> ' + layers[i].name + '</a></li>');
+      var icon = 'fa-map-o';
+
+      switch (layers[i].type) {
+        case 'objectgroup' :
+          icon = 'fa-map-signs';
+          break;
+        case 'image' :
+          icon = 'fa-image';
+          break;
+      }
+
+      list.append('<li><a class="map-editor-layer-link" data-index="' + i + '" href="#"><i class="fa ' + icon + ' fa-fw layer-icon"></i> ' + layers[i].name + '</a></li>');
     }
 
     $('.map-editor-layer-link').on('click', function(event) {
@@ -327,9 +349,7 @@ STUDIO.MapEditor = {};
 
   namespace.applyPickedTile = function() {
     var size = namespace.getFakeTileSize();
-    var mapEditor = namespace.getMapEditor();
-
-    mapEditor.setSelectedTile(namespace._currentTilesetIndex, namespace._pickedColumn, namespace._pickedRow, size.width, size.height);
+    namespace.getMapEditor().setSelectedTile(namespace._currentTilesetIndex, namespace._pickedColumn, namespace._pickedRow, size.width, size.height);
   };
 
   namespace.openTileset = function(tileset) {
@@ -370,7 +390,13 @@ STUDIO.MapEditor = {};
 
       delete newWin._events.loaded;
     });
+  };
 
+  namespace.createNewLayer = function() {
+    STUDIO.openPopupForm('map-editor-new-layer', 'New Layer', function(){
+    }, function(){
+
+    });
   };
 
 })(STUDIO.MapEditor);

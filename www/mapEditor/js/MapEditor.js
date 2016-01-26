@@ -27,6 +27,15 @@ TCHE.MapEditor = function() {
     return ns._needsRedraw;
   };
 
+  ns.reportMapChange = function() {
+    var mapName = TCHE.globals.map._mapName;
+    var mapData = TCHE.globals.map._mapData;
+
+    if (onMapChange !== undefined) {
+      onMapChange(mapData);
+    }
+  };
+
   ns.update = function() {
     ns._needsRedraw = false;
     var pos = TCHE.InputManager.currentMousePos();
@@ -47,6 +56,11 @@ TCHE.MapEditor = function() {
         ns.changeRectangle(ns._clickedPos.x, ns._clickedPos.y, pos.x, pos.y);
         ns._clickedPos = false;
       }
+    }
+
+    //If anything changed, report those changes to the studio
+    if (ns._needsRedraw) {
+      ns.reportMapChange();
     }
   };
 
