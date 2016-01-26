@@ -13,6 +13,8 @@ STUDIO.MapEditor = {};
   namespace._currentTilesetIndex = -1;
   namespace._pickedRow = 0;
   namespace._pickedColumn = 0;
+  namespace._currentMapName = '';
+  namespace._currentMapData = null;
 
   namespace.openMapEditor = function(mapName, callback) {
     var mapData = STUDIO.getMapData(mapName);
@@ -392,8 +394,61 @@ STUDIO.MapEditor = {};
     });
   };
 
+  namespace.checkIfLayerNameExists = function(layerName) {
+    var mapData = namespace._currentMapData;
+    for (var i = 0; i < mapData.layers.length; i++) {
+      if (mapData.layers[i].name == layerName) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
   namespace.createNewLayer = function() {
     STUDIO.openPopupForm('map-editor-new-layer', 'New Layer', function(){
+      var layerName = $('#map-editor-new-layer-name').val();
+      if (!layerName || !layerName.trim()) {
+        throw new Error("Please give this layer a name.");
+      }
+
+      if (namespace.checkIfLayerNameExists(layerName)) {
+        throw new Error("There's already a layer called " + layerName);
+      }
+
+      var layerType = $('#map-editor-new-layer-type').val();
+      var newLayer = {
+        name : layerName,
+        visible : true,
+        x : 0,
+        y : 0,
+        opacity : 1,
+        type : layerType,
+        width : namespace._currentMapData.width,
+        height : namespace._currentMapData.height,
+        properties : []
+      }
+
+      switch(layerType) {
+        case 'tilelayer' :
+          newLayer.data = [];
+          var tiles = namespace._currentMapData.width * namespace._currentMapData.height;
+          for (var i = 0; i < tiles; i++) {
+            newLayer.data[i] = 0;
+          }
+
+          break;
+        case 'objectgroup' :
+          newLayer.objects = [];
+
+          break;
+      }
+
+
+      namespace._currentMapData.layers.push(newLayer);
+      namespace.onMapChange(namespace._currentMapData);
+
+      namespace.openMapEditor(namespace._currentMapName);
     }, function(){
 
     });

@@ -69,6 +69,7 @@ TCHE.MapEditor = function() {
 
     if (tilesetIndex < 0) return;
     if (tilesetIndex >= mapData.tilesets.length) return;
+    if (!tilesetIndex && tilesetIndex !== 0) return;
 
     var tileset = mapData.tilesets[tilesetIndex];
 
