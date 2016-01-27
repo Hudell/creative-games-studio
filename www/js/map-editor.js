@@ -30,7 +30,6 @@ STUDIO.MapEditor = {};
     if (!mapData) {
       throw new Error("Couldn't find map " + mapName + " data.");
     }
-
     namespace._currentMapName = mapName;
     namespace._currentMapData = mapData;
 
@@ -39,7 +38,7 @@ STUDIO.MapEditor = {};
 
     STUDIO.openWindow('map-editor', function(){
       var editorWidth = window.innerWidth - 524;
-      var editorHeight = window.innerHeight - 52;
+      var editorHeight = window.innerHeight - 104;
       
       $('#editor-wrapper').css('height', (editorHeight) + 'px');
 
@@ -66,6 +65,18 @@ STUDIO.MapEditor = {};
   };
 
   namespace.attachEvents = function() {
+    $('#mapeditor-tile-btn').on('click', function(event){ event.preventDefault(); namespace.changeDrawTypeToTile(); });
+    $('#mapeditor-line-btn').on('click', function(event){ event.preventDefault(); namespace.changeDrawTypeToLine(); });
+    $('#mapeditor-tint-btn').on('click', function(event){ event.preventDefault(); namespace.changeDrawTypeToTint(); });
+    
+    $('#mapeditor-pencil-btn').on('click', function(event){ event.preventDefault(); namespace.changeToolToPencil(); });
+    $('#mapeditor-brush-btn').on('click', function(event){ event.preventDefault(); namespace.changeToolToBrush(); });
+    $('#mapeditor-autotiles-btn').on('click', function(event){ event.preventDefault(); namespace.changeToolToAutoTile(); });
+    $('#mapeditor-eraser-btn').on('click', function(event){ event.preventDefault(); namespace.changeToolToEraser(); });
+
+    $('#mapeditor-zoomin-btn').on('click', function(event){ event.preventDefault(); namespace.zoomIn(); });
+    $('#mapeditor-zoomout-btn').on('click', function(event){ event.preventDefault(); namespace.zoomOut(); });
+
     $('#map-editor-tileset-zoom-in').on('click', function(event) {
       event.preventDefault();
       namespace.increaseTilesetZoom();
@@ -220,12 +231,15 @@ STUDIO.MapEditor = {};
   };
 
   namespace.loadLayerList = function() {
-    var list = $('#layer-list');
+    var list = $('#map-editor-layer-list');
     list.html('');
+
+    list.append('<li><a class="map-editor-manage-layers" href="#"><i class="fa fa-cog fa-fw"></i> Manage Layers </a></li>');
+    list.append('<li class="divider"></li>');
 
     var layers = namespace._currentMapData.layers;
     for (var i = 0; i < layers.length; i++) {
-      var icon = 'fa-map-o';
+      var icon = 'fa-th';
 
       switch (layers[i].type) {
         case 'objectgroup' :

@@ -209,9 +209,6 @@ var STUDIO = {};
       
       if (windowName == 'map-editor') {
         id = 'editor-wrapper';
-        $('#map-editor-buttons').removeClass('hidden');
-      } else {
-        $('#map-editor-buttons').addClass('hidden');
       }
 
       html = '<div id="' + id + '">' + html + '</div>';
@@ -785,18 +782,6 @@ var STUDIO = {};
     $('#settings-steam-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'settings-steam'); });
     $('#settings-time-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'settings-time'); });
 
-    $('#mapeditor-tile-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeDrawTypeToTile(); });
-    $('#mapeditor-line-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeDrawTypeToLine(); });
-    $('#mapeditor-tint-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeDrawTypeToTint(); });
-    
-    $('#mapeditor-pencil-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeToolToPencil(); });
-    $('#mapeditor-brush-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeToolToBrush(); });
-    $('#mapeditor-autotiles-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeToolToAutoTile(); });
-    $('#mapeditor-eraser-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.changeToolToEraser(); });
-
-    $('#mapeditor-zoomin-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.zoomIn(); });
-    $('#mapeditor-zoomout-btn').on('click', function(event){ event.preventDefault(); STUDIO.MapEditor.zoomOut(); });
-
     $('#open-btn').on('click', function(event) {
       event.preventDefault();
       STUDIO.openProjectDialog();
@@ -838,7 +823,7 @@ var STUDIO = {};
 
     window.addEventListener('resize', function(){
       $('#content-wrapper').height(window.innerHeight - 52);
-      $('#editor-wrapper').height(window.innerHeight - 52);
+      $('#editor-wrapper').height(window.innerHeight - 104);
     });
     // STUDIO.win.maximize();
   };

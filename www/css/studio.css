@@ -16,7 +16,7 @@ body {
     background-color: #fff;
     position: inherit;
     margin: 0;
-    margin-left: 250px;
+    /*margin-left: 250px;*/
     padding: 0 30px;
     border-left: 1px solid #e7e7e7;
     overflow-y: scroll;
@@ -28,7 +28,7 @@ body {
     background-color: #fff;
     position: inherit;
     margin: 0;
-    margin-left: 250px;
+    /*margin-left: 250px;*/
     border-left: 1px solid #e7e7e7;
 }
 
@@ -526,7 +526,6 @@ table.dataTable thead .sorting:after {
     top: 52px;
 }
 
-
 .sidebar-toolbar {
     margin-right: 0;
 }
@@ -597,4 +596,12 @@ table.dataTable thead .sorting:after {
 
 .navbar-left li {
     font-size : 14px;
+}
+
+.navbar-top-links {
+    font-size: 0;
+}
+
+.navbar-top-links li {
+    font-size: 14px;
 }
