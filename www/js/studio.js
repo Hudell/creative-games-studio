@@ -933,8 +933,8 @@ var STUDIO = {};
       // $('#side-menu').removeClass('hidden');
       // $('#tileset-menu').addClass('hidden');
     }
-      STUDIO.fillRecentList('recent-list');
-
+    
+    STUDIO.fillRecentList('history-list');
     STUDIO.fillContextContent();
 
     $('.recent-link').on('click', function(event){
