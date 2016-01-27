@@ -186,8 +186,6 @@ var STUDIO = {};
   };
 
   STUDIO.openWindow = function(windowName, callback) {
-    STUDIO.MapEditor.closeTilesets();
-
     if (windowName !== 'new-project') {
       if (!STUDIO.isGameLoaded()) {
         STUDIO.openWindow('new-project');
@@ -287,7 +285,6 @@ var STUDIO = {};
   };
 
   STUDIO.reloadProject = function() {
-    STUDIO.MapEditor.closeTilesets();
 
     location.reload();
   };
@@ -702,7 +699,6 @@ var STUDIO = {};
   };
 
   STUDIO.exit = function(){
-    STUDIO.MapEditor.closeTilesets();
     STUDIO.win.close(true);
   };
 

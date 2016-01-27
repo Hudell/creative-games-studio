@@ -1,77 +1,85 @@
-        <nav class="navbar navbar-default" role="navigation" style="margin-bottom: 0">
-            <ul class="nav navbar-top-links navbar-left" id="map-editor-buttons">
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="map-editor-draw-types">
-                        <i class="fa fa-map-pin fa-fw red-color"></i> <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-studio">
-                        <li>
-                            <a id="mapeditor-tile-btn" href="#">
-                                <i class="fa fa-map-pin fa-fw"></i> Single Tile
-                            </a>
-                        </li>
-                        <li>
-                            <a id="mapeditor-line-btn" href="#">
-                                <i class="fa fa-square-o fa-fw"></i> Square
-                            </a>
-                        </li>
-                        <li>
-                            <a id="mapeditor-tint-btn" href="#">
-                                <i class="fa fa-tint fa-fw"></i> Tint
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="map-editor-tool-types">
-                        <i class="fa fa-paint-brush fa-fw red-color"></i> <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-studio">
-                        <li>
-                            <a id="mapeditor-pencil-btn" href="#">
-                                <i class="fa fa-pencil fa-fw"></i> Pencil
-                            </a>
-                        </li>
-                        <li>
-                            <a id="mapeditor-brush-btn" href="#">
-                                <i class="fa fa-paint-brush fa-fw"></i> Brush
-                            </a>
-                        </li>
-                        <li>
-                            <a id="mapeditor-autotiles-btn" href="#">
-                                <i class="fa fa-magic fa-fw"></i> Auto Tiles
-                            </a>
-                        </li>
-                        <li>
-                            <a id="mapeditor-eraser-btn" href="#">
-                                <i class="fa fa-eraser fa-fw"></i> Eraser
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
+<nav class="navbar navbar-default" role="navigation" style="margin-bottom: 0">
+    <ul class="nav navbar-top-links navbar-left" id="map-editor-buttons">
+        <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="map-editor-draw-types">
+                <i class="fa fa-map-pin fa-fw red-color"></i> <i class="fa fa-caret-down"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-studio">
                 <li>
-                    <a id="mapeditor-zoomin-btn" href="#">
-                        <i class="fa fa-search-plus fa-fw red-color"></i>
+                    <a id="mapeditor-tile-btn" href="#">
+                        <i class="fa fa-map-pin fa-fw"></i> Single Tile
                     </a>
                 </li>
                 <li>
-                    <a id="mapeditor-zoomout-btn" href="#">
-                        <i class="fa fa-search-minus fa-fw red-color"></i>
+                    <a id="mapeditor-line-btn" href="#">
+                        <i class="fa fa-square-o fa-fw"></i> Square
                     </a>
                 </li>
-
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="map-editor-layer-dropdown">
-                        <i class="fa fa-paint-brush fa-clone red-color"></i> Layers <i class="fa fa-caret-down"></i>
+                <li>
+                    <a id="mapeditor-tint-btn" href="#">
+                        <i class="fa fa-tint fa-fw"></i> Tint
                     </a>
-                    <ul class="dropdown-menu dropdown-studio" id="map-editor-layer-list">
-                    </ul>
                 </li>
-
             </ul>
-        </nav>
+        </li>
+
+        <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="map-editor-tool-types">
+                <i class="fa fa-paint-brush fa-fw red-color"></i> <i class="fa fa-caret-down"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-studio">
+                <li>
+                    <a id="mapeditor-pencil-btn" href="#">
+                        <i class="fa fa-pencil fa-fw"></i> Pencil
+                    </a>
+                </li>
+                <li>
+                    <a id="mapeditor-brush-btn" href="#">
+                        <i class="fa fa-paint-brush fa-fw"></i> Brush
+                    </a>
+                </li>
+                <li>
+                    <a id="mapeditor-autotiles-btn" href="#">
+                        <i class="fa fa-magic fa-fw"></i> Auto Tiles
+                    </a>
+                </li>
+                <li>
+                    <a id="mapeditor-eraser-btn" href="#">
+                        <i class="fa fa-eraser fa-fw"></i> Eraser
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li>
+            <a id="mapeditor-zoomin-btn" href="#">
+                <i class="fa fa-search-plus fa-fw red-color"></i>
+            </a>
+        </li>
+        <li>
+            <a id="mapeditor-zoomout-btn" href="#">
+                <i class="fa fa-search-minus fa-fw red-color"></i>
+            </a>
+        </li>
+
+        <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="map-editor-layer-dropdown">
+                <i class="fa fa-fw fa-clone red-color"></i> Layers <i class="fa fa-caret-down"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-studio" id="map-editor-layer-list">
+            </ul>
+        </li>
+
+        <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="map-editor-tileset-dropdown">
+                <i class="fa fa-fw fa-th red-color"></i> Tilesets <i class="fa fa-caret-down"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-studio" id="map-editor-tileset-list">
+            </ul>
+        </li>
+
+    </ul>
+</nav>
 
 
 <div class="map-editor">
@@ -82,51 +90,38 @@
 <div class="map-editor-sidebar">
   <div class="navbar-default sidebar" role="">
       <div class="sidebar-nav navbar-collapse">
+          <nav class="navbar navbar-default" role="" style="margin-bottom: 0">
+            <ul class="nav sidebar-toolbar navbar-left">
+                <li>
+                    <a id="" href="#">
+                        <i class="fa fa-plus fa-fw"></i>
+                    </a>
+                </li>
+                <li>
+                    <a id="" href="#">
+                        <i class="fa fa-trash-o fa-fw"></i>
+                    </a>
+                </li>
+                <li>
+                    <a id="" href="#">
+                        <i class="fa fa-gear fa-fw"></i>
+                    </a>
+                </li>
+                <li>
+                    <a id="map-editor-tileset-zoom-in" href="#">
+                        <i class="fa fa-search-plus fa-fw"></i>
+                    </a>
+                </li>
+                <li>
+                    <a id="map-editor-tileset-zoom-out" href="#">
+                        <i class="fa fa-search-minus fa-fw"></i>
+                    </a>
+                </li>
+              </ul>
+          </nav>
+      </div>
 
-                <ul class="nav" id="tileset-menu">
-                    <li>
-                        <a href="#"><i class="fa fa-th fa-fw"></i> Tilesets <span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level" id="tileset-list">
-                          <li>
-                              <a id="" href="#">
-                                  <i class="fa fa-folder-open-o fa-fw"></i> Tileset 1
-                              </a>
-                          </li>
-                        </ul>
-                    </li>
-                </ul>
-
-            <nav class="navbar navbar-default" role="" style="margin-bottom: 0">
-                <ul class="nav sidebar-toolbar navbar-left">
-                    <li>
-                        <a id="" href="#">
-                            <i class="fa fa-plus fa-fw"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a id="" href="#">
-                            <i class="fa fa-trash-o fa-fw"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a id="" href="#">
-                            <i class="fa fa-gear fa-fw"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a id="map-editor-tileset-zoom-in" href="#">
-                            <i class="fa fa-search-plus fa-fw"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a id="map-editor-tileset-zoom-out" href="#">
-                            <i class="fa fa-search-minus fa-fw"></i>
-                        </a>
-                    </li>
-                  </ul>
-
-
-            </nav>
+      <div id="map-editor-tileset-tiles">
 
       </div>
   </div>
