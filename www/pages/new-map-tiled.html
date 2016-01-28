@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-lg-12">
-        <h1 class="page-header">New Tiled Map</h1>
+        <h1 class="page-header">New Map</h1>
     </div>
 </div>
 
@@ -17,6 +17,26 @@
               <div class="form-group">
                 <label>Name</label>
                 <input class="form-control" type="text" placeholder="Name" id="new-tiled-map-name">
+              </div>
+
+              <div class="form-group">
+                <label>Width</label>
+                <input class="form-control" type="number" placeholder="Width" id="new-tiled-map-width">
+              </div>
+
+              <div class="form-group">
+                <label>Height</label>
+                <input class="form-control" type="number" placeholder="Height" id="new-tiled-map-height">
+              </div>
+
+              <div class="form-group">
+                <label>Tile Width</label>
+                <input class="form-control" type="number" placeholder="Tile Width" id="new-tiled-map-tile-width">
+              </div>
+
+              <div class="form-group">
+                <label>Tile Height</label>
+                <input class="form-control" type="number" placeholder="Tile Height" id="new-tiled-map-tile-height">
               </div>
 
               <button id="new-tiled-map-save" type="button" class="btn btn-primary">OK</button>
@@ -41,5 +61,10 @@ $(function(){
   $('#new-tiled-map-cancel').on('click', function(){
     STUDIO.openWindow('new-map');
   });
+
+  $('#new-tiled-map-width').val(20);
+  $('#new-tiled-map-height').val(20);
+  $('#new-tiled-map-tile-width').val(32);
+  $('#new-tiled-map-tile-height').val(32);
 });
 </script>

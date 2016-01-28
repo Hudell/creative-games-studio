@@ -443,6 +443,7 @@ var STUDIO = {};
   STUDIO.changeMap = function(mapName, mapData) {
     STUDIO.markAsModified();
     STUDIO.modifiedMaps[mapName] = mapData;
+    STUDIO.addRecentObject(mapName, mapData);
   };
 
   STUDIO.getMapData = function(mapName) {
@@ -820,8 +821,8 @@ var STUDIO = {};
     window.addEventListener('resize', function(){
       $('#content-wrapper').height(window.innerHeight - 52);
       $('#editor-wrapper').height(window.innerHeight - 104);
+      $('.map-editor-tileset').height(window.innerHeight - 104);
     });
-    // STUDIO.win.maximize();
   };
 
   STUDIO.getCurrentContext = function() {

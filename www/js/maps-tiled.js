@@ -4,7 +4,7 @@
 
   STUDIO.saveOldTiledMap = function(){
     var mapName = $('#edit-tiled-map-name').val();
-    if (!mapName || !mapName.trim) {
+    if (!mapName || !mapName.trim()) {
       throw new Error("I forgot what map you were modifying. Try again.");
     }
 
@@ -14,6 +14,57 @@
     }
 
     STUDIO.openWindow('maps');
+  };
+
+  STUDIO.saveNewTiledMap = function(){
+    var mapName = $('#new-tiled-map-name').val();
+    if (!mapName || !mapName.trim()) {
+      throw new Error("You need to give the map a name.");
+    }
+
+    if (!!STUDIO.gameData.maps[mapName + '.json']) {
+      throw new Error("A map called " + mapName + " already exists.");
+    }
+
+    var width = $('#new-tiled-map-width').val();
+    var height = $('#new-tiled-map-height').val();
+    var tileWidth = $('#new-tiled-map-tile-width').val();
+    var tileHeight = $('#new-tiled-map-tile-height').val();
+
+    if (!width) {
+      throw new Error("Please type a valid map width.");
+    }
+
+    if (!height) {
+      throw new Error("Please type a valid map height.");
+    }
+
+    if (!tileWidth) {
+      throw new Error("Please type a valid width for the tiles.");
+    }
+
+    if (!tileHeight) {
+      throw new Error("Please type a valid height for the tiles.");
+    }
+
+    tileWidth /= 2;
+    tileHeight /= 2;
+
+    mapName += '.json';
+    STUDIO.gameData.maps[mapName] = 'tiled';
+    STUDIO.changeMap(mapName, {
+      "orientation": "orthogonal",
+      "properties": {},
+      "renderorder": "left-up",
+      "tilesets" : [],
+      "layers" : [],
+      "version" : 1,
+      "width" : Number(width),
+      "height" : Number(height),
+      "tilewidth" : Number(tileWidth),
+      "tileheight" : Number(tileHeight)
+    });
+    STUDIO.openMapEditor(mapName);
   };
 
   STUDIO.applyLoadedTiledMapData = function(mapName, mapData) {

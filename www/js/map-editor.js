@@ -46,11 +46,12 @@ STUDIO.MapEditor = {};
       var mapHeight = mapData.height * mapData.tileheight;
 
       namespace.initMapEditor();
+      namespace.changeLayerIndex(0);
 
-      namespace.attachEvents();
       namespace.loadTilesetList();
       namespace.loadLayerList();
       namespace.openFirstTileset();
+      namespace.attachEvents();
 
       if (!!callback) {
         callback();
@@ -76,6 +77,16 @@ STUDIO.MapEditor = {};
 
     $('#mapeditor-zoomin-btn').on('click', function(event){ event.preventDefault(); namespace.zoomIn(); });
     $('#mapeditor-zoomout-btn').on('click', function(event){ event.preventDefault(); namespace.zoomOut(); });
+
+    $('.map-editor-tileset-new').on('click', function(event){
+      event.preventDefault();
+      STUDIO.openPopupForm('map-editor-new-tileset');
+    });
+
+    $('.map-editor-layer-new').on('click', function(event){
+      event.preventDefault();
+      namespace.createNewLayer();
+    })
 
     $('#map-editor-tileset-zoom-in').on('click', function(event) {
       event.preventDefault();
@@ -252,6 +263,11 @@ STUDIO.MapEditor = {};
 
   namespace.changeLayerIndex = function(index) {
     namespace._currentLayerIndex = index;
+
+    if (namespace._currentMapData.layers.length > index && index >= 0) {
+      var layerName = namespace._currentMapData.layers[index].name;
+      $('#map-editor-layer-name').html('Layers - ' + layerName);
+    }
   };
 
   namespace.loadTilesetList = function() {
@@ -262,6 +278,9 @@ STUDIO.MapEditor = {};
     for (var i = 0; i < tilesets.length; i++) {
       list.append('<li><a class="map-editor-tileset-link" data-index="' + i + '" href="#"><i class="fa fa-folder-o fa-fw tileset-icon"></i> ' + tilesets[i].name + '</a></li>');
     }
+
+    list.append('<li class="divider"></li>');
+    list.append('<li><a class="map-editor-tileset-new" href="#"><i class="fa fa-plus fa-fw"></i> Add New Tileset</a></li>');
 
     $('.map-editor-tileset-link').on('click', function(event) {
       event.preventDefault();
@@ -376,6 +395,10 @@ STUDIO.MapEditor = {};
   namespace.pickTile = function(column, row) {
     namespace._pickedColumn = Number(column);
     namespace._pickedRow = Number(row);
+
+    if (namespace._currentTool == 'eraser') {
+      namespace.changeToolToBrush();
+    }
 
     namespace.updatePickedTile();
   };

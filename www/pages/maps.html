@@ -26,11 +26,11 @@
 
 <nav class="navbar navbar-default" role="navigation" style="margin-bottom: 0">
   <ul class="nav navbar-top-links navbar-left">
-<!--     <li class="">
+    <li class="">
       <a id="new-map-btn" href="#">
         <i class="fa fa-file-o fa-fw"></i> New Map
       </a>
-    </li> -->
+    </li>
     <li class="">
       <a id="import-map-btn" href="#">
         <i class="fa fa-folder fa-fw"></i> Import Map
@@ -74,6 +74,7 @@
 $(function(){
   STUDIO.loadMaps();
 
+  $('#new-map-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'new-map'); });
   $('#import-map-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'import-map'); });
 
   $('.maps-row').on('click', function(event) {
