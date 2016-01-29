@@ -73,6 +73,29 @@
       </div>
     </a>
 
+    <a href="#" id="index-tilesets-option" class="">
+      <div class="col-lg-3 col-md-6">
+          <div class="panel panel-blue">
+              <div class="panel-heading">
+                  <div class="row">
+                      <div class="col-xs-3">
+                          <i class="fa fa-th fa-5x"></i>
+                      </div>
+                      <div class="col-xs-9 text-right">
+                          <div class="huge" id="tileset-count">0</div>
+                          <div>Tilesets</div>
+                      </div>
+                  </div>
+              </div>
+              <div class="panel-footer">
+                  <span class="pull-left">Tilesets</span>
+                  <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                  <div class="clearfix"></div>
+              </div>
+          </div>
+      </div>
+    </a>
+
     <a href="#" id="index-characters-option" class="hidden">
         <div class="col-lg-3 col-md-6">
             <div class="panel panel-blue">
@@ -489,6 +512,7 @@ $(function(){
   $('#index-characters-option').on('click', function(event) { STUDIO.eventOpenWindow(event, 'characters'); });
   $('#index-objects-option').on('click', function(event) { STUDIO.eventOpenWindow(event, 'objects'); });
   $('#index-sprites-option').on('click', function(event) { STUDIO.eventOpenWindow(event, 'sprites'); });
+  $('#index-tilesets-option').on('click', function(event) { STUDIO.eventOpenWindow(event, 'tilesets'); });
   $('#index-variables-option').on('click', function(event) { STUDIO.eventOpenWindow(event, 'variables'); });
   
   $('#index-classes-option').on('click', function(event) { STUDIO.eventOpenWindow(event, 'classes'); });

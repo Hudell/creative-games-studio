@@ -12,6 +12,7 @@ var STUDIO = {};
   var gui = require('nw.gui');
   var win = gui.Window.get();
   STUDIO.win = win;
+  STUDIO.version = 1;
 
   STUDIO.gameData = undefined;
   STUDIO.loadedGame = {
@@ -443,7 +444,7 @@ var STUDIO = {};
   STUDIO.changeMap = function(mapName, mapData) {
     STUDIO.markAsModified();
     STUDIO.modifiedMaps[mapName] = mapData;
-    STUDIO.addRecentObject(mapName, mapData);
+    STUDIO.addRecentObject('map', mapName);
   };
 
   STUDIO.getMapData = function(mapName) {
@@ -581,6 +582,9 @@ var STUDIO = {};
     if (!STUDIO.gameData.sprites) {
       STUDIO.gameData.sprites = {};
     }
+    if (!STUDIO.gameData.tilesets) {
+      STUDIO.gameData.tilesets = {};
+    }
     if (!STUDIO.gameData.resolution) {
       STUDIO.gameData.resolution = {};
     }
@@ -652,6 +656,10 @@ var STUDIO = {};
       STUDIO.gameData.tcheScenes = [];
     }
 
+    if (!STUDIO.gameData.version) {
+      STUDIO.gameData.version = STUDIO.version;
+    }
+
     STUDIO.registerEngineScene('SceneMap');
     STUDIO.registerEngineScene('SceneTitle');
 
@@ -671,6 +679,7 @@ var STUDIO = {};
   };
 
   STUDIO.saveGameData = function() {
+    STUDIO.gameData.version = STUDIO.version;
     STUDIO.saveJson(path.join(STUDIO.loadedGame.folder, 'game.json'), STUDIO.gameData);
   };
 
@@ -709,6 +718,7 @@ var STUDIO = {};
     $('#variable-count').html(Object.keys(STUDIO.gameData.variables).length);
     $('#object-count').html(Object.keys(STUDIO.gameData.objects).length);
     $('#sprite-count').html(Object.keys(STUDIO.gameData.sprites).length);
+    $('#tileset-count').html(Object.keys(STUDIO.gameData.tilesets).length);
     $('#character-count').html(Object.keys(STUDIO.gameData.characters).length);
 
     $('#language-count').html(Object.keys(STUDIO.gameData.languages).length);

@@ -251,6 +251,8 @@ STUDIO.MapEditor = {};
 
       list.append('<li><a class="map-editor-layer-link" data-index="' + i + '" href="#"><i class="fa ' + icon + ' fa-fw layer-icon"></i> ' + layers[i].name + '</a></li>');
     }
+    list.append('<li class="divider"></li>');
+    list.append('<li><a class="map-editor-layer-new" href="#"><i class="fa fa-plus fa-fw"></i> New Layer </a></li>');
 
     $('.map-editor-layer-link').on('click', function(event) {
       event.preventDefault();
@@ -468,6 +470,25 @@ STUDIO.MapEditor = {};
     }
 
     return false;
+  };
+
+  namespace.createNewTileset = function() {
+    STUDIO.openPopupForm('map-editor-new-tileset', 'New Tileset', function(){
+      var tilesetFile = $('#map-editor-new-tileset-file').val();
+
+      if (!tilesetFile || !tilesetFile.trim()) {
+        throw new Error("Please choose a file to use as tileset.");
+      }
+
+      var fileName = path.basename(tilesetFile);
+      if (!STUDIO.isFileImported(tilesetFile)) {
+        // if (namespace.checkIfTilesetExists(fileName)) {
+          // throw new Error("The project already has a tileset called " + fileName + ". If they are the same, use the imported tileset. If they are different, rename one of them.");
+        // }
+      }
+    }, function(){
+
+    });
   };
 
   namespace.createNewLayer = function() {

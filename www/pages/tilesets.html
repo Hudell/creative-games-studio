@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-lg-12">
-    <h1 class="page-header">Sprites</h1>
+    <h1 class="page-header">Tilesets</h1>
   </div>
 </div>
 
@@ -27,13 +27,8 @@
 <nav class="navbar navbar-default" role="navigation" style="margin-bottom: 0">
   <ul class="nav navbar-top-links navbar-left">
     <li class="">
-      <a id="new-sprite-btn" href="#">
-        <i class="fa fa-file-o fa-fw"></i> New Sprite
-      </a>
-    </li>
-    <li class="">
-      <a id="import-sprite-btn" href="#">
-        <i class="fa fa-folder fa-fw"></i> Import Sprite
+      <a id="import-tileset-btn" href="#">
+        <i class="fa fa-folder fa-fw"></i> Import Tileset
       </a>
     </li>
   </ul>
@@ -53,13 +48,10 @@
     <div class="panel panel-default">
       <div class="panel-body">
         <div class="table-responsive">
-          <table class="table table-bordered table-striped grid-with-preview-images" id="sprites-table">
+          <table class="table table-bordered table-striped grid-with-preview-images" id="tilesets-table">
             <thead>
               <tr>
                 <th>Name</th>
-                <th>
-                  Type
-                </th>
                 <th>
                   Image
                 </th>
@@ -68,9 +60,6 @@
                 </th>
                 <th>
                   Height
-                </th>
-                <th>
-                  Index
                 </th>
               </tr>
             </thead>
@@ -87,15 +76,14 @@
 
 <script type="text/javascript">
 $(function(){
-  STUDIO.loadSprites();
-  $('#new-sprite-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'new-sprite'); });
-  $('#import-sprite-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'import-sprite'); });
+  STUDIO.TilesetManager.loadTilesets();
+  $('#import-tileset-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'import-tileset'); });
 
-  $('.sprites-row').on('click', function(event) {
+  $('.tilesets-row').on('click', function(event) {
     event.preventDefault();
-    var spriteName = event.currentTarget.dataset.elementId;
+    var tilesetName = event.currentTarget.dataset.elementId;
 
-    STUDIO.editSprite(spriteName);
+    STUDIO.TilesetManager.editTileset(tilesetName);
   });
 });
 </script>
