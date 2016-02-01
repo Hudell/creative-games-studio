@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-lg-12">
-    <h1 class="page-header">Skins</h1>
+    <h1 class="page-header">Tilesets</h1>
   </div>
 </div>
 
@@ -27,14 +27,8 @@
 <nav class="navbar navbar-default" role="navigation" style="margin-bottom: 0">
   <ul class="nav navbar-top-links navbar-left">
     <li class="">
-      <a id="new-skin-btn" href="#">
-        <i class="fa fa-file-o fa-fw"></i> New Skin
-      </a>
-    </li>
-
-    <li class="">
-      <a id="import-skin-btn" href="#">
-        <i class="fa fa-folder fa-fw"></i> Import Skin
+      <a id="import-tileset-btn" href="#">
+        <i class="fa fa-folder fa-fw"></i> New Tileset
       </a>
     </li>
   </ul>
@@ -54,7 +48,7 @@
     <div class="panel panel-default">
       <div class="panel-body">
         <div class="table-responsive">
-          <table class="table table-bordered table-striped grid-with-preview-images" id="skins-table">
+          <table class="table table-bordered table-striped grid-with-preview-images" id="tilesets-table">
             <thead>
               <tr>
                 <th>Name</th>
@@ -63,6 +57,9 @@
                 </th>
                 <th>
                   Image
+                </th>
+                <th>
+                  Tile Size
                 </th>
               </tr>
             </thead>
@@ -79,15 +76,14 @@
 
 <script type="text/javascript">
 $(function(){
-  STUDIO.loadSkins();
-  $('#new-skin-btn').on('click', function(event) { STUDIO.FileManager.eventOpenWindow(event, 'skins', 'new-skin'); });
-  $('#import-skin-btn').on('click', function(event) { STUDIO.FileManager.eventOpenWindow(event, 'skins', 'import-skin'); });
+  STUDIO.TilesetManager.loadTilesets();
+  $('#import-tileset-btn').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'tilesets', 'import-tileset'); });
 
-  $('.skins-row').on('click', function(event) {
+  $('.tilesets-row').on('click', function(event) {
     event.preventDefault();
-    var skinName = event.currentTarget.dataset.elementId;
+    var tilesetName = event.currentTarget.dataset.elementId;
 
-    STUDIO.editSkin(skinName);
+    STUDIO.TilesetManager.editTileset(tilesetName);
   });
 });
 </script>

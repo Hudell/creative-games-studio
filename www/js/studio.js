@@ -597,6 +597,16 @@ var STUDIO = {};
     }
   };
 
+  STUDIO.keyExists = function(object, key) {
+    for (var objectKey in object) {
+      if (objectKey.toLowerCase() == key.toLowerCase()) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
   STUDIO.validateGameData = function() {
     if (!STUDIO.gameData.recentObjects) {
       STUDIO.gameData.recentObjects = [];
@@ -793,7 +803,7 @@ var STUDIO = {};
 
     $('#file-manager-btn').on('click', function(event) {
       event.preventDefault();
-      STUDIO.FileManager.openFileManagerWindow();
+      STUDIO.DatabaseManager.openDatabaseManagerWindow();
     });
 
     $('#plugins-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'plugins'); });
@@ -830,7 +840,7 @@ var STUDIO = {};
     });
 
     STUDIO.DatabaseManager.attachEvents();
-    STUDIO.FileManager.attachEvents();
+    STUDIO.DatabaseManager.attachEvents();
 
     STUDIO.loadLoadedGameInfo();
     if (!!STUDIO.loadedGame.folder) {

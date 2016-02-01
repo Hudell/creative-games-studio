@@ -1,7 +1,8 @@
 <div class="row">
     <div class="col-lg-12">
-        <h1 class="page-header">Import Skin</h1>
+        <h1 class="page-header">New Skin</h1>
     </div>
+    <!-- /.col-lg-12 -->
 </div>
 <!-- /.row -->
 <div class="row">
@@ -19,11 +20,11 @@
                 <select id="skinType" class="form-control">
                   <option value="rpgmaker">Rpg Maker</option>
                 </select>
-                <p class="help-block">Select the type of the Skin that you want to import.</p>
+                <p class="help-block">Select the type of the Skin that you want to use.</p>
               </div>
 
-              <button id="import-skin-continue-btn" type="button" class="btn btn-primary">Continue</button>
-              <button id="import-skin-cancel-btn" type="button" class="btn btn-default">Cancel</button>
+              <button id="new-skin-continue-btn" type="button" class="btn btn-save">Continue</button>
+              <button id="new-skin-cancel-btn" type="button" class="btn btn-default">Cancel</button>
             </form>
           </div>
         </div>
@@ -35,11 +36,11 @@
 
 <script type="text/javascript">
 $(function(){
-  $('#import-skin-continue-btn').on('click', function(){
-    STUDIO.continueImportSkin();
+  $('#new-skin-continue-btn').on('click', function(){
+    STUDIO.continueNewSkin();
   });
-  $('#import-skin-cancel-btn').on('click', function(){
-    STUDIO.FileManager.openWindow('skins', 'skins');
+  $('#new-skin-cancel-btn').on('click', function(){
+    STUDIO.DatabaseManager.openWindow('skins', 'skins');
   });
 });
 </script>

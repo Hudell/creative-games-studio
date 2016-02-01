@@ -1,0 +1,81 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Edit Tileset</h1>
+    </div>
+</div>
+<!-- /.row -->
+<div class="row">
+  <div class="col-lg-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+          
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-lg-6">
+            <form role="form">
+              <input type="hidden" id="edit-tileset-old-name">
+
+              <div class="form-group">
+                <label>Tileset Name</label>
+                <input class="form-control" type="text" placeholder="" id="edit-tileset-name">
+              </div>
+
+              <div class="form-group">
+                <label>Tile Type</label>
+                <select id="tileType" class="form-control">
+                  <option value="tiles">Simple Tiles</option>
+                  <option value="rm-auto-tiles-a1">RPG Maker Animated Auto Tiles (A1)</option>
+                  <option value="rm-auto-tiles-a2">RPG Maker Auto Tiles (A2) </option>
+                  <option value="rm-auto-tiles-a3">RPG Maker Auto Tiles (A3) </option>
+                  <option value="rm-auto-tiles-a4">RPG Maker Auto Tiles (A4) </option>
+                </select>
+
+                <p class="help-block">Select the type of tiles in this tileset. If you're unsure, pick Simple Tiles.</p>
+              </div>
+
+              <div class="image-preview" id="edit-tileset-image-preview">
+              </div>
+
+              <div class="form-group">
+                <label>Tile Width</label>
+                <input class="form-control" type="number" placeholder="0" id="edit-tileset-tile-width">
+                <p class="help-block">Leave it at 0 to use this tileset in any map.</p>
+              </div>
+
+              <div class="form-group">
+                <label>Tile Height</label>
+                <input class="form-control" type="number" placeholder="0" id="edit-tileset-tile-height">
+                <p class="help-block">Leave it at 0 to use this tileset in any map.</p>
+              </div>
+
+              <button id="edit-tileset-continue-btn" type="button" class="btn btn-primary">Continue</button>
+              <button id="edit-tileset-delete-btn" type="button" class="btn btn-danger">Remove Tileset</button>
+              <button id="edit-tileset-cancel-btn" type="button" class="btn btn-default">Cancel</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+$(function(){
+  $('#edit-tileset-continue-btn').on('click', function(event){
+    event.preventDefault();
+    STUDIO.TilesetManager.saveExistingTileset();
+  });
+
+  $('#edit-tileset-delete-btn').on('click', function(event) {
+    event.preventDefault();
+    STUDIO.TilesetManager.deleteCurrentTileset();
+  });
+
+  $('#edit-tileset-cancel-btn').on('click', function(event){
+    event.preventDefault();
+    STUDIO.DatabaseManager.openWindow('tilesets', 'tilesets');
+  });
+});
+</script>

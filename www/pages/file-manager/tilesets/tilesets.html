@@ -53,13 +53,13 @@
               <tr>
                 <th>Name</th>
                 <th>
+                  Type
+                </th>
+                <th>
                   Image
                 </th>
                 <th>
-                  Width
-                </th>
-                <th>
-                  Height
+                  Tile Size
                 </th>
               </tr>
             </thead>
@@ -77,7 +77,7 @@
 <script type="text/javascript">
 $(function(){
   STUDIO.TilesetManager.loadTilesets();
-  $('#import-tileset-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'import-tileset'); });
+  $('#import-tileset-btn').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'tilesets', 'import-tileset'); });
 
   $('.tilesets-row').on('click', function(event) {
     event.preventDefault();

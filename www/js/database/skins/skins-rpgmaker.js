@@ -71,7 +71,7 @@
 
     STUDIO.addRecentObject('skin', skinName);
     STUDIO.markAsModified();
-    STUDIO.FileManager.openWindow('skins', 'skins');
+    STUDIO.DatabaseManager.openWindow('skins', 'skins');
   };
 
   STUDIO.importRpgMakerSkin = function() {
@@ -111,7 +111,7 @@
       STUDIO.markAsModified();
     }
 
-    STUDIO.FileManager.openWindow('skins', 'skins');
+    STUDIO.DatabaseManager.openWindow('skins', 'skins');
   };
 
   STUDIO.saveOldRpgMakerSkin = function(){
@@ -148,7 +148,7 @@
 
     STUDIO.addRecentObject('skin', skinName);
     STUDIO.markAsModified();
-    STUDIO.FileManager.openWindow('skins', 'skins');
+    STUDIO.DatabaseManager.openWindow('skins', 'skins');
   };
 
   STUDIO.loadRpgMakerSkinData = function(skinName) {
@@ -168,7 +168,7 @@
   };
 
   STUDIO.editRpgMakerSkin = function(skinName) {
-    STUDIO.FileManager.openWindow('skins', 'edit-skin-rpgmaker', function(){
+    STUDIO.DatabaseManager.openWindow('skins', 'edit-skin-rpgmaker', function(){
       STUDIO.loadRpgMakerSkinData(skinName);
     });
   };

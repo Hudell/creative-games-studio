@@ -26,14 +26,14 @@
     var type = $('#skinType').val();
     var windowName = 'new-skin-' + type;
 
-    STUDIO.FileManager.openWindow('skins', windowName);
+    STUDIO.DatabaseManager.openWindow('skins', windowName);
   };
 
   STUDIO.continueImportSkin = function() {
     var type = $('#skinType').val();
     var windowName = 'import-skin-' + type;
 
-    STUDIO.FileManager.openWindow('skins', windowName);
+    STUDIO.DatabaseManager.openWindow('skins', windowName);
   };
 
   STUDIO.removeSkin = function(skinName) {
