@@ -26,6 +26,8 @@ STUDIO.MapEditor = {};
   namespace._transparentSpriteTexture = PIXI.Texture.fromImage(path.join('img', 'transparent.png'));
 
   namespace.openMapEditor = function(mapName, callback) {
+    STUDIO.gameData._lastMapName = mapName;
+
     var mapData = STUDIO.getMapData(mapName);
     if (!mapData) {
       throw new Error("Couldn't find map " + mapName + " data.");
@@ -77,6 +79,11 @@ STUDIO.MapEditor = {};
 
     $('#mapeditor-zoomin-btn').on('click', function(event){ event.preventDefault(); namespace.zoomIn(); });
     $('#mapeditor-zoomout-btn').on('click', function(event){ event.preventDefault(); namespace.zoomOut(); });
+
+    $('#btn-new-map').on('click', function(event) {
+      event.preventDefault();
+      namespace.createNewMap();
+    });
 
     $('.map-editor-tileset-new').on('click', function(event){
       event.preventDefault();
@@ -491,6 +498,37 @@ STUDIO.MapEditor = {};
     });
   };
 
+  namespace.addLayerToMap = function(mapData, layerName, layerType) {
+    var newLayer = {
+      name : layerName,
+      visible : true,
+      x : 0,
+      y : 0,
+      opacity : 1,
+      type : layerType,
+      width : mapData.width,
+      height : mapData.height,
+      properties : []
+    };
+
+    switch(layerType) {
+      case 'tilelayer' :
+        newLayer.data = [];
+        var tiles = mapData.width * mapData.height;
+        for (var i = 0; i < tiles; i++) {
+          newLayer.data[i] = 0;
+        }
+
+        break;
+      case 'objectgroup' :
+        newLayer.objects = [];
+
+        break;
+    }
+
+    mapData.layers.push(newLayer);
+  };
+
   namespace.createNewLayer = function() {
     STUDIO.openPopupForm('map-editor-new-layer', 'New Layer', function(){
       var layerName = $('#map-editor-new-layer-name').val();
@@ -503,35 +541,7 @@ STUDIO.MapEditor = {};
       }
 
       var layerType = $('#map-editor-new-layer-type').val();
-      var newLayer = {
-        name : layerName,
-        visible : true,
-        x : 0,
-        y : 0,
-        opacity : 1,
-        type : layerType,
-        width : namespace._currentMapData.width,
-        height : namespace._currentMapData.height,
-        properties : []
-      }
-
-      switch(layerType) {
-        case 'tilelayer' :
-          newLayer.data = [];
-          var tiles = namespace._currentMapData.width * namespace._currentMapData.height;
-          for (var i = 0; i < tiles; i++) {
-            newLayer.data[i] = 0;
-          }
-
-          break;
-        case 'objectgroup' :
-          newLayer.objects = [];
-
-          break;
-      }
-
-
-      namespace._currentMapData.layers.push(newLayer);
+      namespace.addLayerToMap(namespace._currentMapData, layerName, layerType);
       namespace.onMapChange();
 
       namespace.openMapEditor(namespace._currentMapName);
@@ -868,7 +878,10 @@ STUDIO.MapEditor = {};
       namespace.onMapChange()
       namespace.createLayers(namespace._renderer.width, namespace._renderer.height);
     }
+  };
 
+  namespace.createNewMap = function() {
+    STUDIO.openWindow('new-map');
   };
 
 })(STUDIO.MapEditor);

@@ -69,7 +69,8 @@
 <script type="text/javascript">
 $(function(){
   STUDIO.ObjectManager.loadObjects('object-table');
-  $('#new-object-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'new-object'); });
+  var path = require("path");
+  $('#new-object-btn').on('click', function(event) { Database.eventOpenWindow(event, path.join('objects', 'new-object')); });
 
   $('.object-row').on('click', function(event) {
     event.preventDefault();

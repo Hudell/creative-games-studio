@@ -617,3 +617,8 @@ table.dataTable thead .sorting:after {
 .navbar-top-links li {
     font-size: 14px;
 }
+
+.database-option-list {
+    overflow-y : scroll;
+    overflow-x : hidden;
+}

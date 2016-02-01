@@ -467,6 +467,12 @@ var STUDIO = {};
     STUDIO.loadGameData();
     STUDIO.loadMaps();
     STUDIO.markAsSaved();
+
+    if (STUDIO.gameData._lastMapName !== '') {
+      STUDIO.openMapEditor(STUDIO.gameData._lastMapName);
+    } else {
+      STUDIO.MapEditor.createNewMap();
+    }
   };
 
   STUDIO.openProjectDialog = function() {
@@ -559,7 +565,7 @@ var STUDIO = {};
       STUDIO.changeGameTitle(STUDIO.gameData.name);
     }
 
-    STUDIO.openWindow('index');
+    // STUDIO.openWindow('index');
   };
 
   STUDIO.getAllScenes = function() {
@@ -660,6 +666,10 @@ var STUDIO = {};
       STUDIO.gameData.version = STUDIO.version;
     }
 
+    if (!STUDIO.gameData._lastMapName) {
+      STUDIO.gameData._lastMapName = '';
+    }
+
     STUDIO.registerEngineScene('SceneMap');
     STUDIO.registerEngineScene('SceneTitle');
 
@@ -757,30 +767,10 @@ var STUDIO = {};
     $('#index-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'index'); });
     
     $('#maps-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'maps'); });
-    $('#objects-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'objects'); });
-    $('#variables-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'variables'); });
-    $('#sprites-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'sprites'); });
-    $('#characters-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'characters'); });
-    
-    $('#languages-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'languages'); });
-    $('#music-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'music'); });
-    $('#sounds-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'sounds'); });
-    $('#movies-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'movies'); });
-    
-    $('#items-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'items'); });
-    $('#animations-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'animations'); });
-    $('#faces-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'faces'); });
-    $('#skins-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'skins'); });
-
-    $('#classes-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'classes'); });
-    $('#enemies-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'enemies'); });
-    $('#skills-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'skills'); });
-    $('#states-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'states'); });
-    
-    $('#achievements-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'achievements'); });
-    $('#huds-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'huds'); });
-    $('#packages-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'packages'); });
-    $('#vehicles-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'vehicles'); });
+    $('#database-btn').on('click', function(event) {
+      event.preventDefault();
+      STUDIO.DatabaseManager.openDatabaseWindow();
+    });
 
     $('#plugins-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'plugins'); });
     
@@ -815,11 +805,12 @@ var STUDIO = {};
       STUDIO.exitButton();
     });
 
-    STUDIO.openWindow('index');
 
     STUDIO.loadLoadedGameInfo();
     if (!!STUDIO.loadedGame.folder) {
-      STUDIO.loadGameData();
+      STUDIO.loadProject(STUDIO.loadedGame.folder);
+    } else {
+      STUDIO.openWindow('new-project');
     }
 
     STUDIO.fillSidebar();
@@ -831,6 +822,7 @@ var STUDIO = {};
     window.addEventListener('resize', function(){
       $('#content-wrapper').height(window.innerHeight - 52);
       $('#editor-wrapper').height(window.innerHeight - 104);
+      $('.database-option-list').height(window.innerHeight - 52);
       $('.map-editor-tileset').height(window.innerHeight - 104);
     });
   };

@@ -16,13 +16,23 @@
     STUDIO.openWindow('maps');
   };
 
+  STUDIO.checkIfMapNameExists = function(mapName) {
+    for (var key in STUDIO.gameData.maps) {
+      if (key.toLowerCase() == (mapName.toLowerCase() + '.json')) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
   STUDIO.saveNewTiledMap = function(){
     var mapName = $('#new-tiled-map-name').val();
     if (!mapName || !mapName.trim()) {
       throw new Error("You need to give the map a name.");
     }
 
-    if (!!STUDIO.gameData.maps[mapName + '.json']) {
+    if (STUDIO.checkIfMapNameExists(mapName)) {
       throw new Error("A map called " + mapName + " already exists.");
     }
 
@@ -52,7 +62,7 @@
 
     mapName += '.json';
     STUDIO.gameData.maps[mapName] = 'tiled';
-    STUDIO.changeMap(mapName, {
+    var mapData = {
       "orientation": "orthogonal",
       "properties": {},
       "renderorder": "left-up",
@@ -63,7 +73,15 @@
       "height" : Number(height),
       "tilewidth" : Number(tileWidth),
       "tileheight" : Number(tileHeight)
-    });
+    };
+
+    STUDIO.MapEditor.addLayerToMap(mapData, 'Ground', 'tilelayer');
+    STUDIO.MapEditor.addLayerToMap(mapData, 'Ground Overlay', 'tilelayer');
+    STUDIO.MapEditor.addLayerToMap(mapData, 'Walls', 'tilelayer');
+    STUDIO.MapEditor.addLayerToMap(mapData, 'Player', 'objectgroup');
+    STUDIO.MapEditor.addLayerToMap(mapData, 'Overlay', 'tilelayer');
+
+    STUDIO.changeMap(mapName, mapData);
     STUDIO.openMapEditor(mapName);
   };
 
