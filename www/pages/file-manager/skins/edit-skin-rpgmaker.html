@@ -54,12 +54,12 @@ $(function(){
   $('#edit-rpgmaker-skin-delete').on('click', function(event){
     event.preventDefault();
     STUDIO.removeCurrentRpgMakerSkin();
-    STUDIO.openWindow('skins');
+    STUDIO.FileManager.openWindow('skins', 'skins');
   });
 
   $('#edit-rpgmaker-skin-cancel').on('click', function(event){
     event.preventDefault();
-    STUDIO.openWindow('skins');
+    STUDIO.FileManager.openWindow('skins', 'skins');
   });
 });
 </script>

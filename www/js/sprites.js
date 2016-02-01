@@ -30,14 +30,14 @@
     var type = $('#spriteType').val();
     var windowName = 'new-sprite-' + type;
 
-    STUDIO.openWindow(windowName);
+    STUDIO.DatabaseManager.openWindow('sprites', windowName);
   };
 
   STUDIO.continueImportSprite = function() {
     var type = $('#spriteType').val();
     var windowName = 'import-sprite-' + type;
 
-    STUDIO.openWindow(windowName);
+    STUDIO.DatabaseManager.openWindow('sprites', windowName);
   };
 
   STUDIO.removeSprite = function(spriteName) {

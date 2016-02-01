@@ -88,8 +88,8 @@
 <script type="text/javascript">
 $(function(){
   STUDIO.loadSprites();
-  $('#new-sprite-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'new-sprite'); });
-  $('#import-sprite-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'import-sprite'); });
+  $('#new-sprite-btn').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'new-sprite'); });
+  $('#import-sprite-btn').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'import-sprite'); });
 
   $('.sprites-row').on('click', function(event) {
     event.preventDefault();

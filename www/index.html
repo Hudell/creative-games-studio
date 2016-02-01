@@ -28,23 +28,28 @@
         <nav class="navbar navbar-default" role="navigation" style="margin-bottom: 0">
             <ul class="nav navbar-top-links navbar-left">
                 <li>
-                    <a id="maps-btn" href="#">
+                    <a id="maps-btn" href="#" title="Maps">
                         <i class="fa fa-globe fa-fw"></i>
                     </a>
                 </li>
                 <li>
-                    <a id="database-btn" href="#">
+                    <a id="database-btn" href="#" title="Database">
                         <i class="fa fa-th fa-fw"></i>
+                    </a>
+                </li>
+                <li>
+                    <a id="file-manager-btn" href="#" title="File Manager">
+                        <i class="fa fa-file-text-o fa-fw"></i>
                     </a>
                 </li>
 
                 <li>
-                    <a id="plugins-btn" href="#">
+                    <a id="plugins-btn" href="#" title="Plugins">
                         <i class="fa fa-plug fa-fw"></i>
                     </a>
                 </li>
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" title="Settings">
                         <i class="fa fa-cog fa-fw"></i> <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-studio">
@@ -71,7 +76,7 @@
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" title="History">
                         <i class="fa fa-history fa-fw"></i> <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-studio" id="history-list">
@@ -82,82 +87,90 @@
             
             <ul class="nav navbar-top-links navbar-right">
                 <li>
-                    <a id="new-btn" href="#">
+                    <a id="new-btn" href="#" title="New Project">
                         <i class="fa fa-file-o fa-fw"></i>
                     </a>
                 </li>
                 <li>
-                    <a id="open-btn" href="#">
+                    <a id="open-btn" href="#" title="Open Project">
                         <i class="fa fa-folder fa-fw"></i>
                     </a>
                 </li>
                 <li>
-                    <a id="reload-btn" href="#">
+                    <a id="reload-btn" href="#" title="Reload">
                         <i class="fa fa-refresh fa-fw"></i>
                     </a>
                 </li>
                 <li>
-                    <a id="save-btn" href="#">
+                    <a id="save-btn" href="#" title="Save Project">
                         <i class="fa fa-save fa-fw"></i>
                     </a>
                 </li>
                 <li>
-                    <a id="play-btn" href="#">
+                    <a id="play-btn" href="#" title="Play Project">
                         <i class="fa fa-play fa-fw"></i>
                     </a>
                 </li>
                 <li>
-                    <a id="exit-btn" href="#">
+                    <a id="exit-btn" href="#" title="Exit Creative Studio">
                         <i class="fa fa-sign-out fa-fw"></i>
                     </a>
                 </li>
             </ul>
         </nav>
 
-        <div class="navbar-default sidebar hidden" role="navigation" id="database-sidebar">
+        <div class="navbar-default sidebar hidden" role="navigation" id="main-sidebar">
             <div class="sidebar-nav navbar-collapse">
-                <ul class="nav" id="side-menu">
-                    <li class="will-be-hidden">
+                <ul class="nav database-option-list">
+                    <li class="hidden">
                         <a id="achievements-btn" href="#"><i class="menu-option fa fa-trophy fa-fw"></i> Achievements</span></a>
                     </li>
-                    <li class="will-be-hidden">
+                    <li class="hidden">
                         <a id="animations-btn" href="#"><i class="menu-option fa fa-bolt fa-fw"></i> Animations</span></a>
                     </li>
-                    <li class="will-be-hidden">
+                    <li class="hidden">
                         <a id="characters-btn" href="#"><i class="menu-option fa fa-female fa-fw"></i> Characters</span></a>
                     </li>
-                    <li class="will-be-hidden">
+                    <li class="hidden">
                         <a id="classes-btn" href="#"><i class="menu-option fa fa-user-md fa-fw"></i> Classes (Jobs)</span></a>
                     </li>
-                    <li class="will-be-hidden">
+                    <li class="hidden">
                         <a id="enemies-btn" href="#"><i class="menu-option fa fa-bug fa-fw"></i> Enemies</span></a>
                     </li>
-                    <li class="will-be-hidden">
+                    <li class="hidden">
                         <a id="huds-btn" href="#"><i class="menu-option fa fa-external-link fa-fw"></i> Huds</span></a>
                     </li>
-                    <li class="will-be-hidden">
+                    <li class="hidden">
                         <a id="items-btn" href="#"><i class="menu-option fa fa-flask fa-fw"></i> Items</span></a>
                     </li>
-                    <li class="will-be-hidden">
+                    <li class="hidden">
                         <a id="languages-btn" href="#"><i class="menu-option fa fa-pencil fa-fw"></i> Languages</span></a>
                     </li>
                     <li>
                         <a id="objects-btn" href="#"><i class="menu-option fa fa-umbrella fa-fw"></i> Objects</span></a>
                     </li>
-                    <li class="will-be-hidden">
+                    <li class="hidden">
                         <a id="packages-btn" href="#"><i class="menu-option fa fa-shopping-cart fa-fw"></i> Packages (DLC)</span></a>
                     </li>
-                    <li class="will-be-hidden">
+                    <li class="hidden">
                         <a id="skills-btn" href="#"><i class="menu-option fa fa-fire fa-fw"></i> Skills</span></a>
                     </li>
-                    <li class="will-be-hidden">
+                    <li>
+                        <a id="sprites-btn" href="#"><i class="menu-option fa fa-image fa-fw"></i> Sprites</span></a>
+                    </li>
+                    <li class="hidden">
                         <a id="states-btn" href="#"><i class="menu-option fa fa-eye-slash fa-fw"></i> States</span></a>
                     </li>
-                    <li class="will-be-hidden">
+                    <li class="hidden">
                         <a id="variables-btn" href="#"><i class="menu-option fa fa-puzzle-piece fa-fw"></i> Variables</span></a>
                     </li>
-                    <li class="will-be-hidden">
+                    <li class="hidden">
                         <a id="vehicles-btn" href="#"><i class="menu-option fa fa-car fa-fw"></i> Vehicles</span></a>
+                    </li>
+                </ul>
+                <ul class="nav file-manager-option-list">
+                    <li>
+                        <a id="skins-btn" href="#"><i class="menu-option fa fa-sticky-note-o fa-fw"></i> Skins</span></a>
                     </li>
                 </ul>
             </div>
@@ -181,6 +194,7 @@
     <script src="js/studio.js"></script>
     <script src="js/map-editor.js"></script>
     <script src="js/database.js"></script>
+    <script src="js/file-manager.js"></script>
     <script src="js/project.js"></script>
     <script src="js/sprites.js"></script>
     <script src="js/sprites-rpgmaker.js"></script>

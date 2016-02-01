@@ -115,12 +115,12 @@ $(function(){
   $('#edit-rpgmaker-sprite-delete').on('click', function(event){
     event.preventDefault();
     STUDIO.removeCurrentRpgMakerSprite();
-    STUDIO.openWindow('sprites');
+    STUDIO.DatabaseManager.openWindow('sprites', 'sprites');
   });
 
   $('#edit-rpgmaker-sprite-cancel').on('click', function(event){
     event.preventDefault();
-    STUDIO.openWindow('sprites');
+    STUDIO.DatabaseManager.openWindow('sprites', 'sprites');
   });
 });
 </script>

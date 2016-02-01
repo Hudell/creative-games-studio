@@ -138,7 +138,7 @@
 
     STUDIO.addRecentObject('sprite', spriteName);
     STUDIO.markAsModified();
-    STUDIO.openWindow('sprites');
+    STUDIO.DatabaseManager.openWindow('sprites', 'sprites');
   };
 
   STUDIO.importRpgMakerSprite = function() {
@@ -196,7 +196,7 @@
     }
 
     STUDIO.markAsModified();
-    STUDIO.openWindow('sprites');
+    STUDIO.DatabaseManager.openWindow('sprites', 'sprites');
   };
 
 
@@ -255,7 +255,7 @@
 
     STUDIO.addRecentObject('sprite', spriteName);
     STUDIO.markAsModified();
-    STUDIO.openWindow('sprites');
+    STUDIO.DatabaseManager.openWindow('sprites', 'sprites');
   };
 
   STUDIO.loadRpgMakerSpriteData = function(spriteName) {
@@ -275,7 +275,7 @@
   };
 
   STUDIO.editRpgMakerSprite = function(spriteName) {
-    STUDIO.openWindow('edit-sprite-rpgmaker', function(){
+    STUDIO.DatabaseManager.openWindow('sprites', 'edit-sprite-rpgmaker', function(){
       STUDIO.loadRpgMakerSpriteData(spriteName);
     });
   };

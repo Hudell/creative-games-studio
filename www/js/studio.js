@@ -209,13 +209,20 @@ var STUDIO = {};
       var id = 'content-wrapper';
       var html = xhr.responseText;
       
-      $('#database-sidebar').addClass('hidden');
+      $('#main-sidebar').addClass('hidden');
+      $('.database-option-list').addClass('hidden');
+      $('.file-manager-option-list').addClass('hidden');
 
       if (windowName == 'map-editor') {
         id = 'editor-wrapper';
       } else if (STUDIO.getCurrentContext() == 'database') {
         id = 'database-wrapper';
-        $('#database-sidebar').removeClass('hidden');
+        $('#main-sidebar').removeClass('hidden');
+        $('.database-option-list').removeClass('hidden');
+      } else if (STUDIO.getCurrentContext() == 'file-manager') {
+        id = 'file-manager-wrapper';
+        $('#main-sidebar').removeClass('hidden');
+        $('.file-manager-option-list').removeClass('hidden');
       }
 
       html = '<div id="' + id + '">' + html + '</div>';
@@ -223,6 +230,9 @@ var STUDIO = {};
       $('#page-wrapper').html(html);
       $('#content-wrapper').height(window.innerHeight - 52);
       $('#database-wrapper').height(window.innerHeight - 52);
+      $('#file-manager-wrapper').height(window.innerHeight - 52);
+      $('.database-option-list').height(window.innerHeight - 52);
+      $('.file-manager-option-list').height(window.innerHeight - 52);
 
       STUDIO.fillSidebar();
       STUDIO.fixLinks();
@@ -781,6 +791,11 @@ var STUDIO = {};
       STUDIO.DatabaseManager.openDatabaseWindow();
     });
 
+    $('#file-manager-btn').on('click', function(event) {
+      event.preventDefault();
+      STUDIO.FileManager.openFileManagerWindow();
+    });
+
     $('#plugins-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'plugins'); });
     
     $('#settings-player-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'settings-player'); });
@@ -815,6 +830,7 @@ var STUDIO = {};
     });
 
     STUDIO.DatabaseManager.attachEvents();
+    STUDIO.FileManager.attachEvents();
 
     STUDIO.loadLoadedGameInfo();
     if (!!STUDIO.loadedGame.folder) {
@@ -832,7 +848,10 @@ var STUDIO = {};
     window.addEventListener('resize', function(){
       $('#content-wrapper').height(window.innerHeight - 52);
       $('#editor-wrapper').height(window.innerHeight - 104);
+      $('#database-wrapper').height(window.innerHeight - 52);
+      $('#file-manager-wrapper').height(window.innerHeight - 52);
       $('.database-option-list').height(window.innerHeight - 52);
+      $('.file-manager-option-list').height(window.innerHeight - 52);
       $('.map-editor-tileset').height(window.innerHeight - 104);
     });
   };
@@ -865,6 +884,10 @@ var STUDIO = {};
 
     if (windowName.indexOf('database') >= 0) {
       return 'database';
+    }
+
+    if (windowName.indexOf('file-manager') >= 0) {
+      return 'file-manager';
     }
 
     return 'index';

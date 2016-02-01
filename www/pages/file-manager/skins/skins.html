@@ -80,16 +80,8 @@
 <script type="text/javascript">
 $(function(){
   STUDIO.loadSkins();
-  $('#new-skin-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'new-skin'); });
-  $('#import-skin-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'import-skin'); });
-
-  $('.skins-delete').on('click', function(event) {
-    event.preventDefault();
-    var skinName = event.currentTarget.dataset.elementId;
-
-    STUDIO.removeSkin(skinName);
-    STUDIO.openWindow('skins');
-  });
+  $('#new-skin-btn').on('click', function(event) { STUDIO.FileManager.eventOpenWindow(event, 'skins', 'new-skin'); });
+  $('#import-skin-btn').on('click', function(event) { STUDIO.FileManager.eventOpenWindow(event, 'skins', 'import-skin'); });
 
   $('.skins-row').on('click', function(event) {
     event.preventDefault();

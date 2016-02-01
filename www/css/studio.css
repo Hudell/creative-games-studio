@@ -35,6 +35,18 @@ body {
     overflow-x: hidden;
 }
 
+#file-manager-wrapper {
+    padding: 0 15px;
+    background-color: #fff;
+    position: inherit;
+    margin: 0;
+    margin-left: 250px;
+    padding: 0 30px;
+    border-left: 1px solid #e7e7e7;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
 #editor-wrapper {
     /*min-height: 568px;*/
     background-color: #fff;
@@ -619,6 +631,11 @@ table.dataTable thead .sorting:after {
 }
 
 .database-option-list {
+    overflow-y : scroll;
+    overflow-x : hidden;
+}
+
+.file-manager-option-list {
     overflow-y : scroll;
     overflow-x : hidden;
 }

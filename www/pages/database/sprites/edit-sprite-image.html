@@ -64,12 +64,12 @@ $(function(){
   $('#edit-image-sprite-delete').on('click', function(event){
     event.preventDefault();
     STUDIO.removeCurrentImageSprite();
-    STUDIO.openWindow('sprites');
+    STUDIO.DatabaseManager.openWindow('sprites', 'sprites');
   });
 
   $('#edit-image-sprite-cancel').on('click', function(event){
     event.preventDefault();
-    STUDIO.openWindow('sprites');
+    STUDIO.DatabaseManager.openWindow('sprites', 'sprites');
   });
 });
 </script>

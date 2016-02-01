@@ -101,7 +101,7 @@
 
     STUDIO.addRecentObject('sprite', spriteName);
     STUDIO.markAsModified();
-    STUDIO.openWindow('sprites');
+    STUDIO.DatabaseManager.openWindow('sprites', 'sprites');
   };
 
   STUDIO.removeCurrentImageSprite = function() {
@@ -135,7 +135,7 @@
 
     STUDIO.addRecentObject('sprite', spriteName);
     STUDIO.markAsModified();
-    STUDIO.openWindow('sprites');
+    STUDIO.DatabaseManager.openWindow('sprites', 'sprites');
   };
 
   STUDIO.importImageSprite = function() {
@@ -183,7 +183,7 @@
     }
 
     STUDIO.markAsModified();    
-    STUDIO.openWindow('sprites');
+    STUDIO.DatabaseManager.openWindow('sprites', 'sprites');
   };
 
   STUDIO.loadImageSpriteData = function(spriteName) {
@@ -195,7 +195,7 @@
   };
 
   STUDIO.editImageSprite = function(spriteName) {
-    STUDIO.openWindow('edit-sprite-image', function(){
+    STUDIO.DatabaseManager.openWindow('sprites', 'edit-sprite-image', function(){
       STUDIO.loadImageSpriteData(spriteName);
     });
   };  
