@@ -70,7 +70,7 @@
 $(function(){
   STUDIO.ObjectManager.loadObjects('object-table');
   var path = require("path");
-  $('#new-object-btn').on('click', function(event) { Database.eventOpenWindow(event, path.join('objects', 'new-object')); });
+  $('#new-object-btn').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'objects', 'new-object'); });
 
   $('.object-row').on('click', function(event) {
     event.preventDefault();

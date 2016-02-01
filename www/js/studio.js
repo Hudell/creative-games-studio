@@ -44,10 +44,13 @@ var STUDIO = {};
     xhr.send();
   };
 
-  STUDIO.openDialog = function(element, title, buttons) {
+  STUDIO.openDialog = function(element, title, buttons, width, height) {
+    width = width || "auto";
+
     element.dialog({
       title : title || "Information",
-      width : 'auto',
+      width : width,
+      height : height,
       modal : true,
       close: function () {
         $(this).dialog('destroy').remove ();
@@ -206,14 +209,20 @@ var STUDIO = {};
       var id = 'content-wrapper';
       var html = xhr.responseText;
       
+      $('#database-sidebar').addClass('hidden');
+
       if (windowName == 'map-editor') {
         id = 'editor-wrapper';
+      } else if (STUDIO.getCurrentContext() == 'database') {
+        id = 'database-wrapper';
+        $('#database-sidebar').removeClass('hidden');
       }
 
       html = '<div id="' + id + '">' + html + '</div>';
 
       $('#page-wrapper').html(html);
       $('#content-wrapper').height(window.innerHeight - 52);
+      $('#database-wrapper').height(window.innerHeight - 52);
 
       STUDIO.fillSidebar();
       STUDIO.fixLinks();
@@ -805,6 +814,7 @@ var STUDIO = {};
       STUDIO.exitButton();
     });
 
+    STUDIO.DatabaseManager.attachEvents();
 
     STUDIO.loadLoadedGameInfo();
     if (!!STUDIO.loadedGame.folder) {
@@ -837,89 +847,31 @@ var STUDIO = {};
       return 'map-editor';
     }
 
-    if (windowName.indexOf('map') >= 0) {
-      return 'maps';
-    }
+    // if (windowName.indexOf('map') >= 0) {
+    //   return 'maps';
+    // }
 
-    if (windowName.indexOf('object') >= 0) {
-      return 'objects';
-    }
+    // if (windowName.indexOf('object') >= 0) {
+    //   return 'objects';
+    // }
 
-    if (windowName.indexOf('sprite') >= 0) {
-      return 'sprites';
-    }
+    // if (windowName.indexOf('sprite') >= 0) {
+    //   return 'sprites';
+    // }
 
-    if (windowName.indexOf('skin') >= 0) {
-      return 'skins';
+    // if (windowName.indexOf('skin') >= 0) {
+    //   return 'skins';
+    // }
+
+    if (windowName.indexOf('database') >= 0) {
+      return 'database';
     }
 
     return 'index';
   };
 
-  STUDIO.addListToContextArea = function(listId, listCaption, listIcon) {
-    var html = '<ul class="nav"><li><a id="' + listId + '-btn" href="#"><i class="fa fa-fw ' + listIcon + '"></i> ' + listCaption + '<span class="fa arrow"></span></a><ul class="nav nav-second-level" id="' + listId + '"></ul></li></ul>';
-    $('#context-content').append(html);
-  };
-
-  STUDIO.fillContextContent = function() {
-    $('#context-content').html('');
-
-    if (!STUDIO.isGameLoaded()) return;
-
-    var context = STUDIO.getCurrentContext();
-
-    switch(context) {
-      case 'index' :
-      case 'maps' :
-      case 'map-editor' :
-        STUDIO.addListToContextArea('context-map-list', 'Maps', 'fa-globe');
-        STUDIO.fillMapLinks('context-map-list');
-        $('#context-map-list-btn').on('click', function(event){
-          event.preventDefault();
-          STUDIO.openWindow('maps');
-        });
-        break;
-
-      case 'sprites' :
-        STUDIO.addListToContextArea('context-sprite-list', 'Sprites', 'fa-image');
-        STUDIO.fillSpriteLinks('context-sprite-list');
-        $('#context-sprite-list-btn').on('click', function(event){
-          event.preventDefault();
-          STUDIO.openWindow('sprites');
-        });
-        break;
-
-      case 'skins' :
-        STUDIO.addListToContextArea('context-skin-list', 'Skins', 'fa-sticky-note-o');
-        STUDIO.fillSkinLinks('context-skin-list');
-        $('#context-skin-list-btn').on('click', function(event){
-          event.preventDefault();
-          STUDIO.openWindow('skins');
-        });
-        break;
-
-      case 'objects' :
-        STUDIO.addListToContextArea('context-object-list', 'Objects', 'fa-umbrella');
-        STUDIO.ObjectManager.fillObjectLinks('context-object-list');
-        $('#context-object-list-btn').on('click', function(event){
-          event.preventDefault();
-          STUDIO.openWindow('objects');
-        });
-        break;
-    }
-  };
-
   STUDIO.fillSidebar = function() {
-    if (STUDIO._windowName == 'map-editor') {
-      // $('#side-menu').addClass('hidden');
-      // $('#tileset-menu').removeClass('hidden');
-    } else {
-      // $('#side-menu').removeClass('hidden');
-      // $('#tileset-menu').addClass('hidden');
-    }
-    
     STUDIO.fillRecentList('history-list');
-    STUDIO.fillContextContent();
 
     $('.recent-link').on('click', function(event){
       event.preventDefault();

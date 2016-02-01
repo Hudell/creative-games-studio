@@ -52,7 +52,7 @@ $(function(){
   });
   $('#new-object-cancel-btn').on('click', function(event){
     event.preventDefault();
-    STUDIO.openWindow('objects');
+    STUDIO.DatabaseManager.openWindow('objects', 'objects');
   });
 });
 </script>

@@ -237,7 +237,7 @@ STUDIO.ObjectManager = {};
     STUDIO.addRecentObject('object', name);
     
     STUDIO.markAsModified();
-    STUDIO.openWindow('objects');
+    STUDIO.DatabaseManager.openWindow('objects', 'objects');
   };
 
   namespace.removeCurrentObject = function() {
@@ -421,7 +421,7 @@ STUDIO.ObjectManager = {};
     }
 
     namespace._currentObject = STUDIO.deepClone(STUDIO.gameData.objects[objectName]);
-    STUDIO.openWindow('edit-object', function(){
+    STUDIO.DatabaseManager.openWindow('objects', 'edit-object', function(){
       $('#edit-object-name').val(objectName);
       namespace.loadObjectEventsToScreen();
       namespace.refreshObjectSelectList();
