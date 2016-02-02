@@ -526,6 +526,10 @@ var STUDIO = {};
     return -1;
   };
 
+  STUDIO.removeRecentObject = function(type, objectName) {
+
+  };
+
   STUDIO.addRecentObject = function(type, objectName) {
     if (!STUDIO.gameData) return;
     if (!STUDIO.gameData.recentObjects) {
@@ -851,10 +855,6 @@ var STUDIO = {};
 
     STUDIO.fillSidebar();
 
-    win.on('close', function(){
-      STUDIO.exitButton();
-    });
-
     window.addEventListener('resize', function(){
       $('#content-wrapper').height(window.innerHeight - 52);
       $('#editor-wrapper').height(window.innerHeight - 104);
@@ -864,6 +864,12 @@ var STUDIO = {};
       $('.file-manager-option-list').height(window.innerHeight - 52);
       $('.map-editor-tileset').height(window.innerHeight - 104);
     });
+
+    if (win._events === undefined || win._events.close === undefined) {
+      win.on('close', function(){
+        STUDIO.exitButton();
+      });
+    }
   };
 
   STUDIO.getCurrentContext = function() {
@@ -876,28 +882,8 @@ var STUDIO = {};
       return 'map-editor';
     }
 
-    // if (windowName.indexOf('map') >= 0) {
-    //   return 'maps';
-    // }
-
-    // if (windowName.indexOf('object') >= 0) {
-    //   return 'objects';
-    // }
-
-    // if (windowName.indexOf('sprite') >= 0) {
-    //   return 'sprites';
-    // }
-
-    // if (windowName.indexOf('skin') >= 0) {
-    //   return 'skins';
-    // }
-
     if (windowName.indexOf('database') >= 0) {
       return 'database';
-    }
-
-    if (windowName.indexOf('file-manager') >= 0) {
-      return 'file-manager';
     }
 
     return 'index';

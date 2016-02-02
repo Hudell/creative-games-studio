@@ -45,6 +45,19 @@ STUDIO.TilesetManager = {};
     }
   };
 
+  namespace.fillTilesets = function(selectId) {
+    var select = $('#' + selectId);
+    select.html('');
+
+    if (!STUDIO.gameData.tilesets) {
+      return;
+    }
+
+    for (var name in STUDIO.gameData.tilesets) {
+      select.append('<option value="' + name + '">' + name + '</option>');
+    }
+  };
+
   namespace.onChangeTilesetImage = function() {
     var filePath = $('#import-tileset-image').val();
 
@@ -100,6 +113,7 @@ STUDIO.TilesetManager = {};
     };
 
     STUDIO.gameData.tilesets[name] = tilesetData;
+    STUDIO.addRecentObject('tileset', name);
     STUDIO.markAsModified();
     STUDIO.DatabaseManager.openWindow('tilesets', 'tilesets');
   };
@@ -149,6 +163,7 @@ STUDIO.TilesetManager = {};
       }
       
       delete STUDIO.gameData.tilesets[oldName];
+      STUDIO.removeRecentObject('tileset', oldName);
     }
 
     tilesetData.name = newName;
@@ -157,11 +172,21 @@ STUDIO.TilesetManager = {};
     tilesetData.type = type;
 
     STUDIO.gameData.tilesets[newName] = tilesetData;
+    STUDIO.addRecentObject('tileset', newName);
     STUDIO.markAsModified();
     STUDIO.DatabaseManager.openWindow('tilesets', 'tilesets');
   };
 
   namespace.deleteCurrentTileset = function() {
-    
+    var oldName = $('#edit-tileset-old-name').val();
+
+    if (!oldName || !oldName.trim()) {
+      throw new Error("I forgot what tileset you were editing.");
+    }
+
+    delete STUDIO.gameData.tilesets[oldName];
+    STUDIO.removeRecentObject('tileset', oldName);
+    STUDIO.markAsModified();
+    STUDIO.DatabaseManager.openWindow('tilesets', 'tilesets');
   };
 })(STUDIO.TilesetManager);
