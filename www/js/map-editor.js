@@ -11,14 +11,17 @@ STUDIO.MapEditor = {};
   namespace._currentTool = 'brush';
   namespace._currentDrawType = 'tile';
   namespace._currentTilesetIndex = -1;
-  namespace._pickedRow = 0;
-  namespace._pickedColumn = 0;
+  namespace._pickedArea = {
+    top : 0,
+    bottom : 0,
+    left : 0,
+    right : 0
+  };
   namespace._currentMapName = '';
   namespace._currentMapData = null;
   namespace._tileCache = {};
   namespace._layerCache = {};
-  // namespace._currentBrushSize = 1;
-  namespace._currentTileId = -1;
+  namespace._currentTileIds = [];
   namespace._currentLayerIndex = 0;
   namespace._clickedPos = false;
 
@@ -132,8 +135,12 @@ STUDIO.MapEditor = {};
     namespace._currentTool = toolName;
     $('#map-editor-tool-types').html('<i class="fa fa-' + iconClass + ' fa-fw red-color"></i> <i class="fa fa-caret-down"></i>');
 
-    namespace._pickedColumn = 0;
-    namespace._pickedRow = 0;
+    namespace._pickedArea = {
+      top : 0,
+      bottom : 0,
+      left : 0,
+      right : 0
+    };
 
     namespace.refreshTilesetWindow();
   };
@@ -148,13 +155,13 @@ STUDIO.MapEditor = {};
   };
 
   namespace.convertPickedTileFromBrushToPencil = function() {
-    if (namespace._pickedColumn % 2 == 1) {
-      namespace._pickedColumn -= 1;
-    }
+    // if (namespace._pickedColumn % 2 == 1) {
+    //   namespace._pickedColumn -= 1;
+    // }
 
-    if (namespace._pickedRow % 2 == 1) {
-      namespace._pickedRow -= 1;
-    }
+    // if (namespace._pickedRow % 2 == 1) {
+    //   namespace._pickedRow -= 1;
+    // }
   };
 
   namespace.changeToolToPencil = function() {
@@ -163,7 +170,7 @@ STUDIO.MapEditor = {};
     }
 
     namespace.changeTool('pencil', 'pencil');
-    namespace.updatePickedTile();
+    namespace.updatePickedArea();
   };
 
   namespace.changeToolToBrush = function() {
@@ -172,7 +179,7 @@ STUDIO.MapEditor = {};
     }
 
     namespace.changeTool('brush', 'paint-brush');
-    namespace.updatePickedTile();
+    namespace.updatePickedArea();
   };
 
   namespace.changeToolToAutoTile = function() {
@@ -355,37 +362,145 @@ STUDIO.MapEditor = {};
       imageHeight *= zoomLevel;
 
       var increment = 1;
-      if (allowHalf) {
-        increment = 0.5;
-      }
+      // if (allowHalf) {
+      //   increment = 0.5;
+      // }
 
-      var imagemap = "<map name='tileset-map'>";
-      for (var r = 0; r < rows; r += increment) {
-        for (var c = 0; c < columns; c += increment) {
-          var x = c * tileWidth * zoomLevel;
-          var y = r * tileHeight * zoomLevel;
+      // var imagemap = "<map name='tileset-map'>";
+      // for (var r = 0; r < rows; r += increment) {
+      //   for (var c = 0; c < columns; c += increment) {
+      //     var x = c * tileWidth * zoomLevel;
+      //     var y = r * tileHeight * zoomLevel;
 
-          imagemap += "<area shape='rect' coords='" + x + ',' + y + ',' + (x + tileWidth * zoomLevel) + ',' + (y + tileHeight * zoomLevel) + "' href='#' class='tileset-map-area' data-column='" + c + "' data-row='" + r + "'>";
-        }
-      }
+      //     imagemap += "<area shape='rect' coords='" + x + ',' + y + ',' + (x + tileWidth * zoomLevel) + ',' + (y + tileHeight * zoomLevel) + "' href='#' class='tileset-map-area' data-column='" + c + "' data-row='" + r + "'>";
+      //   }
+      // }
 
-      imagemap += "</map>";
-      $('.map-editor-tileset').append(imagemap);
+      // imagemap += "</map>";
+      // $('.map-editor-tileset').append(imagemap);
       img.css('height', imageHeight + 'px');
       img.css('width', imageWidth + 'px');
-      img.attr('usemap', '#tileset-map');
+      // img.attr('usemap', '#tileset-map');
       
       $('.map-editor-tileset').css('height', $('#editor-wrapper').css('height'));
-      $('img[usemap]').maphilight();
+      // $('img[usemap]').maphilight();
+
+      // $('.tileset-map-area').on('click', function(event) {
+      //   event.preventDefault();
+      //   var data = event.currentTarget.dataset;
+      //   namespace.pickTile(data.column, data.row);
+      // });
+
+      namespace._tileMouseDown = false;
+
+      var getPosFromEvent = function(event, allowFloat) {
+        // var mapData = namespace._currentMapData;
+        allowFloat = allowFloat || false;
+
+        var posX = event.offsetX;
+        var posY = event.offsetY;
+        var size = namespace.getFakeTileSize();
+
+        var tileWidth = size.width;
+        var tileHeight = size.height;
+
+        if (size.allowHalf && allowFloat) {
+          tileWidth /= 2;
+          tileHeight /= 2;
+        }
+
+        var column = Math.floor(posX / tileWidth);
+        var row = Math.floor(posY / tileHeight);
+
+
+        if (size.allowHalf && allowFloat) {
+          column /= 2;
+          row /= 2;
+        }
+
+        return {column : column, row : row};
+      };
       
-      $('.tileset-map-area').on('click', function(event) {
+      img.on('mousedown', function(event) {
+        event.preventDefault();
+        namespace._tileMouseDown = getPosFromEvent(event);
+      });
+
+      img.on('mouseup', function(event) {
+        event.preventDefault();
+        var pos = getPosFromEvent(event);
+        var size = namespace.getFakeTileSize();
+
+        if (!!namespace._tileMouseDown) {
+          var oldPos = namespace._tileMouseDown;
+          if (size.allowHalf && oldPos.column == pos.column && oldPos.row == pos.row) {
+            pos.column += 0.5;
+            pos.row += 0.5;
+          }
+
+          namespace.pickArea(oldPos.column, oldPos.row, pos.column, pos.row);
+          namespace._tileMouseDown = false;
+        } else {
+          if (size.allowHalf) {
+            namespace.pickArea(pos.column, pos.row, pos.column + 0.5, pos.row + 0.5);
+          } else {
+            namespace.pickTile(pos.column, pos.row);
+          }
+        }
+      });
+
+      img.on('dblclick', function(event){
         event.preventDefault();
 
-        var data = event.currentTarget.dataset;
-        namespace.pickTile(data.column, data.row);
-      });    
-    });
+        var pos = getPosFromEvent(event, true);
+        namespace.pickArea(pos.column, pos.row, pos.column + 0.5, pos.row + 0.5);
+      });
 
+      // $('.tileset-map-area').on('mousedown', function(event){
+      //   event.preventDefault();
+      //   var data = event.currentTarget.dataset;
+
+      //   namespace._tileMouseDown = {column : parseFloat(data.column), row : parseFloat(data.row)};
+      // });
+
+      // $('.tileset-map-area').on('mouseup', function(event){
+      //   event.preventDefault();
+      //   var data = event.currentTarget.dataset;
+
+      //   if (!!namespace._tileMouseDown) {
+      //     namespace.pickArea(namespace._tileMouseDown.column, namespace._tileMouseDown.row, parseFloat(data.column), parseFloat(data.row));
+      //     namespace._tileMouseDown = false;
+      //   } else {
+      //     namespace.pickTile(data.column, data.row);
+      //   }
+      // });
+    });
+  };
+
+  namespace.pickArea = function(column, row, column2, row2) {
+    var left = column;
+    var right = column2;
+    var top = row;
+    var bottom = row2;
+
+    if (left > right) {
+      right = column;
+      left = column2;
+    }
+
+    if (top > bottom) {
+      top = row2;
+      bottom = row;
+    }
+
+    namespace._pickedArea = {
+      top : top,
+      bottom : bottom,
+      right : right,
+      left : left
+    };
+
+    namespace.updatePickedArea();
   };
 
   namespace.pickTile = function(column, row) {
@@ -393,12 +508,16 @@ STUDIO.MapEditor = {};
       namespace.changeToolToBrush();
     }
 
-    namespace._pickedColumn = Number(column);
-    namespace._pickedRow = Number(row);
-    namespace.updatePickedTile();
+    namespace._pickedArea = {
+      top : parseFloat(row),
+      bottom : parseFloat(row),
+      left : parseFloat(column),
+      right : parseFloat(column)
+    };
+    namespace.updatePickedArea();
   };
 
-  namespace.updatePickedTile = function() {
+  namespace.updatePickedArea = function() {
     var size = namespace.getFakeTileSize();
     var tilesetIndex = namespace._currentTilesetIndex;
     var mapData = namespace._currentMapData;
@@ -408,24 +527,59 @@ STUDIO.MapEditor = {};
     if (!tilesetIndex && tilesetIndex !== 0) return;
 
     var tileset = mapData.tilesets[tilesetIndex];
-    var column = namespace._pickedColumn;
-    var row = namespace._pickedRow;
+    var left = namespace._pickedArea.left;
+    var top = namespace._pickedArea.top;
+    var right = namespace._pickedArea.right;
+    var bottom = namespace._pickedArea.bottom;
+
+    var mapColumns = mapData.width;
+
     var tileWidth = size.width;
     var tileHeight = size.height;
-    var x = column * tileWidth;
-    var y = row * tileHeight;
-
     var realTileWidth = tileset.tilewidth;
     var realTileHeight = tileset.tileheight;
-    var realColumn = Math.floor(x / realTileWidth);
-    var realRow = Math.floor(y / realTileHeight);
-
     var totalColumns = tileset.imagewidth / realTileWidth;
     var totalRows = tileset.imageheight / realTileHeight;
 
-    var tileId = realRow * totalColumns + realColumn + tileset.firstgid;
+    namespace._currentTileIds = [];
 
-    namespace._currentTileId = tileId;
+    var increment = 1;
+    if (size.allowHalf) {
+      increment = 0.5;
+
+      var diff = right - left;
+      if (diff % 2 == 1) {
+        right += 0.5;
+      }
+
+      diff = bottom - top;
+      if (diff % 2 == 1) {
+        bottom += 0.5;
+      }
+    }
+
+    var leftX = left * tileWidth;
+    var rightX = right * tileWidth;
+    var topY = top * tileHeight;
+    var bottomY = bottom * tileHeight;
+    var realLeftColumn = Math.floor(leftX / realTileWidth);
+    var realTopRow = Math.floor(topY / realTileHeight);
+
+    for (var column = left; column <= right; column += increment) {
+      for (var row = top; row <= bottom; row += increment) {
+        var x = column * tileWidth;
+        var y = row * tileHeight;
+
+        var realColumn = Math.floor(x / realTileWidth);
+        var realRow = Math.floor(y / realTileHeight);
+        
+        var tileId = realRow * totalColumns + realColumn + tileset.firstgid;
+        var index = realColumn - realLeftColumn;
+        index += (realRow - realTopRow) * mapColumns;
+
+        namespace._currentTileIds[index] = tileId;
+      }
+    }
   };
 
   namespace.openFirstTileset = function() {
@@ -691,6 +845,7 @@ STUDIO.MapEditor = {};
 
       window.addEventListener("mouseup", function(evt) {
         mouseClicked[evt.button] = false;
+        namespace._tileMouseDown = false;
       });
 
       window.addEventListener('blur', function(){
@@ -733,7 +888,7 @@ STUDIO.MapEditor = {};
   };
 
   namespace.getTileTexture = function(tileId) {
-    if (tileId < 0) {
+    if (tileId <= 0) {
       return PIXI.Texture.fromImage(path.join('img', 'transparent.png'));
     }
 
@@ -884,8 +1039,22 @@ STUDIO.MapEditor = {};
     }
   };
 
+  namespace.drawTile = function(column, row, tileId, layer, tileset) {
+    var mapData = namespace._currentMapData;
+    var x = column * mapData.tilewidth;
+    var y = row * mapData.tileheight;
+    var tileWidth = mapData.tilewidth;
+    var tilesetColumns = tileset.imagewidth / tileWidth;
+    var totalColumns = mapData.width;
+    var totalRows = mapData.height;
+
+    index = totalColumns * row + column;
+    layer.data[index] = tileId;
+  };
+
   namespace.changeTile = function(x, y) {
-    if (namespace._currentTileId < 0) return;
+    if (namespace._currentTileIds.length == 0) return;
+    if (namespace._currentTileIds[0] < 0) return;
 
     var mapData = namespace._currentMapData;
 
@@ -911,37 +1080,39 @@ STUDIO.MapEditor = {};
     var tileset = mapData.tilesets[namespace._currentTilesetIndex];
     if (!tileset) return;
 
-    var columns = tileset.imagewidth / tileWidth;
-
     var column;
     var row;
-    var index;
 
-    switch(namespace._currentTool) {
-      case 'pencil' :
-        column = Math.floor(x / tileWidth);
-        row = Math.floor(y / tileHeight);
-        index = totalColumns * row + column;
+    column = Math.floor(x / tileWidth);
+    row = Math.floor(y / tileHeight);
 
-        layer.data[index] = namespace._currentTileId;
-        break;
-      case 'brush' :
-        column = Math.floor(x / (tileWidth * 2)) * 2;
-        row = Math.floor(y / (tileHeight * 2)) * 2;
-        index = totalColumns * row + column;
+    var previousIndex = 0;
+    var previousRow = row;
 
-        layer.data[index] = namespace._currentTileId;
-        layer.data[index + 1] = namespace._currentTileId + 1;
-        layer.data[index + totalColumns] = namespace._currentTileId + columns;
-        layer.data[index + totalColumns + 1] = namespace._currentTileId + columns + 1;
-        break;
-      case 'eraser' :
-        column = Math.floor(x / tileWidth);
-        row = Math.floor(y / tileHeight);
-        index = totalColumns * row + column;
+    for (var i = 0; i < namespace._currentTileIds.length; i++) {
+      var tileId = namespace._currentTileIds[i];
 
-        layer.data[index] = 0; 
-        break;
+      if (tileId === undefined) continue;
+      if (namespace._currentTool == 'eraser') {
+        tileId = -1;
+      }
+
+      if (column >= totalColumns) continue;
+      var newColumn = column + i;
+      var newRow = row;
+
+      while (newColumn >= totalColumns) {
+        newColumn -= totalColumns;
+        newRow++;
+      }
+
+      if (newColumn < column) {
+        continue;
+      }
+
+      this.drawTile(newColumn, newRow, tileId, layer, tileset);
+      previousIndex = i;
+      previousRow = newRow;
     }
 
     namespace._layerCache[layer.name] = false;
@@ -1036,7 +1207,7 @@ STUDIO.MapEditor = {};
 
     var index = totalColumns * row + column;
 
-    namespace._currentTileId = layer.data[index];
+    namespace._currentTileIds = [layer.data[index]];
   };
 
   namespace.update = function(){

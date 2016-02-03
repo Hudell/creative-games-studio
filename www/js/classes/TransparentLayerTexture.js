@@ -24,7 +24,7 @@ TransparentLayerTexture.prototype.refreshSelection = function() {
     data[i] = 0;
   }
 
-  if (STUDIO.MapEditor._currentTileId < 0) {
+  if (STUDIO.MapEditor._currentTileIds.length === 0 || STUDIO.MapEditor._currentTileIds[0] < 0) {
     return;
   }
 
@@ -150,7 +150,6 @@ TransparentLayerTexture.prototype.changeTile = function(x, y) {
   var columns = tileset.imagewidth / tileWidth;
   var column;
   var row;
-  var index;
   var width = mapColumns * tileWidth;
   var height = mapRows * tileHeight;
 
@@ -159,28 +158,35 @@ TransparentLayerTexture.prototype.changeTile = function(x, y) {
   if (x >= width) return;
   if (y >= height) return;
 
-  switch(STUDIO.MapEditor._currentTool) {
-    case 'pencil' :
-      column = Math.floor(x / tileWidth);
-      row = Math.floor(y / tileHeight);
+  column = Math.floor(x / tileWidth);
+  row = Math.floor(y / tileHeight);
 
-      this.drawTile(column, row, STUDIO.MapEditor._currentTileId);
-      break;
-    case 'brush' :
-      column = Math.floor(x / (tileWidth * 2)) * 2;
-      row = Math.floor(y / (tileHeight * 2)) * 2;
-      
-      this.drawTile(column, row, STUDIO.MapEditor._currentTileId);
-      this.drawTile(column + 1, row, STUDIO.MapEditor._currentTileId + 1);
-      this.drawTile(column, row + 1, STUDIO.MapEditor._currentTileId + columns);
-      this.drawTile(column + 1, row + 1, STUDIO.MapEditor._currentTileId + columns + 1);
+  var previousIndex = 0;
+  var previousRow = row;
+  for (var i = 0; i < STUDIO.MapEditor._currentTileIds.length; i++) {
+    var tileId = STUDIO.MapEditor._currentTileIds[i];
 
-      break;
-    case 'eraser' :
-      column = Math.floor(x / tileWidth);
-      row = Math.floor(y / tileHeight);
-      
-      this.drawTile(column, row, -1);
-      break;
+    if (tileId === undefined || tileId === 0) continue;
+    if (STUDIO.MapEditor._currentTool == 'eraser') {
+      tileId = -1;
+    }
+
+    if (column >= mapColumns) continue;
+
+    var newColumn = column + i;
+    var newRow = row;
+
+    while (newColumn >= mapColumns) {
+      newColumn -= mapColumns;
+      newRow++;
+    }
+
+    if (newColumn < column) {
+      continue;
+    }
+
+    this.drawTile(newColumn, newRow, tileId);
+    previousIndex = i;
+    previousRow = newRow;
   }
 };
