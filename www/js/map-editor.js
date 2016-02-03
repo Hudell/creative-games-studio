@@ -135,12 +135,14 @@ STUDIO.MapEditor = {};
     namespace._currentTool = toolName;
     $('#map-editor-tool-types').html('<i class="fa fa-' + iconClass + ' fa-fw red-color"></i> <i class="fa fa-caret-down"></i>');
 
-    namespace._pickedArea = {
-      top : 0,
-      bottom : 0,
-      left : 0,
-      right : 0
-    };
+    switch (toolName) {
+      case 'brush' :
+        namespace._pickedArea = {top : 0, bottom : 0.5, right : 0.5, left : 0};
+        break;
+      default :
+        namespace._pickedArea = {top : 0, bottom : 0, right : 0, left : 0};
+        break;
+    }
 
     namespace.refreshTilesetWindow();
   };
@@ -150,34 +152,12 @@ STUDIO.MapEditor = {};
     $('#map-editor-draw-types').html('<i class="fa fa-' + iconClass + ' fa-fw red-color"></i> <i class="fa fa-caret-down"></i>');
   };
 
-  namespace.convertPickedTileFromPencilToBrush = function() {
-    //Nothing needs to be done
-  };
-
-  namespace.convertPickedTileFromBrushToPencil = function() {
-    // if (namespace._pickedColumn % 2 == 1) {
-    //   namespace._pickedColumn -= 1;
-    // }
-
-    // if (namespace._pickedRow % 2 == 1) {
-    //   namespace._pickedRow -= 1;
-    // }
-  };
-
   namespace.changeToolToPencil = function() {
-    if (namespace._currentTool == 'brush') {
-      namespace.convertPickedTileFromBrushToPencil();
-    }
-
     namespace.changeTool('pencil', 'pencil');
     namespace.updatePickedArea();
   };
 
   namespace.changeToolToBrush = function() {
-    if (namespace._currentTool == 'pencil') {
-      namespace.convertPickedTileFromPencilToBrush();
-    }
-
     namespace.changeTool('brush', 'paint-brush');
     namespace.updatePickedArea();
   };

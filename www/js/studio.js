@@ -859,16 +859,14 @@ var STUDIO = {};
       $('#content-wrapper').height(window.innerHeight - 52);
       $('#editor-wrapper').height(window.innerHeight - 104);
       $('#database-wrapper').height(window.innerHeight - 52);
-      $('#file-manager-wrapper').height(window.innerHeight - 52);
       $('.database-option-list').height(window.innerHeight - 52);
-      $('.file-manager-option-list').height(window.innerHeight - 52);
       $('.map-editor-tileset').height(window.innerHeight - 104);
     });
 
     if (win._events !== undefined && win._events.close !== undefined) {
       delete win._events.close;
     }
-    
+
     win.on('close', function(){
       STUDIO.exitButton();
     });
