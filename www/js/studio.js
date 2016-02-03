@@ -865,11 +865,13 @@ var STUDIO = {};
       $('.map-editor-tileset').height(window.innerHeight - 104);
     });
 
-    if (win._events === undefined || win._events.close === undefined) {
-      win.on('close', function(){
-        STUDIO.exitButton();
-      });
+    if (win._events !== undefined && win._events.close !== undefined) {
+      delete win._events.close;
     }
+    
+    win.on('close', function(){
+      STUDIO.exitButton();
+    });
   };
 
   STUDIO.getCurrentContext = function() {

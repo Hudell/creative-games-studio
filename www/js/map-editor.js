@@ -298,6 +298,43 @@ STUDIO.MapEditor = {};
     namespace.openTileset(tileset);
   };
 
+  namespace.getSelectionSize = function() {
+    var mapData = namespace._currentMapData;
+    var tileWidth = mapData.tilewidth;
+    var tileHeight = mapData.tileheight;
+    var mapColumns = mapData.width;
+
+    var tiles = namespace._currentTileIds;
+
+    var width = 0;
+    var height = 0;
+
+    for (var i = 0; i < tiles.length; i++) {
+      var tileId = tiles[i];
+      if (tileId === undefined) continue;
+
+      if (i < mapColumns && i >= width) {
+        width = i + 1;
+      }
+
+      var aux = i;
+      var row = 1;
+      while (aux >= mapColumns) {
+        aux -= mapColumns;
+        row++;
+      }
+
+      if (row > height) {
+        height = row;
+      }
+    }
+
+    return {
+      width : width * tileWidth,
+      height : height * tileHeight
+    };
+  };
+
   namespace.getFakeTileSize = function() {
     var tileWidth = namespace._currentMapData.tilewidth;
     var tileHeight = namespace._currentMapData.tileheight;
@@ -361,40 +398,14 @@ STUDIO.MapEditor = {};
       imageWidth *= zoomLevel;
       imageHeight *= zoomLevel;
 
-      var increment = 1;
-      // if (allowHalf) {
-      //   increment = 0.5;
-      // }
-
-      // var imagemap = "<map name='tileset-map'>";
-      // for (var r = 0; r < rows; r += increment) {
-      //   for (var c = 0; c < columns; c += increment) {
-      //     var x = c * tileWidth * zoomLevel;
-      //     var y = r * tileHeight * zoomLevel;
-
-      //     imagemap += "<area shape='rect' coords='" + x + ',' + y + ',' + (x + tileWidth * zoomLevel) + ',' + (y + tileHeight * zoomLevel) + "' href='#' class='tileset-map-area' data-column='" + c + "' data-row='" + r + "'>";
-      //   }
-      // }
-
-      // imagemap += "</map>";
-      // $('.map-editor-tileset').append(imagemap);
       img.css('height', imageHeight + 'px');
       img.css('width', imageWidth + 'px');
-      // img.attr('usemap', '#tileset-map');
       
       $('.map-editor-tileset').css('height', $('#editor-wrapper').css('height'));
-      // $('img[usemap]').maphilight();
-
-      // $('.tileset-map-area').on('click', function(event) {
-      //   event.preventDefault();
-      //   var data = event.currentTarget.dataset;
-      //   namespace.pickTile(data.column, data.row);
-      // });
 
       namespace._tileMouseDown = false;
 
       var getPosFromEvent = function(event, allowFloat) {
-        // var mapData = namespace._currentMapData;
         allowFloat = allowFloat || false;
 
         var posX = event.offsetX;
@@ -455,25 +466,6 @@ STUDIO.MapEditor = {};
         var pos = getPosFromEvent(event, true);
         namespace.pickArea(pos.column, pos.row, pos.column + 0.5, pos.row + 0.5);
       });
-
-      // $('.tileset-map-area').on('mousedown', function(event){
-      //   event.preventDefault();
-      //   var data = event.currentTarget.dataset;
-
-      //   namespace._tileMouseDown = {column : parseFloat(data.column), row : parseFloat(data.row)};
-      // });
-
-      // $('.tileset-map-area').on('mouseup', function(event){
-      //   event.preventDefault();
-      //   var data = event.currentTarget.dataset;
-
-      //   if (!!namespace._tileMouseDown) {
-      //     namespace.pickArea(namespace._tileMouseDown.column, namespace._tileMouseDown.row, parseFloat(data.column), parseFloat(data.row));
-      //     namespace._tileMouseDown = false;
-      //   } else {
-      //     namespace.pickTile(data.column, data.row);
-      //   }
-      // });
     });
   };
 
@@ -888,7 +880,7 @@ STUDIO.MapEditor = {};
   };
 
   namespace.getTileTexture = function(tileId) {
-    if (tileId <= 0) {
+    if (tileId < 0) {
       return PIXI.Texture.fromImage(path.join('img', 'transparent.png'));
     }
 
@@ -1094,7 +1086,7 @@ STUDIO.MapEditor = {};
 
       if (tileId === undefined) continue;
       if (namespace._currentTool == 'eraser') {
-        tileId = -1;
+        tileId = 0;
       }
 
       if (column >= totalColumns) continue;
@@ -1173,11 +1165,12 @@ STUDIO.MapEditor = {};
       bottom = y;
     }
 
-    var tileWidth = mapData.tilewidth;
-    var tileHeight = mapData.tileheight;
+    var size = namespace.getSelectionSize();
+    var xIncrement = size.width;
+    var yIncrement = size.height;
 
-    for (var tileX = left; tileX <= (right ); tileX += tileWidth) {
-      for (var tileY = top; tileY <= (bottom ); tileY += tileHeight) {
+    for (var tileX = left; tileX <= right; tileX += xIncrement) {
+      for (var tileY = top; tileY <= bottom; tileY += yIncrement) {
         namespace.changeTile(tileX, tileY);
       }
     }

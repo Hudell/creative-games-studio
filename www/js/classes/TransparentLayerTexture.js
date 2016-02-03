@@ -86,11 +86,10 @@ TransparentLayerTexture.prototype.addRectangleToLayer = function(x, y, x2, y2) {
     bottom = y;
   }
 
-  var tileWidth = mapData.tilewidth;
-  var tileHeight = mapData.tileheight;
+  var size = STUDIO.MapEditor.getSelectionSize();
 
-  for (var tileX = left; tileX <= right; tileX += tileWidth) {
-    for (var tileY = top; tileY <= bottom; tileY += tileHeight) {
+  for (var tileX = left; tileX <= right; tileX += size.width) {
+    for (var tileY = top; tileY <= bottom; tileY += size.height) {
       this.changeTile(tileX, tileY);
     }
   }
