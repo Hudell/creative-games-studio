@@ -622,3 +622,9 @@ table.dataTable thead .sorting:after {
     overflow-y : scroll;
     overflow-x : hidden;
 }
+
+.tileset-canvas {
+    position: absolute;
+    top : 52px;
+    left : 0;
+}

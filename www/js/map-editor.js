@@ -384,6 +384,18 @@ STUDIO.MapEditor = {};
       $('.map-editor-tileset').css('height', $('#editor-wrapper').css('height'));
 
       namespace._tileMouseDown = false;
+      namespace._tilesetRenderer = PIXI.autoDetectRenderer(imageWidth, imageHeight, {
+        transparent : true
+      });
+
+      $('.map-editor-tileset')[0].appendChild(namespace._tilesetRenderer.view);
+      namespace._tilesetRenderer.view.style.width = imageWidth + "px";
+      namespace._tilesetRenderer.view.style.height = imageHeight + "px";
+      var canvas = $(namespace._tilesetRenderer.view);
+
+      canvas.addClass('tileset-canvas');
+      namespace._tilesetStage = new PIXI.Container();
+
 
       var getPosFromEvent = function(event, allowFloat) {
         allowFloat = allowFloat || false;
@@ -412,12 +424,12 @@ STUDIO.MapEditor = {};
         return {column : column, row : row};
       };
       
-      img.on('mousedown', function(event) {
+      canvas.on('mousedown', function(event) {
         event.preventDefault();
         namespace._tileMouseDown = getPosFromEvent(event);
       });
 
-      img.on('mouseup', function(event) {
+      canvas.on('mouseup', function(event) {
         event.preventDefault();
         var pos = getPosFromEvent(event);
         var size = namespace.getFakeTileSize();
@@ -440,7 +452,7 @@ STUDIO.MapEditor = {};
         }
       });
 
-      img.on('dblclick', function(event){
+      canvas.on('dblclick', function(event){
         event.preventDefault();
 
         var pos = getPosFromEvent(event, true);
