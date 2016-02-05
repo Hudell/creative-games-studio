@@ -168,6 +168,7 @@ STUDIO.MapEditor = {};
 
   namespace.changeToolToEraser = function() {
     namespace.changeTool('eraser', 'eraser');
+    namespace.updatePickedArea();
   };
 
   namespace.changeDrawTypeToTile = function() {
@@ -853,7 +854,7 @@ STUDIO.MapEditor = {};
   };
 
   namespace.createTransparentLayer = function(width, height) {
-    namespace._transparentLayerTexture = new TransparentLayerTexture(namespace._renderer, width, height);
+    namespace._transparentLayerTexture = new PIXI.RenderTexture(namespace._renderer, width, height);
     
     var sprite = new PIXI.Sprite(namespace._transparentSpriteTexture);
     
@@ -993,7 +994,7 @@ STUDIO.MapEditor = {};
 
   namespace.createSelectionLayer = function(width, height) {
     if (!namespace._selectionLayerTexture) {
-      namespace._selectionLayerTexture = new TransparentLayerTexture(namespace._renderer, width, height);
+      namespace._selectionLayerTexture = new SelectionLayerTexture(namespace._renderer, width, height);
     }
   };
 

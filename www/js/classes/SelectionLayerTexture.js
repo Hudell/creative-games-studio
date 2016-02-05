@@ -1,11 +1,11 @@
-function TransparentLayerTexture(renderer, width, height) {
+function SelectionLayerTexture(renderer, width, height) {
   PIXI.RenderTexture.call(this, renderer, width, height);
 }
 
-TransparentLayerTexture.prototype = Object.create(PIXI.RenderTexture.prototype);
-TransparentLayerTexture.prototype.constructor = TransparentLayerTexture;
+SelectionLayerTexture.prototype = Object.create(PIXI.RenderTexture.prototype);
+SelectionLayerTexture.prototype.constructor = SelectionLayerTexture;
 
-TransparentLayerTexture.prototype.refreshSelection = function() {
+SelectionLayerTexture.prototype.refreshSelection = function() {
   if (!!this.hasAnySprite) {
     this.clear();
     //Render an empty container just so it has something to render (PIXI raises a warning if it doesn't render anything)
@@ -49,7 +49,7 @@ TransparentLayerTexture.prototype.refreshSelection = function() {
   }
 };
 
-TransparentLayerTexture.prototype.addRectangleToLayer = function(x, y, x2, y2) {
+SelectionLayerTexture.prototype.addRectangleToLayer = function(x, y, x2, y2) {
   var mapData = STUDIO.MapEditor._currentMapData;
   var maxX = mapData.width * mapData.tilewidth;
   var maxY = mapData.height * mapData.tileheight;
@@ -95,7 +95,7 @@ TransparentLayerTexture.prototype.addRectangleToLayer = function(x, y, x2, y2) {
   }
 };
 
-TransparentLayerTexture.prototype.addTileSprite = function(tileTexture, x, y, tileId, alpha) {
+SelectionLayerTexture.prototype.addTileSprite = function(tileTexture, x, y, tileId, alpha) {
   var sprite = new PIXI.Sprite(tileTexture);
   sprite.x = x;
   sprite.y = y;
@@ -117,7 +117,7 @@ TransparentLayerTexture.prototype.addTileSprite = function(tileTexture, x, y, ti
   this.render(container);
 };
 
-TransparentLayerTexture.prototype.drawTile = function(column, row, tileId) {
+SelectionLayerTexture.prototype.drawTile = function(column, row, tileId) {
   var mapData = STUDIO.MapEditor._currentMapData;
   var x = column * mapData.tilewidth;
   var y = row * mapData.tileheight;
@@ -138,7 +138,7 @@ TransparentLayerTexture.prototype.drawTile = function(column, row, tileId) {
   }
 };
 
-TransparentLayerTexture.prototype.changeTile = function(x, y) {
+SelectionLayerTexture.prototype.changeTile = function(x, y) {
   var mapData = STUDIO.MapEditor._currentMapData;
   var mapColumns = mapData.width;
   var mapRows = mapData.height;
