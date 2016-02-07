@@ -1150,10 +1150,12 @@ STUDIO.MapEditor = {};
   };
 
   namespace.stopDrawingTile = function() {
-    if (!!namespace._drawingRectangle) {
-      namespace._drawingRectangle.tiles.push(namespace._drawingTile);
-    } else {
-      namespace._history.push(namespace._drawingTile);
+    if (namespace._drawingTile.changes.length > 0) {
+      if (!!namespace._drawingRectangle) {
+        namespace._drawingRectangle.tiles.push(namespace._drawingTile);
+      } else {
+        namespace._history.push(namespace._drawingTile);
+      }
     }
 
     namespace._drawingTile = false;
@@ -1167,7 +1169,9 @@ STUDIO.MapEditor = {};
   };
 
   namespace.stopDrawingRectangle = function() {
-    namespace._history.push(namespace._drawingRectangle);
+    if (namespace._drawingRectangle.tiles.length > 0) {
+      namespace._history.push(namespace._drawingRectangle);
+    }
     namespace._drawingRectangle = false;
   };
 
