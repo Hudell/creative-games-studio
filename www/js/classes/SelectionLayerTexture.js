@@ -38,7 +38,7 @@ SelectionLayerTexture.prototype.refreshSelection = function() {
   if (STUDIO.MapEditor._currentDrawType === 'rectangle' && !!STUDIO.MapEditor._clickedPos) {
     this.addRectangleToLayer(STUDIO.MapEditor._clickedPos.x, STUDIO.MapEditor._clickedPos.y, pos.x, pos.y);
   } else {
-    this.changeTile(x, y);
+    this.addTile(x, y);
   }
 };
 
@@ -131,7 +131,12 @@ SelectionLayerTexture.prototype.drawTile = function(column, row, tileId) {
   }
 };
 
-SelectionLayerTexture.prototype.changeTile = function(x, y) {
+SelectionLayerTexture.prototype.addTile = function(x, y) {
+  this.changeTile(x, y, true);
+};
+
+SelectionLayerTexture.prototype.changeTile = function(x, y, drawRect) {
+  drawRect = drawRect || false;
   var mapData = STUDIO.MapEditor._currentMapData;
   var mapColumns = mapData.width;
   var mapRows = mapData.height;
@@ -152,6 +157,11 @@ SelectionLayerTexture.prototype.changeTile = function(x, y) {
 
   column = Math.floor(x / tileWidth);
   row = Math.floor(y / tileHeight);
+
+  var leftColumn = column ;
+  var topRow = row;
+  var rightColumn = leftColumn;
+  var bottomRow = topRow;
 
   var previousIndex = 0;
   var previousRow = row;
@@ -177,8 +187,46 @@ SelectionLayerTexture.prototype.changeTile = function(x, y) {
       continue;
     }
 
+    if (newColumn < leftColumn) {
+      leftColumn = newColumn;
+    } else if (newColumn > rightColumn) {
+      rightColumn = newColumn;
+    }
+
+    if (newRow < topRow) {
+      topRow = newRow;
+    } else if (newRow > bottomRow) {
+      bottomRow = newRow;
+    }
+
     this.drawTile(newColumn, newRow, tileId);
     previousIndex = i;
     previousRow = newRow;
   }
+
+  var left = leftColumn * tileWidth;
+  var top = topRow * tileHeight;
+  var right = rightColumn * tileWidth + tileWidth;
+  var bottom = bottomRow * tileHeight + tileHeight;
+
+  this.drawSelectionRect(left, top, right - left, bottom - top);
+};
+
+SelectionLayerTexture.prototype.drawSelectionRect = function(x, y, w, h, color, alpha, length) {
+  color = color || 0x333333;
+  alpha = alpha || 1;
+  length = length || 2;
+
+  var graphics = new PIXI.Graphics();
+
+  graphics.beginFill(color, alpha);
+  graphics.drawRect(x, y, w, length);
+  graphics.drawRect(x, y + h - length, w, length);
+  graphics.drawRect(x + w - length, y, length, h);
+  graphics.drawRect(x, y, length, h);
+
+  graphics.endFill();
+
+  this.render(graphics);
+  this.hasAnySprite = true;
 };
