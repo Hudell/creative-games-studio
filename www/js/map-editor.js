@@ -25,6 +25,9 @@ STUDIO.MapEditor = {};
   namespace._currentLayerIndex = 0;
   namespace._clickedPos = false;
   namespace._tilesetClickedPos = false;
+  namespace._history = [];
+  namespace._drawingRectangle = false;
+  namespace._drawingTile = false;
 
   //Preloads the transparent png
   namespace._transparentSpriteTexture = PIXI.Texture.fromImage(path.join('img', 'transparent.png'));
@@ -38,6 +41,7 @@ STUDIO.MapEditor = {};
     }
     namespace._currentMapName = mapName;
     namespace._currentMapData = mapData;
+    namespace._history = [];
 
     STUDIO.openWindow('map-editor', function(){
       var editorWidth = window.innerWidth - 524;
@@ -80,6 +84,7 @@ STUDIO.MapEditor = {};
 
     $('#mapeditor-zoomin-btn').on('click', function(event){ event.preventDefault(); namespace.zoomIn(); });
     $('#mapeditor-zoomout-btn').on('click', function(event){ event.preventDefault(); namespace.zoomOut(); });
+    $('#mapeditor-undo-btn').on('click', function(event){ event.preventDefault(); namespace.undo(); });
 
     $('#btn-new-map').on('click', function(event) {
       event.preventDefault();
@@ -728,6 +733,8 @@ STUDIO.MapEditor = {};
     var relativeFileName = path.join('..', tilesetData.image);
     var fullPath = path.join(STUDIO.loadedGame.folder, tilesetData.image);
 
+    namespace._history = [];
+
     var img = new Image();
     img.onload = function(){
       var imageheight = img.height;
@@ -1113,7 +1120,92 @@ STUDIO.MapEditor = {};
     var totalRows = mapData.height;
 
     index = totalColumns * row + column;
+
+    if (tileId !== layer.data[index]) {
+      namespace.addChangeToHistory({
+        type : 'change',
+        index : index,
+        layer : layer,
+        oldTileId : layer.data[index],
+        newTileId : tileId
+      });
+    }
+
     layer.data[index] = tileId;
+  };
+
+  namespace.addChangeToHistory = function(change) {
+    if (!!namespace._drawingTile) {
+      namespace._drawingTile.changes.push(change);
+    } else {
+      namespace._history.push(change);
+    }
+  };
+
+  namespace.startDrawingTile = function() {
+    namespace._drawingTile = {
+      type : 'tile',
+      changes : []
+    };
+  };
+
+  namespace.stopDrawingTile = function() {
+    if (!!namespace._drawingRectangle) {
+      namespace._drawingRectangle.tiles.push(namespace._drawingTile);
+    } else {
+      namespace._history.push(namespace._drawingTile);
+    }
+
+    namespace._drawingTile = false;
+  };
+
+  namespace.startDrawingRectangle = function() {
+    namespace._drawingRectangle = {
+      type : 'rectangle',
+      tiles : []
+    };
+  };
+
+  namespace.stopDrawingRectangle = function() {
+    namespace._history.push(namespace._drawingRectangle);
+    namespace._drawingRectangle = false;
+  };
+
+  namespace.undoChange = function(change) {
+    change.layer.data[change.index] = change.oldTileId;
+    namespace._layerCache[change.layer.name] = false;
+  };
+
+  namespace.undoTile = function(tile) {
+    for (var i = 0; i < tile.changes.length; i++) {
+      namespace.undoChange(tile.changes[i]);
+    }
+  };
+
+  namespace.undoRectangle = function(rectangle) {
+    for (var i = 0; i < rectangle.tiles.length; i++) {
+      namespace.undoTile(rectangle.tiles[i]);
+    }
+  };
+
+  namespace.undo = function() {
+    if (!namespace._history.length) return;
+
+    var lastAction = namespace._history.pop();
+
+    switch(lastAction.type) {
+      case 'rectangle' :
+        namespace.undoRectangle(lastAction);
+        break;
+      case 'tile' :
+        namespace.undoTile(lastAction);
+        break;
+      default :
+        namespace.undoChange(lastAction);
+        break;
+    }
+
+    namespace._needsRefresh = true;    
   };
 
   namespace.changeTile = function(x, y) {
@@ -1153,6 +1245,7 @@ STUDIO.MapEditor = {};
     var previousIndex = 0;
     var previousRow = row;
 
+    namespace.startDrawingTile();
     for (var i = 0; i < namespace._currentTileIds.length; i++) {
       var tileId = namespace._currentTileIds[i];
 
@@ -1178,6 +1271,7 @@ STUDIO.MapEditor = {};
       previousIndex = i;
       previousRow = newRow;
     }
+    namespace.stopDrawingTile();
 
     namespace._layerCache[layer.name] = false;
     namespace._needsRefresh = true;
@@ -1241,11 +1335,13 @@ STUDIO.MapEditor = {};
     var xIncrement = size.width;
     var yIncrement = size.height;
 
+    namespace.startDrawingRectangle();
     for (var tileX = left; tileX <= right; tileX += xIncrement) {
       for (var tileY = top; tileY <= bottom; tileY += yIncrement) {
         namespace.changeTile(tileX, tileY);
       }
     }
+    namespace.stopDrawingRectangle();
   };
 
   namespace.pickPos = function(x, y) {
