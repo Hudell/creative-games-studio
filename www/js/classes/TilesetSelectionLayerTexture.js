@@ -92,8 +92,8 @@ TilesetSelectionLayerTexture.prototype.addRectangle = function(x, y, x2, y2) {
 
   var realLeft = Math.floor(left / tileWidth) * tileWidth;
   var realTop = Math.floor(top / tileHeight) * tileHeight;
-  var realRight = Math.floor(right / tileWidth) * tileWidth;
-  var realBottom = Math.floor(bottom / tileHeight) * tileHeight;
+  var realRight = Math.ceil(right / tileWidth) * tileWidth;
+  var realBottom = Math.ceil(bottom / tileHeight) * tileHeight;
 
   this.drawSelectionRect(realLeft, realTop, realRight - realLeft, realBottom - realTop);
 };
