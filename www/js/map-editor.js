@@ -371,6 +371,7 @@ STUDIO.MapEditor = {};
   namespace.setupTileset = function(imagePath, tileWidth, tileHeight, columns, rows, allowHalf) {
     var img = new Image();
     img.onload = function() {
+      $('.map-editor-tileset').html('');
       var imageWidth = img.width;
       var imageHeight = img.height;
       var zoomLevel = namespace.tilesetZoomLevel;
@@ -417,7 +418,6 @@ STUDIO.MapEditor = {};
 
         var column = Math.floor(posX / tileWidth);
         var row = Math.floor(posY / tileHeight);
-
 
         if (size.allowHalf && allowFloat) {
           column /= 2;
