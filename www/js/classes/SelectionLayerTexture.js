@@ -155,10 +155,16 @@ SelectionLayerTexture.prototype.changeTile = function(x, y, drawRect) {
   if (x >= width) return;
   if (y >= height) return;
 
+  var fakeSize = STUDIO.MapEditor.getFakeTileSize();
+  if (fakeSize.allowHalf && !STUDIO.MapEditor._offgridPlacement && STUDIO.MapEditor._currentTool !== 'eraser') {
+    x = Math.floor(x / fakeSize.width) * fakeSize.width;
+    y = Math.floor(y / fakeSize.height) * fakeSize.height;
+  }
+
   column = Math.floor(x / tileWidth);
   row = Math.floor(y / tileHeight);
 
-  var leftColumn = column ;
+  var leftColumn = column;
   var topRow = row;
   var rightColumn = leftColumn;
   var bottomRow = topRow;

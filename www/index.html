@@ -28,23 +28,46 @@
         <nav class="navbar navbar-default" role="navigation" style="margin-bottom: 0">
             <ul class="nav navbar-top-links navbar-left">
                 <li>
-                    <a id="maps-btn" href="#" title="Maps">
-                        <i class="fa fa-globe fa-fw"></i>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="map-editor-tileset-dropdown" title="Maps">
+                        <i class="fa fa-globe fa-fw"></i> Maps <i class="fa fa-caret-down"></i>
                     </a>
+                    <ul class="dropdown-menu dropdown-studio">
+                        <li>
+                            <a id="btn-new-map" href="#">
+                                New Map
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                Open Map
+                            </a>
+                        </li>
+                        <li>
+                            <a id="list-maps-btn" href="#">
+                                List Maps
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                Delete Current Map
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li>
                     <a id="database-btn" href="#" title="Database">
-                        <i class="fa fa-database fa-fw"></i>
+                        <i class="fa fa-database fa-fw"></i> Database
                     </a>
                 </li>
                 <li>
                     <a id="plugins-btn" href="#" title="Plugins">
-                        <i class="fa fa-plug fa-fw"></i>
+                        <i class="fa fa-plug fa-fw"></i> Plugins
                     </a>
                 </li>
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" title="Settings">
-                        <i class="fa fa-cog fa-fw"></i> <i class="fa fa-caret-down"></i>
+                        <i class="fa fa-cog fa-fw"></i> Settings <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-studio">
                         <li>
@@ -71,7 +94,7 @@
                 </li>
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" title="History">
-                        <i class="fa fa-history fa-fw"></i> <i class="fa fa-caret-down"></i>
+                        <i class="fa fa-history fa-fw"></i> Recent Files <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-studio" id="history-list">
                     </ul>

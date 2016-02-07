@@ -28,6 +28,7 @@ STUDIO.MapEditor = {};
   namespace._history = [];
   namespace._drawingRectangle = false;
   namespace._drawingTile = false;
+  namespace._offgridPlacement = false;
 
   //Preloads the transparent png
   namespace._transparentSpriteTexture = PIXI.Texture.fromImage(path.join('img', 'transparent.png'));
@@ -59,6 +60,7 @@ STUDIO.MapEditor = {};
       namespace.loadLayerList();
       namespace.openFirstTileset();
       namespace.attachEvents();
+      namespace.refreshOffgridPlacementIcon();
 
       if (!!callback) {
         callback();
@@ -86,11 +88,6 @@ STUDIO.MapEditor = {};
     $('#mapeditor-zoomout-btn').on('click', function(event){ event.preventDefault(); namespace.zoomOut(); });
     $('#mapeditor-undo-btn').on('click', function(event){ event.preventDefault(); namespace.undo(); });
 
-    $('#btn-new-map').on('click', function(event) {
-      event.preventDefault();
-      namespace.createNewMap();
-    });
-
     $('#map-editor-tileset-zoom-in').on('click', function(event) {
       event.preventDefault();
       namespace.increaseTilesetZoom();
@@ -106,6 +103,11 @@ STUDIO.MapEditor = {};
       namespace.createNewLayer();
     });
 
+    $('#map-editor-manage-layers-btn').on('click', function(event){
+      event.preventDefault();
+      namespace.manageLayers();
+    });
+
     $('#map-editor-tileset-new').on('click', function(event){
       event.preventDefault();
       namespace.createNewTileset();
@@ -114,6 +116,11 @@ STUDIO.MapEditor = {};
     $('#map-editor-tileset-remove').on('click', function(event) {
       event.preventDefault();
       namespace.removeCurrentTileset();
+    });
+
+    $('#mapeditor-options-offgrid').on('click', function(event){
+      event.preventDefault();
+      namespace.toggleOffgridPlacement();
     });
   };
 
@@ -201,7 +208,7 @@ STUDIO.MapEditor = {};
     var list = $('#map-editor-layer-list');
     list.html('');
 
-    list.append('<li><a class="map-editor-manage-layers" href="#"><i class="fa fa-cog fa-fw"></i> Manage Layers </a></li>');
+    list.append('<li><a class="map-editor-manage-layers" id="map-editor-manage-layers-btn" href="#"><i class="fa fa-cog fa-fw"></i> Manage Layers </a></li>');
     list.append('<li class="divider"></li>');
 
     var layers = namespace._currentMapData.layers;
@@ -650,6 +657,21 @@ STUDIO.MapEditor = {};
     return false;
   };
 
+  namespace.toggleOffgridPlacement = function() {
+    namespace._offgridPlacement = !namespace._offgridPlacement;
+    namespace.refreshOffgridPlacementIcon();
+  };
+
+  namespace.refreshOffgridPlacementIcon = function() {
+    if (!!namespace._offgridPlacement) {
+      $('#mapeditor-options-offgrid').find('i').removeClass('fa-square-o');
+      $('#mapeditor-options-offgrid').find('i').addClass('fa-check-square-o');
+    } else {
+      $('#mapeditor-options-offgrid').find('i').removeClass('fa-check-square-o');
+      $('#mapeditor-options-offgrid').find('i').addClass('fa-square-o');
+    }
+  };
+
   namespace.removeCurrentTileset = function() {
     var mapData = namespace._currentMapData;
     var index = namespace._currentTilesetIndex;
@@ -811,6 +833,12 @@ STUDIO.MapEditor = {};
     }
 
     mapData.layers.push(newLayer);
+  };
+
+  namespace.manageLayers = function() {
+    STUDIO.openPopupForm('map-editor-manage-layers', 'Manage Layers', function(){
+
+    });
   };
 
   namespace.createNewLayer = function() {
@@ -1239,6 +1267,12 @@ STUDIO.MapEditor = {};
 
     var tileset = mapData.tilesets[namespace._currentTilesetIndex];
     if (!tileset) return;
+
+    var fakeSize = STUDIO.MapEditor.getFakeTileSize();
+    if (fakeSize.allowHalf && !namespace._offgridPlacement && namespace._currentTool !== 'eraser') {
+      x = Math.floor(x / fakeSize.width) * fakeSize.width;
+      y = Math.floor(y / fakeSize.height) * fakeSize.height;
+    }
 
     var column;
     var row;

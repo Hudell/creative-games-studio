@@ -797,9 +797,13 @@ var STUDIO = {};
   };
 
   STUDIO.onLoad = function(){
-    $('#index-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'index'); });
-    
-    $('#maps-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'maps'); });
+    $('#index-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'index'); });    
+    $('#list-maps-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'maps'); });
+    $('#btn-new-map').on('click', function(event) {
+      event.preventDefault();
+      STUDIO.MapEditor.createNewMap();
+    });
+
     $('#database-btn').on('click', function(event) {
       event.preventDefault();
       STUDIO.DatabaseManager.openDatabaseWindow();
