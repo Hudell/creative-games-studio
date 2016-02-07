@@ -6,12 +6,12 @@ TilesetSelectionLayerTexture.prototype = Object.create(PIXI.RenderTexture.protot
 TilesetSelectionLayerTexture.prototype.constructor = TilesetSelectionLayerTexture;
 
 TilesetSelectionLayerTexture.prototype.refreshSelection = function() {
-  // if (!!this.hasAnySprite) {
+  if (!!this.hasAnySprite) {
     this.clear();
     //Render an empty container just so it has something to render (PIXI raises a warning if it doesn't render anything)
     this.render(new PIXI.Container());
     this.hasAnySprite = false;
-  // }
+  }
 
   var mapData = STUDIO.MapEditor._currentMapData;
   if (!mapData) return;
@@ -19,10 +19,11 @@ TilesetSelectionLayerTexture.prototype.refreshSelection = function() {
   var tileset = mapData.tilesets[STUDIO.MapEditor._currentTilesetIndex];
   if (!tileset) return;
   
-  if (STUDIO.MapEditor._currentTileIds.length === 0 || STUDIO.MapEditor._currentTileIds[0] <= 0) {
-    return;
-  }
+  this.drawMousePos(mapData, tileset);
+  this.drawPickedTiles(mapData, tileset);
+};
 
+TilesetSelectionLayerTexture.prototype.drawMousePos = function(mapData, tileset) {
   var pos = STUDIO.MapEditor.getTilesetMousePos();
   var x = pos.x;
   var y = pos.y;
@@ -36,11 +37,82 @@ TilesetSelectionLayerTexture.prototype.refreshSelection = function() {
   if (y <= 0) return;
   if (x >= width) return;
   if (y >= height) return;
-    
+  
   if (!!STUDIO.MapEditor._tilesetClickedPos) {
     this.addRectangle(STUDIO.MapEditor._tilesetClickedPos.x, STUDIO.MapEditor._tilesetClickedPos.y, pos.x, pos.y);
   } else {
     this.addTile(x, y);
+  }
+};
+
+TilesetSelectionLayerTexture.prototype.getTilePosition = function(mapData, tileset, tileId) {
+  var subTileId = tileId - tileset.firstgid;
+  var columns = tileset.imagewidth / mapData.tilewidth;
+
+  var column = subTileId % columns;
+  var row = Math.floor(subTileId / columns);
+
+  return {
+    x : column * mapData.tilewidth,
+    y : row * mapData.tileheight
+  };
+};
+
+TilesetSelectionLayerTexture.prototype.drawPickedTiles = function(mapData, tileset, individually) {
+  if (STUDIO.MapEditor._currentTileIds.length === 0) {
+    return;
+  }
+
+  individually = individually || false;
+
+  var left = false;
+  var right = false;
+  var top = false;
+  var bottom = false;
+  var length = 0;
+
+  for (var i = 0; i < STUDIO.MapEditor._currentTileIds.length; i++) {
+    var tileId = STUDIO.MapEditor._currentTileIds[i];
+    if (!tileId) continue;
+
+    length++;
+
+    var pos = this.getTilePosition(mapData, tileset, tileId);
+    if (!pos) continue;
+
+    if (individually) {
+      this.drawSelectionRect(pos.x, pos.y, mapData.tilewidth, mapData.tileheight, 0x333333, 1, 2);
+    } else {
+      if (left === false || pos.x < left) {
+        left = pos.x;
+      }
+
+      if (right === false || pos.x > right) {
+        right = pos.x;
+      }
+
+      if (top === false || pos.y < top) {
+        top = pos.y;
+      }
+
+      if (bottom === false || pos.y > bottom) {
+        bottom = pos.y;
+      }
+    }
+  }
+
+  if (left !== false && right !== false && top !== false && bottom !== false) {
+    var xAmount = (right + mapData.tilewidth - left) / mapData.tilewidth;
+    var yAmount = (bottom + mapData.tileheight - top) / mapData.tileheight;
+    var amount = xAmount * yAmount;
+
+    //If the amount of tiles inside the rect match the amount of selected tiles, then draw a single rect
+    if (amount === length) {
+      this.drawSelectionRect(left, top, (right - left) + mapData.tilewidth, (bottom - top) + mapData.tileheight, 0x333333, 1, 4);
+    } else {
+      // If it didn't match, draw a rect on each tile individually
+      this.drawPickedTiles(mapData, tileset, true);
+    }
   }
 };
 
@@ -122,14 +194,34 @@ TilesetSelectionLayerTexture.prototype.addTile = function(x, y) {
   if (realX >= width) return;
   if (realY >= height) return;
 
+  if (size.allowHalf) {
+    var halfTileWidth = tileWidth / 2;
+    var halfTileHeight = tileHeight / 2;
+
+    var newX = Math.floor(x / halfTileWidth) * halfTileWidth;
+    var newY = Math.floor(y / halfTileHeight) * halfTileHeight;
+
+    if (newX !== realX || newY !== realY) {
+      this.drawSelectionRect(newX, newY, tileWidth, tileHeight, 0xff0000, 0.6, 1);
+    }
+  }
+
   this.drawSelectionRect(realX, realY, tileWidth, tileHeight);
 };
 
-TilesetSelectionLayerTexture.prototype.drawSelectionRect = function(x, y, w, h) {
+TilesetSelectionLayerTexture.prototype.drawSelectionRect = function(x, y, w, h, color, alpha, length) {
+  color = color || 0x333333;
+  alpha = alpha || 1;
+  length = length || 2;
+
   var graphics = new PIXI.Graphics();
 
-  graphics.beginFill('black', 0.6);
-  graphics.drawRect(x, y, w, h);
+  graphics.beginFill(color, alpha);
+  graphics.drawRect(x, y, w, length);
+  graphics.drawRect(x, y + h - length, w, length);
+  graphics.drawRect(x + w - length, y, length, h);
+  graphics.drawRect(x, y, length, h);
+
   graphics.endFill();
 
   this.render(graphics);

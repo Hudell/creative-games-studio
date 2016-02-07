@@ -391,6 +391,15 @@ STUDIO.MapEditor = {};
       namespace._tilesetRenderer.view.style.height = imageHeight + "px";
       var canvas = $(namespace._tilesetRenderer.view);
 
+      canvas.on('webglcontextlost', function(evt){
+        evt.preventDefault();
+        console.log("WebGL Context lost");
+      });
+      canvas.on('webglcontextrestored', function(evt){
+        console.log("WebGL Context restored");
+        namespace.openMapEditor(namespace._currentMapName);
+      });
+
       canvas.addClass('tileset-canvas');
       namespace._tilesetStage = new PIXI.Container();
 
@@ -447,9 +456,23 @@ STUDIO.MapEditor = {};
 
         if (!!namespace._tileMouseDown) {
           var oldPos = namespace._tileMouseDown;
-          if (size.allowHalf && oldPos.column == pos.column && oldPos.row == pos.row) {
-            pos.column += 0.5;
-            pos.row += 0.5;
+
+          if (size.allowHalf) {
+            if (oldPos.column != Math.floor(oldPos.column)) {
+              oldPos.column -= 0.5;
+            }
+
+            if (oldPos.row != Math.floor(oldPos.row)) {
+              oldPos.row -= 0.5;
+            }
+
+            if (pos.column == Math.floor(pos.column)) {
+              pos.column += 0.5;
+            }
+
+            if (pos.row == Math.floor(pos.row)) {
+              pos.row += 0.5;
+            }
           }
 
           namespace.pickArea(oldPos.column, oldPos.row, pos.column, pos.row);
@@ -461,8 +484,6 @@ STUDIO.MapEditor = {};
             namespace.pickTile(pos.column, pos.row);
           }
         }
-
-        namespace._needsTilesetRefresh = true;
       });
 
       canvas.on('dblclick', function(event){
@@ -513,6 +534,7 @@ STUDIO.MapEditor = {};
       left : parseFloat(column),
       right : parseFloat(column)
     };
+
     namespace.updatePickedArea();
   };
 
@@ -579,6 +601,8 @@ STUDIO.MapEditor = {};
         namespace._currentTileIds[index] = tileId;
       }
     }
+
+    namespace._needsTilesetRefresh = true;
   };
 
   namespace.openFirstTileset = function() {
@@ -800,7 +824,6 @@ STUDIO.MapEditor = {};
   };
 
   var mouseClicked = [];
-  // var mousePos = {x : 0, y : 0};
 
   namespace.getMousePos = function() {
     return namespace._renderer.plugins.interaction.mouse.global;
@@ -831,17 +854,22 @@ STUDIO.MapEditor = {};
       namespace._renderer.view.addEventListener("mousedown", function(evt) {
         var pos = namespace.getMousePos();
         mouseClicked[evt.button] = true;
-        // mousePos = pos;
       });
 
       namespace._renderer.view.addEventListener("mousemove", function(evt) {
-        // mousePos = namespace.getMousePos();
         namespace._needsSelectionRefresh = true;
       });
 
       namespace._renderer.view.addEventListener("mouseout", function(evt) {
         namespace._needsSelectionRefresh = true;
       });
+
+      namespace._renderer.view.addEventListener('webglcontextlost', function(evt){
+        evt.preventDefault();
+      }, false);
+      namespace._renderer.view.addEventListener('webglcontextrestored', function(evt){
+        namespace.openMapEditor(namespace._currentMapName);
+      });      
 
       window.addEventListener("mouseout", function(evt){
         namespace._needsSelectionRefresh = true;
@@ -1232,8 +1260,8 @@ STUDIO.MapEditor = {};
     if (x > maxX) return;
     if (y > maxY) return;
 
-    var column = Math.floor(x / (tileWidth * 2)) * 2;
-    var row = Math.floor(y / (tileHeight * 2)) * 2;
+    var column = Math.floor(x / tileWidth);
+    var row = Math.floor(y / tileHeight);
 
     var totalColumns = mapData.width;
     var totalRows = mapData.height;
@@ -1241,6 +1269,21 @@ STUDIO.MapEditor = {};
     var index = totalColumns * row + column;
 
     namespace._currentTileIds = [layer.data[index]];
+    if (namespace._currentTool == 'brush') {
+      if (column < totalColumns) {
+        namespace._currentTileIds.push(layer.data[index + 1]);
+      }
+      if (row < totalRows) {
+        index += totalColumns;
+        namespace._currentTileIds[totalColumns] = layer.data[index];
+
+        if (column < totalColumns) {
+          namespace._currentTileIds[totalColumns + 1] = layer.data[index + 1];
+        }
+      }
+    }
+
+    namespace._needsTilesetRefresh = true;
   };
 
   namespace.update = function(){
