@@ -44,7 +44,7 @@ var STUDIO = {};
     xhr.send();
   };
 
-  STUDIO.openDialog = function(element, title, buttons, width, height) {
+  STUDIO.openDialog = function(element, title, buttons, width, height, onClose) {
     width = width || "auto";
 
     element.dialog({
@@ -54,6 +54,9 @@ var STUDIO = {};
       modal : true,
       close: function () {
         $(this).dialog('destroy').remove ();
+        if (!!onClose) {
+          onClose();
+        }
       },
       buttons: buttons || [
         {
@@ -153,7 +156,7 @@ var STUDIO = {};
     $('#' + tableId).children('tbody').append(row);
   };
 
-  STUDIO.openPopup = function(popupName, title, callback, buttons) {
+  STUDIO.openPopup = function(popupName, title, callback, buttons, width, height, onClose) {
     STUDIO.requestPage(path.join('popups', popupName + '.html'), function(result, xhr){
       STUDIO.openDialog($('<div></div>').html(xhr.responseText), title, buttons || [
         {
@@ -162,7 +165,7 @@ var STUDIO = {};
             $(this).dialog("close");
           }
         }
-      ]);
+      ], width, height, onClose);
       STUDIO.fixLinks();
 
       if (!!callback) {
@@ -171,7 +174,7 @@ var STUDIO = {};
     });
   };
 
-  STUDIO.openPopupForm = function(popupName, title, okCallback, loadCallback) {
+  STUDIO.openPopupForm = function(popupName, title, okCallback, loadCallback, closeCallback) {
     STUDIO.openPopup(popupName, title, loadCallback || false, [
       {
         text : "Confirm",
@@ -186,7 +189,7 @@ var STUDIO = {};
           }
         }
       }
-    ]);
+    ], undefined, undefined, closeCallback);
   };
 
   STUDIO.openWindow = function(windowName, callback) {
@@ -236,6 +239,7 @@ var STUDIO = {};
 
       STUDIO.fillSidebar();
       STUDIO.fixLinks();
+      STUDIO.createMapMenu();
 
       if (!!callback) {
         callback();
@@ -471,14 +475,25 @@ var STUDIO = {};
       return STUDIO.modifiedMaps[mapName];
     }
 
+    //If it's null, it's because the map was deleted, so don't load the data from the file
+    if (STUDIO.modifiedMaps[mapName] === null) {
+      return null;
+    }
+
     return STUDIO.loadJson(path.join(STUDIO.loadedGame.folder, 'maps', mapName));
   };
 
   STUDIO.saveMapData = function(mapName) {
     var mapData = STUDIO.getMapData(mapName);
+    var filePath = path.join(STUDIO.loadedGame.folder, 'maps', mapName);
 
-    STUDIO.saveJson(path.join(STUDIO.loadedGame.folder, 'maps', mapName), mapData);
-    STUDIO.addRecentObject('map', mapName);    
+    if (mapData === null) {
+      fs.unlinkSync(filePath);
+      STUDIO.removeRecentObject('map', mapName);
+    } else {
+      STUDIO.saveJson(filePath, mapData);
+      STUDIO.addRecentObject('map', mapName);
+    }
   };
 
   STUDIO.loadProject = function(folderPath) {
@@ -487,7 +502,13 @@ var STUDIO = {};
     STUDIO.loadMaps();
     STUDIO.markAsSaved();
 
-    if (STUDIO.gameData._lastMapName !== '') {
+    STUDIO.openLastMap();
+  };
+
+  STUDIO.openLastMap = function() {
+    if (STUDIO.MapEditor._currentMapName !== '') {
+      STUDIO.openMapEditor(STUDIO.MapEditor._currentMapName);
+    } else if (STUDIO.gameData._lastMapName !== '') {
       STUDIO.openMapEditor(STUDIO.gameData._lastMapName);
     } else {
       STUDIO.MapEditor.createNewMap();
@@ -798,11 +819,6 @@ var STUDIO = {};
 
   STUDIO.onLoad = function(){
     $('#index-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'index'); });    
-    $('#list-maps-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'maps'); });
-    $('#btn-new-map').on('click', function(event) {
-      event.preventDefault();
-      STUDIO.MapEditor.createNewMap();
-    });
 
     $('#database-btn').on('click', function(event) {
       event.preventDefault();
@@ -848,7 +864,6 @@ var STUDIO = {};
     });
 
     STUDIO.DatabaseManager.attachEvents();
-    STUDIO.DatabaseManager.attachEvents();
 
     STUDIO.loadLoadedGameInfo();
     if (!!STUDIO.loadedGame.folder) {
@@ -873,6 +888,40 @@ var STUDIO = {};
 
     win.on('close', function(){
       STUDIO.exitButton();
+    });
+  };
+
+  STUDIO.createMapMenu = function() {
+    var el = $('#map-menu');
+    el.html('');
+
+    if (STUDIO._windowName !== 'map-editor') {
+      el.append('<li><a id="current-map-btn" href="#"><i class="fa fa-map fa-fw"></i> Map Editor</a></li>');
+      el.append('<li class="divider"></li>');
+    }
+
+    el.append('<li><a id="btn-new-map" href="#"><i class="fa fa-plus fa-fw"></i> New Map</a></li>');
+    el.append('<li><a id="list-maps-btn" href="#"><i class="fa fa-list fa-fw"></i> List Maps</a></li>');
+
+    if (STUDIO._windowName === 'map-editor') {
+      el.append('<li class="divider"></li>');
+      el.append('<li><a id="current-map-settingsbtn" href="#"><i class="fa fa-wrench fa-fw"></i> Map Settings</a></li>');
+      el.append('<li><a id="delete-current-map-btn" href="#"><i class="fa fa-remove fa-fw"></i> Delete Current Map</a></li>');
+    }
+
+    $('#current-map-btn').on('click', function(event) {
+      event.preventDefault();
+      STUDIO.openLastMap();
+    });
+
+    $('#list-maps-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'maps'); });
+    $('#btn-new-map').on('click', function(event) {
+      event.preventDefault();
+      STUDIO.MapEditor.createNewMap();
+    });
+    $('#delete-current-map-btn').on('click', function(event) {
+      event.preventDefault();
+      STUDIO.MapEditor.removeCurrentMapConfirmation();
     });
   };
 

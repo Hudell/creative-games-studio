@@ -15,17 +15,28 @@ GridLayerTexture.prototype.refreshGrid = function() {
 
     var size = STUDIO.MapEditor.getFakeTileSize();
     this.drawGrid(size.width, size.height, mapColumns, mapRows);
+
+    if (size.allowHalf && !!STUDIO.MapEditor._offgridPlacement) {
+      this.drawGrid(size.width, size.height, mapColumns, mapRows, 0x990000, 0.1, size.width / 2, 0);
+      this.drawGrid(size.width, size.height, mapColumns, mapRows, 0x990000, 0.1, 0, size.height / 2);
+    }
   } else {
     this.render(new PIXI.Container());
   }
 };
 
-GridLayerTexture.prototype.drawGrid = function(tileWidth, tileHeight, columns, rows) {
+GridLayerTexture.prototype.drawGrid = function(tileWidth, tileHeight, columns, rows, color, alpha, offsetX, offsetY) {
   var graphics = new PIXI.Graphics();
+  if (!offsetX) {
+    offsetX = 0;
+  }
+  if (!offsetY) {
+    offsetY = 0
+  }
 
   for (var x = 0; x < columns; x++) {
     for (var y = 0; y < rows; y++) {
-      this.drawGridRect(graphics, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+      this.drawGridRect(graphics, offsetX + x * tileWidth, offsetY + y * tileHeight, tileWidth, tileHeight, color, alpha);
     }
   }
 

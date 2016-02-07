@@ -210,12 +210,14 @@ SelectionLayerTexture.prototype.changeTile = function(x, y, drawRect) {
     previousRow = newRow;
   }
 
-  var left = leftColumn * tileWidth;
-  var top = topRow * tileHeight;
-  var right = rightColumn * tileWidth + tileWidth;
-  var bottom = bottomRow * tileHeight + tileHeight;
+  if (drawRect) {
+    var left = leftColumn * tileWidth;
+    var top = topRow * tileHeight;
+    var right = rightColumn * tileWidth + tileWidth;
+    var bottom = bottomRow * tileHeight + tileHeight;
 
-  this.drawSelectionRect(left, top, right - left, bottom - top);
+    this.drawSelectionRect(left, top, right - left, bottom - top);
+  }
 };
 
 SelectionLayerTexture.prototype.drawSelectionRect = function(x, y, w, h, color, alpha, length) {

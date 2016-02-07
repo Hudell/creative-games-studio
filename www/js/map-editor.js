@@ -101,16 +101,6 @@ STUDIO.MapEditor = {};
       namespace.decreaseTilesetZoom();
     });
 
-    $('#map-editor-new-layer-btn').on('click', function(event) {
-      event.preventDefault();
-      namespace.createNewLayer();
-    });
-
-    $('#map-editor-manage-layers-btn').on('click', function(event){
-      event.preventDefault();
-      namespace.manageLayers();
-    });
-
     $('#map-editor-tileset-new').on('click', function(event){
       event.preventDefault();
       namespace.createNewTileset();
@@ -118,7 +108,7 @@ STUDIO.MapEditor = {};
 
     $('#map-editor-tileset-remove').on('click', function(event) {
       event.preventDefault();
-      namespace.removeCurrentTileset();
+      namespace.removeCurrentTilesetConfirmation();
     });
 
     $('#mapeditor-options-offgrid').on('click', function(event){
@@ -249,6 +239,11 @@ STUDIO.MapEditor = {};
     $('.map-editor-layer-new').on('click', function(event){
       event.preventDefault();
       namespace.createNewLayer();
+    });
+
+    $('#map-editor-manage-layers-btn').on('click', function(event){
+      event.preventDefault();
+      namespace.manageLayers();
     });    
   };
 
@@ -258,6 +253,8 @@ STUDIO.MapEditor = {};
     if (namespace._currentMapData.layers.length > index && index >= 0) {
       var layerName = namespace._currentMapData.layers[index].name;
       $('#map-editor-layer-name').html('Layers - ' + layerName);
+    } else {
+      $('#map-editor-layer-name').html('Layers');
     }
   };
 
@@ -675,6 +672,7 @@ STUDIO.MapEditor = {};
   namespace.toggleOffgridPlacement = function() {
     namespace._offgridPlacement = !namespace._offgridPlacement;
     namespace.refreshOffgridPlacementIcon();
+    this.refreshGrid();
   };
 
   namespace.toggleGrid = function() {
@@ -691,8 +689,7 @@ STUDIO.MapEditor = {};
       el.removeClass('fa-check-square-o');
       el.addClass('fa-square-o');
     }
-
-  }
+  };
 
   namespace.refreshOffgridPlacementIcon = function() {
     var el = $('#mapeditor-options-offgrid').find('i');
@@ -702,6 +699,19 @@ STUDIO.MapEditor = {};
   namespace.refreshGridIcon = function() {
     var el = $('#mapeditor-options-show-grid').find('i');
     namespace.refreshCheckIcon(el, !!namespace._showGrid);
+  };
+
+  namespace.removeCurrentTilesetConfirmation = function() {
+    var mapData = namespace._currentMapData;
+    var index = namespace._currentTilesetIndex;
+
+    if (index < 0 || index >= mapData.tilesets.length) {
+      throw new Error("There's no Tileset to remove.");
+    }
+
+    STUDIO.confirm("The current tileset will be removed from this map", function(){
+      namespace.removeCurrentTileset();
+    }, "Delete Confirmation");
   };
 
   namespace.removeCurrentTileset = function() {
@@ -721,6 +731,23 @@ STUDIO.MapEditor = {};
     }
 
     namespace.registerOpenTileset(index);
+  };
+
+  namespace.removeCurrentMapConfirmation = function() {
+    if (STUDIO._windowName !== 'map-editor') {
+      throw new Error("There's no map loaded.");
+    }
+
+    STUDIO.confirm("The map " + STUDIO.removeFileExtension(namespace._currentMapName) + " will be removed.", function(){
+      namespace.removeCurrentMap();
+    });
+  };
+
+  namespace.removeCurrentMap = function() {
+    STUDIO.changeMap(namespace._currentMapName, null);
+    delete STUDIO.gameData.maps[namespace._currentMapName];
+
+    STUDIO.openWindow('maps');
   };
 
   namespace.removeTilesetFromMap = function(mapData, tilesetIndex) {
@@ -867,10 +894,162 @@ STUDIO.MapEditor = {};
     mapData.layers.push(newLayer);
   };
 
+  namespace.loadLayerManagerList = function() {
+    var list = $('#layer-manager-layer-list');
+    list.html('');
+
+    var layers = namespace._currentMapData.layers;
+    for (var i = 0; i < layers.length; i++) {
+      var icon = 'fa-th';
+
+      switch (layers[i].type) {
+        case 'objectgroup' :
+          icon = 'fa-map-signs';
+          break;
+        case 'image' :
+          icon = 'fa-image';
+          break;
+      }
+
+      var item = '';
+      item += '<i class="fa fa-trash fa-fw" data-index=' + i + '></i>';
+
+      if (layers[i].visible) {
+        item += '<i class="fa fa-eye fa-fw" data-index=' + i + '></i>';
+      } else {
+        item += '<i class="fa fa-eye-slash fa-fw" data-index=' + i + '></i>';
+      }
+      
+      if (i > 0) {
+        item += '<i class="fa fa-arrow-up fa-fw" data-index=' + i + '></i>';
+      } else {
+        item += '<i class="fa fa-fw"></i>';
+      }
+      if (i < layers.length - 1) {
+        item += '<i class="fa fa-arrow-down fa-fw" data-index=' + i + '></i>';
+      } else {
+        item += '<i class="fa fa-fw"></i>';
+      }
+      
+      item += '<i class="fa fa-fw"></i>';
+      item += '<i class="fa ' + icon + ' fa-fw layer-icon"></i>';
+      item += ' ';
+      item += layers[i].name;
+      item += '</br>';
+
+      list.append(item);
+    }
+
+    $('#layer-manager-layer-list').find('.fa-trash').on('click', function(event){
+      var link = $(event.currentTarget);
+      var layerIndex = event.currentTarget.dataset.index;
+      namespace.trashLayerConfirmation(layerIndex);
+    });
+
+    $('#layer-manager-layer-list').find('.fa-eye').on('click', function(event){
+      var link = $(event.currentTarget);
+      var layerIndex = event.currentTarget.dataset.index;
+
+      namespace.toggleLayerVisibility(layerIndex);
+    });
+
+    $('#layer-manager-layer-list').find('.fa-eye-slash').on('click', function(event){
+      var link = $(event.currentTarget);
+      var layerIndex = event.currentTarget.dataset.index;
+      namespace.toggleLayerVisibility(layerIndex);
+    });
+
+    $('#layer-manager-layer-list').find('.fa-arrow-down').on('click', function(event){
+      var link = $(event.currentTarget);
+      var layerIndex = event.currentTarget.dataset.index;
+      namespace.moveLayerDown(layerIndex);
+    });
+
+    $('#layer-manager-layer-list').find('.fa-arrow-up').on('click', function(event){
+      var link = $(event.currentTarget);
+      var layerIndex = event.currentTarget.dataset.index;
+      namespace.moveLayerUp(layerIndex);
+    });
+  };
+
+  namespace.swapLayers = function(oldIndex, newIndex) {
+    if (oldIndex == newIndex) return;
+
+    var mapData = namespace._currentMapData;
+    if (!mapData) return;
+
+    if (oldIndex >= 0 && oldIndex < mapData.layers.length && newIndex >= 0 && newIndex < mapData.layers.length) {
+      var oldLayer = mapData.layers[oldIndex];
+      var newLayer = mapData.layers[newIndex];
+
+      mapData.layers[oldIndex] = newLayer;
+      mapData.layers[newIndex] = oldLayer;
+
+      namespace.onMapChange();
+      namespace.loadLayerManagerList();
+    }
+  };
+
+  namespace.moveLayerUp = function(layerIndex) {
+    namespace.swapLayers(layerIndex, Number(layerIndex) -1);
+  };
+
+  namespace.moveLayerDown = function(layerIndex) {
+    namespace.swapLayers(layerIndex, Number(layerIndex) + 1);
+  };
+
+  namespace.toggleLayerVisibility = function(layerIndex) {
+    var mapData = namespace._currentMapData;
+    if (!mapData) return;
+
+    if (layerIndex >= 0 && layerIndex < mapData.layers.length) {
+      mapData.layers[layerIndex].visible = !mapData.layers[layerIndex].visible;
+      namespace.onMapChange();
+      namespace.loadLayerManagerList();
+    }
+  };
+
+  namespace.trashLayerConfirmation = function(layerIndex) {
+    STUDIO.confirm("The layer will be removed", function(){
+      namespace.trashLayer(layerIndex);
+    }, "Delete Confirmation");
+  };
+
+  namespace.trashLayer = function(layerIndex) {
+    var mapData = namespace._currentMapData;
+    if (!mapData) return;
+
+    if (layerIndex >= 0 && layerIndex < mapData.layers.length) {
+      mapData.layers.splice(layerIndex, 1);
+      namespace.onMapChange();
+      namespace.loadLayerManagerList();
+    }
+  };
+
   namespace.manageLayers = function() {
     STUDIO.openPopupForm('map-editor-manage-layers', 'Manage Layers', function(){
-
+      namespace.refreshLayers();
+    }, function(){
+      namespace.loadLayerManagerList();
+    }, function(){
+      namespace.refreshLayers();
     });
+  };
+
+  namespace.refreshLayers = function() {
+    namespace.createLayers(namespace._renderer.width, namespace._renderer.height);
+    namespace.loadLayerList();
+
+    while (namespace._currentTilesetIndex >= namespace._currentMapData.layers.length - 1) {
+      namespace._currentTilesetIndex -= 1;
+    }
+
+    if (namespace._currentTilesetIndex < 0) {
+      namespace._currentTilesetIndex = -1;
+    }
+
+    namespace.registerOpenTileset(namespace._currentTilesetIndex);
+    namespace.changeLayerIndex(namespace._currentTilesetIndex);
   };
 
   namespace.createNewLayer = function() {
@@ -917,6 +1096,13 @@ STUDIO.MapEditor = {};
     var width = mapData.width * mapData.tilewidth;
     var height = mapData.height * mapData.tileheight;
 
+    if (!!namespace._renderer) {
+      namespace._renderer.resize(width, height);
+    }
+
+    namespace.clearCaches();
+    namespace._history = [];
+
     if (!namespace._renderer) {
       namespace._renderer = PIXI.autoDetectRenderer(width, height, {
         transparent : true
@@ -940,34 +1126,40 @@ STUDIO.MapEditor = {};
       }, false);
       namespace._renderer.view.addEventListener('webglcontextrestored', function(evt){
         namespace.openMapEditor(namespace._currentMapName);
-      });      
-
-      window.addEventListener("mouseout", function(evt){
-        namespace._needsSelectionRefresh = true;
-        namespace._needsTilesetRefresh = true;
       });
 
-      window.addEventListener("mouseup", function(evt) {
-        mouseClicked[evt.button] = false;
-        if (evt.button == 0) {
+
+      if (!namespace._addedWindowEvents) {
+        window.addEventListener("mouseout", function(evt){
+          namespace._needsSelectionRefresh = true;
+          namespace._needsTilesetRefresh = true;
+        });
+
+        window.addEventListener("mouseup", function(evt) {
+          mouseClicked[evt.button] = false;
+          if (evt.button == 0) {
+            namespace._tileMouseDown = false;
+          }
+        });
+
+        window.addEventListener('blur', function(){
+          for (var i = 0; i < mouseClicked.length; i++) {
+            mouseClicked[i] = false;
+          }
           namespace._tileMouseDown = false;
-        }
-      });
+          namespace._needsTilesetRefresh = true;
+          namespace._needsSelectionRefresh = true;
+        });
 
-      window.addEventListener('blur', function(){
-        for (var i = 0; i < mouseClicked.length; i++) {
-          mouseClicked[i] = false;
-        }
-        namespace._tileMouseDown = false;
-        namespace._needsTilesetRefresh = true;
-        namespace._needsSelectionRefresh = true;        
-      });
+        namespace._addedWindowEvents = true;
+      }
     }
 
     $('.map-editor').html('');
     $('.map-editor')[0].appendChild(namespace._renderer.view);
     namespace._renderer.view.style.width = width + "px";
     namespace._renderer.view.style.height = height + "px";
+    namespace._currentTileIds = [];
 
     namespace._stage = new PIXI.Container();
 
@@ -1097,7 +1289,9 @@ STUDIO.MapEditor = {};
     }
 
     namespace._layerCache[layerData.name] = layerTexture;
-    namespace._stage.addChild(new PIXI.Sprite(layerTexture));
+    if (layerData.visible) {
+      namespace._stage.addChild(new PIXI.Sprite(layerTexture));
+    }
   };
 
   namespace.createSelectionLayerIfNeeded = function() {
@@ -1146,7 +1340,6 @@ STUDIO.MapEditor = {};
     namespace._stage.addChild(new PIXI.Sprite(namespace._gridLayerTexture));
 
     if (namespace._needsGridRefresh) {
-      console.log('refresh grid');
       namespace._gridLayerTexture.refreshGrid();
       namespace._needsGridRefresh = false;
     }
@@ -1156,6 +1349,12 @@ STUDIO.MapEditor = {};
     if (!namespace._selectionLayerTexture) {
       namespace._selectionLayerTexture = new SelectionLayerTexture(namespace._renderer, width, height);
     }
+  };
+
+  namespace.clearCaches = function() {
+    namespace._layerCache = {};
+    namespace._tileCache = {};
+    namespace._gridLayerTexture = false;
   };
 
   namespace.createLayers = function(width, height) {
@@ -1445,6 +1644,12 @@ STUDIO.MapEditor = {};
     if (y < 0) return;
     if (x > maxX) return;
     if (y > maxY) return;
+
+    var fakeSize = STUDIO.MapEditor.getFakeTileSize();
+    if (fakeSize.allowHalf && !namespace._offgridPlacement) {
+      x = Math.floor(x / fakeSize.width) * fakeSize.width;
+      y = Math.floor(y / fakeSize.height) * fakeSize.height;
+    }    
 
     var column = Math.floor(x / tileWidth);
     var row = Math.floor(y / tileHeight);
