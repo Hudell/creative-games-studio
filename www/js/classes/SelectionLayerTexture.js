@@ -17,13 +17,6 @@ SelectionLayerTexture.prototype.refreshSelection = function() {
   var mapColumns = mapData.width;
   var mapRows = mapData.height;
 
-  var data = [];
-
-  var tiles = mapColumns * mapRows;
-  for (var i = 0; i < tiles; i++) {
-    data[i] = 0;
-  }
-
   if (STUDIO.MapEditor._currentTileIds.length === 0 || STUDIO.MapEditor._currentTileIds[0] < 0) {
     return;
   }

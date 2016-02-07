@@ -624,7 +624,4 @@ table.dataTable thead .sorting:after {
 }
 
 .tileset-canvas {
-    position: absolute;
-    top : 52px;
-    left : 0;
 }
