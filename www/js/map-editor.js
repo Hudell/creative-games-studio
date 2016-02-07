@@ -386,7 +386,11 @@ STUDIO.MapEditor = {};
         transparent : true
       });
 
-      $('.map-editor-tileset')[0].appendChild(namespace._tilesetRenderer.view);
+      var tilesetEditor = $('.map-editor-tileset');
+      if (tilesetEditor.length > 0) {
+        tilesetEditor[0].appendChild(namespace._tilesetRenderer.view);
+      }
+
       namespace._tilesetRenderer.view.style.width = imageWidth + "px";
       namespace._tilesetRenderer.view.style.height = imageHeight + "px";
       var canvas = $(namespace._tilesetRenderer.view);
@@ -1267,8 +1271,9 @@ STUDIO.MapEditor = {};
     var totalRows = mapData.height;
 
     var index = totalColumns * row + column;
+    var tileId = layer.data[index];
 
-    namespace._currentTileIds = [layer.data[index]];
+    namespace._currentTileIds = [tileId];
     if (namespace._currentTool == 'brush') {
       if (column < totalColumns) {
         namespace._currentTileIds.push(layer.data[index + 1]);
@@ -1283,7 +1288,26 @@ STUDIO.MapEditor = {};
       }
     }
 
+    namespace.selectTilesetByTileId(tileId);
     namespace._needsTilesetRefresh = true;
+  };
+
+  namespace.selectTilesetByTileId = function(tileId) {
+    var mapData = namespace._currentMapData;
+    var tilesetIndex = -1;
+
+    for (var i = 0; i < mapData.tilesets.length; i++) {
+      var tileset = mapData.tilesets[i];
+
+      if (tileset.firstgid <= tileId && tileId < tileset.firstgid + tileset.tilecount) {
+        tilesetIndex = i;
+        break;
+      }
+    }
+
+    if (tilesetIndex >= 0 && tilesetIndex !== namespace._currentTilesetIndex) {
+      namespace.registerOpenTileset(tilesetIndex);
+    }
   };
 
   namespace.update = function(){
