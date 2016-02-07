@@ -36,27 +36,41 @@
       throw new Error("A map called " + mapName + " already exists.");
     }
 
-    var width = $('#new-tiled-map-width').val();
-    var height = $('#new-tiled-map-height').val();
+    var width = parseInt($('#new-tiled-map-width').val(), 10);
+    var height = parseInt($('#new-tiled-map-height').val(), 10);
     var tileWidth = $('#new-tiled-map-tile-width').val();
     var tileHeight = $('#new-tiled-map-tile-height').val();
 
     if (!width) {
       throw new Error("Please type a valid map width.");
     }
+    if (width < 1) {
+      throw new Error("The Map width needs to be a positive number.");
+    }
 
     if (!height) {
       throw new Error("Please type a valid map height.");
+    }
+    if (height < 1) {
+      throw new Error("The Map height needs to be a positive number.");
     }
 
     if (!tileWidth) {
       throw new Error("Please type a valid width for the tiles.");
     }
+    if (tileWidth < 1) {
+      throw new Error("The tile width needs to be a positive number.");
+    }
 
     if (!tileHeight) {
       throw new Error("Please type a valid height for the tiles.");
     }
+    if (tileHeight < 1) {
+      throw new Error("The tile height needs to be a positive number.");
+    }
 
+    width *= 2;
+    height *= 2;
     tileWidth /= 2;
     tileHeight /= 2;
 

@@ -905,7 +905,7 @@ var STUDIO = {};
 
     if (STUDIO._windowName === 'map-editor') {
       el.append('<li class="divider"></li>');
-      el.append('<li><a id="current-map-settingsbtn" href="#"><i class="fa fa-wrench fa-fw"></i> Map Settings</a></li>');
+      el.append('<li><a id="current-map-settings-btn" href="#"><i class="fa fa-wrench fa-fw"></i> Map Settings</a></li>');
       el.append('<li><a id="delete-current-map-btn" href="#"><i class="fa fa-remove fa-fw"></i> Delete Current Map</a></li>');
     }
 
@@ -914,6 +914,10 @@ var STUDIO = {};
       STUDIO.openLastMap();
     });
 
+    $('#current-map-settings-btn').on('click', function(event){
+      event.preventDefault();
+      STUDIO.MapEditor.openMapSettings();
+    });
     $('#list-maps-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'maps'); });
     $('#btn-new-map').on('click', function(event) {
       event.preventDefault();

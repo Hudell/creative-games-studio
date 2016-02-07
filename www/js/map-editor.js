@@ -298,6 +298,31 @@ STUDIO.MapEditor = {};
     namespace.openTileset(tileset);
   };
 
+  namespace.openMapSettings = function() {
+    var mapData = namespace._currentMapData;
+    STUDIO.openPopupForm('map-settings', 'Map Settings', function(){
+      var newWidth = parseInt($('#map-settings-width').val(), 10);
+      var newHeight = parseInt($('#map-settings-height').val(), 10);
+
+      if (newWidth <= 0) {
+        throw new Error("The width needs to be a positive number.");
+      }
+
+      if (newHeight <= 0) {
+        throw new Error("The height needs to be a positive number.");
+      }
+
+      mapData.width = newWidth * 2;
+      mapData.height = newHeight * 2;
+
+      namespace.onMapChange();
+      namespace.openMapEditor(namespace._currentMapName);
+    }, function(){
+      $('#map-settings-width').val(mapData.width / 2);
+      $('#map-settings-height').val(mapData.height / 2);
+    });
+  };
+
   namespace.getSelectionSize = function() {
     var mapData = namespace._currentMapData;
     var tileWidth = mapData.tilewidth;
@@ -1355,6 +1380,7 @@ STUDIO.MapEditor = {};
     namespace._layerCache = {};
     namespace._tileCache = {};
     namespace._gridLayerTexture = false;
+    namespace._selectionLayerTexture = false;
   };
 
   namespace.createLayers = function(width, height) {
