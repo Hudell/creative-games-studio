@@ -207,7 +207,7 @@ STUDIO.MapEditor = {};
     var list = $('#map-editor-layer-list');
     list.html('');
 
-    list.append('<li><a class="map-editor-manage-layers" id="map-editor-manage-layers-btn" href="#"><i class="fa fa-cog fa-fw"></i> Manage Layers </a></li>');
+    list.append('<li><a class="map-editor-manage-layers" id="map-editor-manage-layers-btn" href="#"><i class="fa fa-cogs fa-fw"></i> Manage Layers </a></li>');
     list.append('<li class="divider"></li>');
 
     var layers = namespace._currentMapData.layers;

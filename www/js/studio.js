@@ -271,6 +271,11 @@ var STUDIO = {};
     STUDIO.changeLoadedPath('');
   };
 
+  STUDIO.closeProjectAndRedirect = function() {
+    STUDIO.closeProject();
+    STUDIO.openWindow('new-project');
+  };
+
   STUDIO.openProject = function(folderPath) {
     if (!fs.existsSync(path.join(folderPath, "game.json"))) {
       STUDIO.showError("Game Data not found");
@@ -314,17 +319,27 @@ var STUDIO = {};
   };
 
   STUDIO.reloadProjectButton = function() {
-    if (!STUDIO.isGameLoaded()) {
-      throw new Error("There's no game loaded.");
-    }
-
-    if (STUDIO.isGameModified()) {
+    if (STUDIO.isGameLoaded() && STUDIO.isGameModified()) {
       STUDIO.customConfirm("Unsaved changes will be lost.", "Attention", "No problem.", "Wait, No.", function(){
         STUDIO.reloadProject();
       });
     } else {
       STUDIO.reloadProject();
     }    
+  };
+
+  STUDIO.closeProjectButton = function() {
+    if (!STUDIO.isGameLoaded()) {
+      throw new Error("There's no game loaded.");
+    }
+
+    if (STUDIO.isGameModified()) {
+      STUDIO.customConfirm("Unsaved changes will be lost.", "Attention", "No problem.", "Wait, No.", function(){
+        STUDIO.closeProjectAndRedirect();
+      });
+    } else {
+      STUDIO.closeProjectAndRedirect();
+    }
   };
 
   STUDIO.newProject = function() {
@@ -840,6 +855,10 @@ var STUDIO = {};
     $('#open-btn').on('click', function(event) {
       event.preventDefault();
       STUDIO.openProjectDialog();
+    });
+    $('#close-btn').on('click', function(event) {
+      event.preventDefault();
+      STUDIO.closeProjectButton();
     });
     $('#save-btn').on('click', function(event) {
       event.preventDefault();            
