@@ -298,6 +298,38 @@ STUDIO.MapEditor = {};
     namespace.openTileset(tileset);
   };
 
+  namespace.resizeLayer = function(layer, width, height) {
+    if (layer.type !== "tilelayer") return;
+
+    var organizedData = [];
+    var index = -1;
+    for (var y = 0; y < layer.height; y++) {
+      organizedData[y] = [];
+
+      for (var x = 0; x < layer.width; x++) {
+        index++;
+
+        organizedData[y][x] = layer.data[index];
+      }
+    }
+
+    index = -1;
+    for (y = 0; y < height; y++) {
+      for (x = 0; x < width; x++) {
+        index++;
+
+        if (!!organizedData[y]) {
+          layer.data[index] = organizedData[y][x] || 0;
+        } else {
+          layer.data[index] = 0;
+        }
+      }
+    }
+
+    layer.width = width;
+    layer.height = height;
+  };
+
   namespace.openMapSettings = function() {
     var mapData = namespace._currentMapData;
     STUDIO.openPopupForm('map-settings', 'Map Settings', function(){
@@ -314,6 +346,10 @@ STUDIO.MapEditor = {};
 
       mapData.width = newWidth * 2;
       mapData.height = newHeight * 2;
+
+      for (var i = 0; i < mapData.layers.length; i++) {
+        namespace.resizeLayer(mapData.layers[i], mapData.width, mapData.height);
+      }
 
       namespace.onMapChange();
       namespace.openMapEditor(namespace._currentMapName);
@@ -510,24 +546,6 @@ STUDIO.MapEditor = {};
         if (!!namespace._tileMouseDown) {
           var oldPos = namespace._tileMouseDown;
 
-          if (size.allowHalf) {
-            if (oldPos.column != Math.floor(oldPos.column)) {
-              oldPos.column -= 0.5;
-            }
-
-            if (oldPos.row != Math.floor(oldPos.row)) {
-              oldPos.row -= 0.5;
-            }
-
-            if (pos.column == Math.floor(pos.column)) {
-              pos.column += 0.5;
-            }
-
-            if (pos.row == Math.floor(pos.row)) {
-              pos.row += 0.5;
-            }
-          }
-
           namespace.pickArea(oldPos.column, oldPos.row, pos.column, pos.row);
           namespace._tileMouseDown = false;
         } else {
@@ -564,6 +582,25 @@ STUDIO.MapEditor = {};
     if (top > bottom) {
       top = row2;
       bottom = row;
+    }
+
+    var size = namespace.getFakeTileSize();
+    if (size.allowHalf) {
+      if (left != Math.floor(left)) {
+        left -= 0.5;
+      }
+
+      if (right != Math.floor(right)) {
+        right -= 0.5;
+      }
+
+      if (right == Math.floor(right)) {
+        right += 0.5;
+      }
+
+      if (bottom == Math.floor(bottom)) {
+        bottom += 0.5;
+      }
     }
 
     namespace._pickedArea = {
