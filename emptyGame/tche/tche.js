@@ -2,13 +2,13 @@
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -35,7 +35,7 @@ if (!Array.prototype.find) {
   };
 }
 
-var BAH = (function () {
+var BAH = function () {
   function BAH() {
     _classCallCheck(this, BAH);
   }
@@ -53,7 +53,7 @@ var BAH = (function () {
   }]);
 
   return BAH;
-})();
+}();
 
 var TCHE = {
   globals: {},
@@ -170,7 +170,7 @@ var TCHE = {
   $.trigger(TCHE);
 })(TCHE);
 (function () {
-  var Ajax = (function () {
+  var Ajax = function () {
     function Ajax() {
       _classCallCheck(this, Ajax);
     }
@@ -185,7 +185,7 @@ var TCHE = {
           xhr.overrideMimeType(mimeType);
         }
         if (onLoad === undefined) {
-          onLoad = function (xhr, filePath, name) {
+          onLoad = function onLoad(xhr, filePath, name) {
             if (xhr.status < 400) {
               TCHE.data[name] = JSON.parse(xhr.responseText);
             }
@@ -203,12 +203,12 @@ var TCHE = {
     }]);
 
     return Ajax;
-  })();
+  }();
 
   TCHE.Ajax = Ajax;
 })();
 (function () {
-  var Clone = (function () {
+  var Clone = function () {
     function Clone() {
       _classCallCheck(this, Clone);
     }
@@ -248,12 +248,12 @@ var TCHE = {
     }]);
 
     return Clone;
-  })();
+  }();
 
   TCHE.Clone = Clone;
 })();
 (function () {
-  var Params = (function () {
+  var Params = function () {
     function Params() {
       _classCallCheck(this, Params);
     }
@@ -297,7 +297,7 @@ var TCHE = {
     }]);
 
     return Params;
-  })();
+  }();
 
   TCHE.Params = Params;
   TCHE.Params.loadParams();
@@ -362,21 +362,64 @@ function Trigger(el) {
 }
 
 (function () {
-  var Validation = (function () {
+  var Validation = function () {
     function Validation() {
       _classCallCheck(this, Validation);
     }
 
     _createClass(Validation, null, [{
+      key: 'hasAnySkin',
+      value: function hasAnySkin() {
+        if (!TCHE.data.game.skins) {
+          return false;
+        }
+
+        for (var key in TCHE.data.game.skins) {
+          return true;
+        }
+
+        return false;
+      }
+    }, {
+      key: 'hasAnySprite',
+      value: function hasAnySprite() {
+        if (!TCHE.data.game.sprites) {
+          return false;
+        }
+
+        for (var key in TCHE.data.game.sprites) {
+          return true;
+        }
+
+        return false;
+      }
+    }, {
+      key: 'hasPlayerSprite',
+      value: function hasPlayerSprite() {
+        if (!TCHE.data.game.player.sprite) {
+          return false;
+        }
+
+        if (!TCHE.data.game.sprites[TCHE.data.game.player.sprite]) {
+          return false;
+        }
+
+        return true;
+      }
+    }, {
       key: 'checkBasicFiles',
       value: function checkBasicFiles() {
         try {
-          if (!TCHE.data.game.skins || TCHE.data.game.skins.length === 0) {
-            throw new Error("There's no skin configured.");
+          // if (!this.hasAnySkin()) {
+          //   throw new Error("There's no skin configured.");
+          // }
+
+          if (!this.hasAnySprite()) {
+            throw new Error("There's no sprite configured.");
           }
 
-          if (!TCHE.data.game.sprites || TCHE.data.game.sprites.length === 0) {
-            throw new Error("There's no sprite configured.");
+          if (!this.hasPlayerSprite()) {
+            throw new Error("The player's sprite doesn't exist.");
           }
         } catch (e) {
           alert(e);
@@ -386,12 +429,12 @@ function Trigger(el) {
     }]);
 
     return Validation;
-  })();
+  }();
 
   TCHE.Validation = Validation;
 })();
 (function () {
-  var Character = (function () {
+  var Character = function () {
     function Character() {
       _classCallCheck(this, Character);
 
@@ -800,12 +843,12 @@ function Trigger(el) {
     }]);
 
     return Character;
-  })();
+  }();
 
   TCHE.registerClass('Character', Character);
 })();
 (function () {
-  var CodeInterpreter = (function () {
+  var CodeInterpreter = function () {
     function CodeInterpreter() {
       _classCallCheck(this, CodeInterpreter);
 
@@ -857,12 +900,12 @@ function Trigger(el) {
     }]);
 
     return CodeInterpreter;
-  })();
+  }();
 
   TCHE.CodeInterpreter = CodeInterpreter;
 })();
 (function () {
-  var MapType = (function () {
+  var MapType = function () {
     function MapType() {
       _classCallCheck(this, MapType);
     }
@@ -893,12 +936,12 @@ function Trigger(el) {
     }]);
 
     return MapType;
-  })();
+  }();
 
   TCHE.MapType = MapType;
 })();
 (function () {
-  var ObjectType = (function () {
+  var ObjectType = function () {
     function ObjectType() {
       _classCallCheck(this, ObjectType);
 
@@ -918,12 +961,12 @@ function Trigger(el) {
     }]);
 
     return ObjectType;
-  })();
+  }();
 
   TCHE.ObjectType = ObjectType;
 })();
 (function () {
-  var SkinType = (function () {
+  var SkinType = function () {
     function SkinType() {
       _classCallCheck(this, SkinType);
     }
@@ -945,12 +988,12 @@ function Trigger(el) {
     }]);
 
     return SkinType;
-  })();
+  }();
 
   TCHE.SkinType = SkinType;
 })();
 (function () {
-  var Sprite = (function (_PIXI$Container) {
+  var Sprite = function (_PIXI$Container) {
     _inherits(Sprite, _PIXI$Container);
 
     function Sprite() {
@@ -996,12 +1039,12 @@ function Trigger(el) {
     }]);
 
     return Sprite;
-  })(PIXI.Container);
+  }(PIXI.Container);
 
   TCHE.registerClass('Sprite', Sprite);
 })();
 (function () {
-  var SpriteType = (function () {
+  var SpriteType = function () {
     function SpriteType() {
       _classCallCheck(this, SpriteType);
     }
@@ -1028,12 +1071,12 @@ function Trigger(el) {
     }]);
 
     return SpriteType;
-  })();
+  }();
 
   TCHE.SpriteType = SpriteType;
 })();
 (function () {
-  var WindowContent = (function (_PIXI$RenderTexture) {
+  var WindowContent = function (_PIXI$RenderTexture) {
     _inherits(WindowContent, _PIXI$RenderTexture);
 
     function WindowContent(renderer, width, height, skinName) {
@@ -1191,12 +1234,12 @@ function Trigger(el) {
     }]);
 
     return WindowContent;
-  })(PIXI.RenderTexture);
+  }(PIXI.RenderTexture);
 
   TCHE.registerClass('WindowContent', WindowContent);
 })();
 (function () {
-  var ImageSpriteType = (function (_TCHE$SpriteType) {
+  var ImageSpriteType = function (_TCHE$SpriteType) {
     _inherits(ImageSpriteType, _TCHE$SpriteType);
 
     function ImageSpriteType() {
@@ -1206,12 +1249,12 @@ function Trigger(el) {
     }
 
     return ImageSpriteType;
-  })(TCHE.SpriteType);
+  }(TCHE.SpriteType);
 
   TCHE.spriteTypes.image = ImageSpriteType;
 })();
 (function () {
-  var RpgMakerSpriteType = (function (_TCHE$SpriteType2) {
+  var RpgMakerSpriteType = function (_TCHE$SpriteType2) {
     _inherits(RpgMakerSpriteType, _TCHE$SpriteType2);
 
     function RpgMakerSpriteType() {
@@ -1296,12 +1339,12 @@ function Trigger(el) {
     }]);
 
     return RpgMakerSpriteType;
-  })(TCHE.SpriteType);
+  }(TCHE.SpriteType);
 
   TCHE.spriteTypes.rpgmaker = RpgMakerSpriteType;
 })();
 (function () {
-  var Default2DMapType = (function (_TCHE$MapType) {
+  var Default2DMapType = function (_TCHE$MapType) {
     _inherits(Default2DMapType, _TCHE$MapType);
 
     function Default2DMapType() {
@@ -1331,12 +1374,12 @@ function Trigger(el) {
     }]);
 
     return Default2DMapType;
-  })(TCHE.MapType);
+  }(TCHE.MapType);
 
   TCHE.mapTypes["2d"] = Default2DMapType;
 })();
 (function () {
-  var TiledMapType = (function (_TCHE$MapType2) {
+  var TiledMapType = function (_TCHE$MapType2) {
     _inherits(TiledMapType, _TCHE$MapType2);
 
     function TiledMapType() {
@@ -1402,12 +1445,12 @@ function Trigger(el) {
     }]);
 
     return TiledMapType;
-  })(TCHE.MapType);
+  }(TCHE.MapType);
 
   TCHE.mapTypes.tiled = TiledMapType;
 })();
 (function () {
-  var RpgMakerSkinType = (function (_TCHE$SkinType) {
+  var RpgMakerSkinType = function (_TCHE$SkinType) {
     _inherits(RpgMakerSkinType, _TCHE$SkinType);
 
     function RpgMakerSkinType() {
@@ -1657,12 +1700,12 @@ function Trigger(el) {
     }]);
 
     return RpgMakerSkinType;
-  })(TCHE.SkinType);
+  }(TCHE.SkinType);
 
   TCHE.skinTypes.rpgmaker = RpgMakerSkinType;
 })();
 (function () {
-  var ObjectObjectType = (function (_TCHE$ObjectType) {
+  var ObjectObjectType = function (_TCHE$ObjectType) {
     _inherits(ObjectObjectType, _TCHE$ObjectType);
 
     function ObjectObjectType() {
@@ -1684,12 +1727,12 @@ function Trigger(el) {
     }]);
 
     return ObjectObjectType;
-  })(TCHE.ObjectType);
+  }(TCHE.ObjectType);
 
   TCHE.objectTypes.Object = ObjectObjectType;
 })();
 (function () {
-  var CreatureObjectType = (function (_TCHE$objectTypes$Obj) {
+  var CreatureObjectType = function (_TCHE$objectTypes$Obj) {
     _inherits(CreatureObjectType, _TCHE$objectTypes$Obj);
 
     function CreatureObjectType() {
@@ -1707,12 +1750,12 @@ function Trigger(el) {
     }]);
 
     return CreatureObjectType;
-  })(TCHE.objectTypes.Object);
+  }(TCHE.objectTypes.Object);
 
   TCHE.objectTypes.Creature = CreatureObjectType;
 })();
 (function () {
-  var NpcObjectType = (function (_TCHE$objectTypes$Cre) {
+  var NpcObjectType = function (_TCHE$objectTypes$Cre) {
     _inherits(NpcObjectType, _TCHE$objectTypes$Cre);
 
     function NpcObjectType() {
@@ -1730,12 +1773,12 @@ function Trigger(el) {
     }]);
 
     return NpcObjectType;
-  })(TCHE.objectTypes.Creature);
+  }(TCHE.objectTypes.Creature);
 
   TCHE.objectTypes.NPC = NpcObjectType;
 })();
 (function () {
-  var PlayerObjectType = (function (_TCHE$objectTypes$Cre2) {
+  var PlayerObjectType = function (_TCHE$objectTypes$Cre2) {
     _inherits(PlayerObjectType, _TCHE$objectTypes$Cre2);
 
     function PlayerObjectType() {
@@ -1757,12 +1800,12 @@ function Trigger(el) {
     }]);
 
     return PlayerObjectType;
-  })(TCHE.objectTypes.Creature);
+  }(TCHE.objectTypes.Creature);
 
   TCHE.objectTypes.Player = PlayerObjectType;
 })();
 (function () {
-  var CharacterSprite = (function (_TCHE$Sprite) {
+  var CharacterSprite = function (_TCHE$Sprite) {
     _inherits(CharacterSprite, _TCHE$Sprite);
 
     function CharacterSprite(character) {
@@ -1821,12 +1864,12 @@ function Trigger(el) {
     }]);
 
     return CharacterSprite;
-  })(TCHE.Sprite);
+  }(TCHE.Sprite);
 
   TCHE.registerClass('CharacterSprite', CharacterSprite);
 })();
 (function () {
-  var MapSprite = (function (_TCHE$Sprite2) {
+  var MapSprite = function (_TCHE$Sprite2) {
     _inherits(MapSprite, _TCHE$Sprite2);
 
     function MapSprite(map) {
@@ -1849,12 +1892,12 @@ function Trigger(el) {
     }]);
 
     return MapSprite;
-  })(TCHE.Sprite);
+  }(TCHE.Sprite);
 
   TCHE.registerClass('MapSprite', MapSprite);
 })();
 (function () {
-  var TiledLayerSprite = (function (_TCHE$Sprite3) {
+  var TiledLayerSprite = function (_TCHE$Sprite3) {
     _inherits(TiledLayerSprite, _TCHE$Sprite3);
 
     function TiledLayerSprite(layerData) {
@@ -1955,12 +1998,12 @@ function Trigger(el) {
     }]);
 
     return TiledLayerSprite;
-  })(TCHE.Sprite);
+  }(TCHE.Sprite);
 
   TCHE.registerClass('TiledLayerSprite', TiledLayerSprite);
 })();
 (function () {
-  var TiledObjectLayerSprite = (function (_TCHE$Sprite4) {
+  var TiledObjectLayerSprite = function (_TCHE$Sprite4) {
     _inherits(TiledObjectLayerSprite, _TCHE$Sprite4);
 
     function TiledObjectLayerSprite(layerData) {
@@ -2010,9 +2053,9 @@ function Trigger(el) {
           return obj1.x - obj2.x;
         });
 
-        this._objectSprites.forEach((function (obj) {
+        this._objectSprites.forEach(function (obj) {
           this.addChild(obj);
-        }).bind(this));
+        }.bind(this));
       }
     }, {
       key: 'createObjectSprite',
@@ -2031,12 +2074,12 @@ function Trigger(el) {
     }]);
 
     return TiledObjectLayerSprite;
-  })(TCHE.Sprite);
+  }(TCHE.Sprite);
 
   TCHE.registerClass('TiledObjectLayerSprite', TiledObjectLayerSprite);
 })();
 (function () {
-  var WindowSprite = (function (_TCHE$Sprite5) {
+  var WindowSprite = function (_TCHE$Sprite5) {
     _inherits(WindowSprite, _TCHE$Sprite5);
 
     function WindowSprite(width, height, skinName) {
@@ -2161,12 +2204,12 @@ function Trigger(el) {
     }]);
 
     return WindowSprite;
-  })(TCHE.Sprite);
+  }(TCHE.Sprite);
 
   TCHE.registerClass('WindowSprite', WindowSprite);
 })();
 (function () {
-  var TiledMap = (function (_TCHE$MapSprite) {
+  var TiledMap = function (_TCHE$MapSprite) {
     _inherits(TiledMap, _TCHE$MapSprite);
 
     function TiledMap(map) {
@@ -2230,11 +2273,11 @@ function Trigger(el) {
         this._layers.push(layerSprite);
         this.addChild(layerSprite);
 
-        this._map.objects.forEach((function (obj) {
+        this._map.objects.forEach(function (obj) {
           if (obj.layerName == layer.name) {
             layerSprite.createObjectSprite(obj);
           }
-        }).bind(this));
+        }.bind(this));
 
         if (layer.properties !== undefined && layer.properties.playerLayer !== undefined) {
           layerSprite.createObjectSprite(TCHE.globals.player);
@@ -2262,12 +2305,12 @@ function Trigger(el) {
     }]);
 
     return TiledMap;
-  })(TCHE.MapSprite);
+  }(TCHE.MapSprite);
 
   TCHE.registerClass('TiledMap', TiledMap);
 })();
 (function () {
-  var Map2d = (function (_TCHE$MapSprite2) {
+  var Map2d = function (_TCHE$MapSprite2) {
     _inherits(Map2d, _TCHE$MapSprite2);
 
     function Map2d(map) {
@@ -2310,11 +2353,11 @@ function Trigger(el) {
       value: function createObjects() {
         this._objectSprites = [];
 
-        this._map.objects.forEach((function (obj) {
+        this._map.objects.forEach(function (obj) {
           var objSprite = new TCHE.CharacterSprite(obj);
           this._objectSprites.push(objSprite);
           this.addChild(objSprite);
-        }).bind(this));
+        }.bind(this));
       }
     }, {
       key: 'updatePlayer',
@@ -2342,12 +2385,12 @@ function Trigger(el) {
     }]);
 
     return Map2d;
-  })(TCHE.MapSprite);
+  }(TCHE.MapSprite);
 
   TCHE.registerClass('Map2d', Map2d);
 })();
 (function () {
-  var ChoiceWindow = (function (_TCHE$WindowSprite) {
+  var ChoiceWindow = function (_TCHE$WindowSprite) {
     _inherits(ChoiceWindow, _TCHE$WindowSprite);
 
     function ChoiceWindow(width, height) {
@@ -2647,12 +2690,51 @@ function Trigger(el) {
     }]);
 
     return ChoiceWindow;
-  })(TCHE.WindowSprite);
+  }(TCHE.WindowSprite);
 
   TCHE.registerClass('ChoiceWindow', ChoiceWindow);
 })();
 (function () {
-  var WindowTitleChoices = (function (_TCHE$ChoiceWindow) {
+  var MessageWindow = function (_TCHE$WindowSprite2) {
+    _inherits(MessageWindow, _TCHE$WindowSprite2);
+
+    function MessageWindow(width, height) {
+      _classCallCheck(this, MessageWindow);
+
+      var _this20 = _possibleConstructorReturn(this, Object.getPrototypeOf(MessageWindow).call(this, width, height));
+
+      _this20.interactive = true;
+
+      _this20.redraw();
+      return _this20;
+    }
+
+    _createClass(MessageWindow, [{
+      key: 'draw',
+      value: function draw() {}
+    }, {
+      key: 'click',
+      value: function click(e) {}
+    }, {
+      key: 'mousemove',
+      value: function mousemove(e) {}
+    }, {
+      key: 'checkInput',
+      value: function checkInput() {}
+    }, {
+      key: 'update',
+      value: function update() {
+        this.checkInput();
+      }
+    }]);
+
+    return MessageWindow;
+  }(TCHE.WindowSprite);
+
+  TCHE.registerClass('MessageWindow', MessageWindow);
+})();
+(function () {
+  var WindowTitleChoices = function (_TCHE$ChoiceWindow) {
     _inherits(WindowTitleChoices, _TCHE$ChoiceWindow);
 
     function WindowTitleChoices() {
@@ -2699,12 +2781,12 @@ function Trigger(el) {
     }]);
 
     return WindowTitleChoices;
-  })(TCHE.ChoiceWindow);
+  }(TCHE.ChoiceWindow);
 
   TCHE.registerClass('WindowTitleChoices', WindowTitleChoices);
 })();
 (function () {
-  var CodeManager = (function () {
+  var CodeManager = function () {
     function CodeManager() {
       _classCallCheck(this, CodeManager);
     }
@@ -2723,7 +2805,7 @@ function Trigger(el) {
     }]);
 
     return CodeManager;
-  })();
+  }();
 
   TCHE.registerStaticClass('CodeManager', CodeManager);
 })();
@@ -2732,7 +2814,7 @@ function Trigger(el) {
   var startedLoadingSprites = false;
   var filesToLoad = 0;
 
-  var FileManager = (function () {
+  var FileManager = function () {
     function FileManager() {
       _classCallCheck(this, FileManager);
     }
@@ -2870,7 +2952,7 @@ function Trigger(el) {
     }]);
 
     return FileManager;
-  })();
+  }();
 
   TCHE.registerStaticClass('FileManager', FileManager);
 })();
@@ -2927,7 +3009,7 @@ function Trigger(el) {
     113: 'F2'
   };
 
-  var InputManager = (function () {
+  var InputManager = function () {
     function InputManager() {
       _classCallCheck(this, InputManager);
     }
@@ -3041,27 +3123,27 @@ function Trigger(el) {
       value: function isKeyNamePressed(keyName) {
         var codes = this.getKeyCodes(keyName);
 
-        return codes.find((function (key) {
+        return codes.find(function (key) {
           return this.isKeyCodePressed(key);
-        }).bind(this)) || false;
+        }.bind(this)) || false;
       }
     }, {
       key: 'isKeyNameReleased',
       value: function isKeyNameReleased(keyName) {
         var codes = this.getKeyCodes(keyName);
 
-        return codes.find((function (key) {
+        return codes.find(function (key) {
           return this.isKeyCodeReleased(key);
-        }).bind(this)) || false;
+        }.bind(this)) || false;
       }
     }, {
       key: 'isKeyNameTriggered',
       value: function isKeyNameTriggered(keyName) {
         var codes = this.getKeyCodes(keyName);
 
-        return codes.find((function (key) {
+        return codes.find(function (key) {
           return this.isKeyCodeTriggered(key);
-        }).bind(this)) || false;
+        }.bind(this)) || false;
       }
     }, {
       key: 'isKeyPressed',
@@ -3093,23 +3175,23 @@ function Trigger(el) {
     }, {
       key: 'getPressedKeys',
       value: function getPressedKeys(keys) {
-        return Object.keys(keys).filter((function (key) {
+        return Object.keys(keys).filter(function (key) {
           return this.isKeyCodePressed(key);
-        }).bind(this));
+        }.bind(this));
       }
     }, {
       key: 'getFirstDirection',
       value: function getFirstDirection() {
-        return ['left', 'right', 'up', 'down'].find((function (direction) {
+        return ['left', 'right', 'up', 'down'].find(function (direction) {
           return this.isKeyNamePressed(direction);
-        }).bind(this)) || '';
+        }.bind(this)) || '';
       }
     }, {
       key: 'getDirection',
       value: function getDirection() {
-        return ['left', 'right', 'up', 'down'].filter((function (direction) {
+        return ['left', 'right', 'up', 'down'].filter(function (direction) {
           return this.isKeyNamePressed(direction);
-        }).bind(this)).join('-');
+        }.bind(this)).join('-');
       }
     }, {
       key: 'onKeyDown',
@@ -3208,7 +3290,7 @@ function Trigger(el) {
     }]);
 
     return InputManager;
-  })();
+  }();
 
   document.addEventListener('keydown', InputManager.onKeyDown.bind(InputManager));
   document.addEventListener('keyup', InputManager.onKeyUp.bind(InputManager));
@@ -3251,7 +3333,7 @@ function Trigger(el) {
   TCHE.registerStaticClass('InputManager', InputManager);
 })();
 (function () {
-  var MapManager = (function () {
+  var MapManager = function () {
     function MapManager() {
       _classCallCheck(this, MapManager);
     }
@@ -3303,12 +3385,28 @@ function Trigger(el) {
     }]);
 
     return MapManager;
-  })();
+  }();
 
   TCHE.registerStaticClass('MapManager', MapManager);
 })();
 (function () {
-  var ObjectTypeManager = (function () {
+  var MessageManager = function () {
+    function MessageManager() {
+      _classCallCheck(this, MessageManager);
+    }
+
+    _createClass(MessageManager, null, [{
+      key: 'showMessage',
+      value: function showMessage() {}
+    }]);
+
+    return MessageManager;
+  }();
+
+  TCHE.registerStaticClass('MessageManager', MessageManager);
+})();
+(function () {
+  var ObjectTypeManager = function () {
     function ObjectTypeManager() {
       _classCallCheck(this, ObjectTypeManager);
     }
@@ -3357,12 +3455,12 @@ function Trigger(el) {
     }]);
 
     return ObjectTypeManager;
-  })();
+  }();
 
   TCHE.registerStaticClass('ObjectTypeManager', ObjectTypeManager);
 })();
 (function () {
-  var ResolutionManager = (function () {
+  var ResolutionManager = function () {
     function ResolutionManager() {
       _classCallCheck(this, ResolutionManager);
     }
@@ -3406,7 +3504,7 @@ function Trigger(el) {
     }]);
 
     return ResolutionManager;
-  })();
+  }();
 
   TCHE.registerStaticClass('ResolutionManager', ResolutionManager);
 })();
@@ -3415,7 +3513,7 @@ function Trigger(el) {
   var newScene;
   var newSceneParams;
 
-  var SceneManager = (function () {
+  var SceneManager = function () {
     function SceneManager() {
       _classCallCheck(this, SceneManager);
     }
@@ -3502,12 +3600,12 @@ function Trigger(el) {
     }]);
 
     return SceneManager;
-  })();
+  }();
 
   TCHE.registerStaticClass('SceneManager', SceneManager);
 })();
 (function () {
-  var SkinManager = (function () {
+  var SkinManager = function () {
     function SkinManager() {
       _classCallCheck(this, SkinManager);
     }
@@ -3613,12 +3711,12 @@ function Trigger(el) {
     }]);
 
     return SkinManager;
-  })();
+  }();
 
   TCHE.registerStaticClass('SkinManager', SkinManager);
 })();
 (function () {
-  var SoundManager = (function () {
+  var SoundManager = function () {
     function SoundManager() {
       _classCallCheck(this, SoundManager);
     }
@@ -3631,12 +3729,12 @@ function Trigger(el) {
     }]);
 
     return SoundManager;
-  })();
+  }();
 
   TCHE.registerStaticClass('SoundManager', SoundManager);
 })();
 (function () {
-  var SpriteManager = (function () {
+  var SpriteManager = function () {
     function SpriteManager() {
       _classCallCheck(this, SpriteManager);
     }
@@ -3745,12 +3843,12 @@ function Trigger(el) {
     }]);
 
     return SpriteManager;
-  })();
+  }();
 
   TCHE.registerStaticClass('SpriteManager', SpriteManager);
 })();
 (function () {
-  var TileManager = (function () {
+  var TileManager = function () {
     function TileManager() {
       _classCallCheck(this, TileManager);
     }
@@ -3841,12 +3939,12 @@ function Trigger(el) {
     }]);
 
     return TileManager;
-  })();
+  }();
 
   TCHE.registerStaticClass('TileManager', TileManager);
 })();
 (function () {
-  var Scene = (function (_PIXI$Container2) {
+  var Scene = function (_PIXI$Container2) {
     _inherits(Scene, _PIXI$Container2);
 
     function Scene() {
@@ -3867,22 +3965,22 @@ function Trigger(el) {
     }]);
 
     return Scene;
-  })(PIXI.Container);
+  }(PIXI.Container);
 
   TCHE.registerClass('Scene', Scene);
 })();
 (function () {
-  var SceneLoading = (function (_TCHE$Scene) {
+  var SceneLoading = function (_TCHE$Scene) {
     _inherits(SceneLoading, _TCHE$Scene);
 
     function SceneLoading() {
       _classCallCheck(this, SceneLoading);
 
-      var _this22 = _possibleConstructorReturn(this, Object.getPrototypeOf(SceneLoading).call(this));
+      var _this23 = _possibleConstructorReturn(this, Object.getPrototypeOf(SceneLoading).call(this));
 
-      _this22.createBackground();
-      _this22.createMessage();
-      return _this22;
+      _this23.createBackground();
+      _this23.createMessage();
+      return _this23;
     }
 
     _createClass(SceneLoading, [{
@@ -3955,12 +4053,12 @@ function Trigger(el) {
     }]);
 
     return SceneLoading;
-  })(TCHE.Scene);
+  }(TCHE.Scene);
 
   TCHE.registerClass('SceneLoading', SceneLoading);
 })();
 (function () {
-  var SceneLaunch = (function (_TCHE$SceneLoading) {
+  var SceneLaunch = function (_TCHE$SceneLoading) {
     _inherits(SceneLaunch, _TCHE$SceneLoading);
 
     function SceneLaunch() {
@@ -4003,23 +4101,23 @@ function Trigger(el) {
     }]);
 
     return SceneLaunch;
-  })(TCHE.SceneLoading);
+  }(TCHE.SceneLoading);
 
   TCHE.registerClass('SceneLaunch', SceneLaunch);
 })();
 (function () {
-  var SceneMapLoading = (function (_TCHE$SceneLoading2) {
+  var SceneMapLoading = function (_TCHE$SceneLoading2) {
     _inherits(SceneMapLoading, _TCHE$SceneLoading2);
 
     function SceneMapLoading(params) {
       _classCallCheck(this, SceneMapLoading);
 
-      var _this24 = _possibleConstructorReturn(this, Object.getPrototypeOf(SceneMapLoading).call(this));
+      var _this25 = _possibleConstructorReturn(this, Object.getPrototypeOf(SceneMapLoading).call(this));
 
-      _this24._mapName = params.mapName;
+      _this25._mapName = params.mapName;
 
       TCHE.FileManager.loadMapFiles(params.mapName);
-      return _this24;
+      return _this25;
     }
 
     _createClass(SceneMapLoading, [{
@@ -4035,18 +4133,18 @@ function Trigger(el) {
     }]);
 
     return SceneMapLoading;
-  })(TCHE.SceneLoading);
+  }(TCHE.SceneLoading);
 
   TCHE.registerClass('SceneMapLoading', SceneMapLoading);
 })();
 (function () {
-  var SceneMap = (function (_TCHE$Scene2) {
+  var SceneMap = function (_TCHE$Scene2) {
     _inherits(SceneMap, _TCHE$Scene2);
 
     function SceneMap(params) {
       _classCallCheck(this, SceneMap);
 
-      var _this25 = _possibleConstructorReturn(this, Object.getPrototypeOf(SceneMap).call(this));
+      var _this26 = _possibleConstructorReturn(this, Object.getPrototypeOf(SceneMap).call(this));
 
       TCHE.globals.player.x = Number(TCHE.data.game.player.x || 0);
       TCHE.globals.player.y = Number(TCHE.data.game.player.y || 0);
@@ -4061,9 +4159,9 @@ function Trigger(el) {
       var mapData = TCHE.globals.map.mapData;
       var spriteClass = TCHE.MapManager.getSpriteClass(mapData);
 
-      _this25._mapSprite = new spriteClass(TCHE.globals.map);
-      _this25.addChild(_this25._mapSprite);
-      return _this25;
+      _this26._mapSprite = new spriteClass(TCHE.globals.map);
+      _this26.addChild(_this26._mapSprite);
+      return _this26;
     }
 
     _createClass(SceneMap, [{
@@ -4084,12 +4182,12 @@ function Trigger(el) {
     }]);
 
     return SceneMap;
-  })(TCHE.Scene);
+  }(TCHE.Scene);
 
   TCHE.registerClass('SceneMap', SceneMap);
 })();
 (function () {
-  var SceneWindow = (function (_TCHE$Scene3) {
+  var SceneWindow = function (_TCHE$Scene3) {
     _inherits(SceneWindow, _TCHE$Scene3);
 
     function SceneWindow(params) {
@@ -4106,25 +4204,25 @@ function Trigger(el) {
     }]);
 
     return SceneWindow;
-  })(TCHE.Scene);
+  }(TCHE.Scene);
 
   TCHE.registerClass('SceneWindow', SceneWindow);
 })();
 (function () {
-  var SceneTitle = (function (_TCHE$SceneWindow) {
+  var SceneTitle = function (_TCHE$SceneWindow) {
     _inherits(SceneTitle, _TCHE$SceneWindow);
 
     function SceneTitle(params) {
       _classCallCheck(this, SceneTitle);
 
-      var _this27 = _possibleConstructorReturn(this, Object.getPrototypeOf(SceneTitle).call(this));
+      var _this28 = _possibleConstructorReturn(this, Object.getPrototypeOf(SceneTitle).call(this));
 
-      _this27._windowSprite = new TCHE.WindowTitleChoices();
-      _this27._windowSprite.x = Math.floor(TCHE.renderer.width / 2) - Math.floor(_this27._windowSprite.width / 2);
-      _this27._windowSprite.y = TCHE.renderer.height - _this27._windowSprite.height;
+      _this28._windowSprite = new TCHE.WindowTitleChoices();
+      _this28._windowSprite.x = Math.floor(TCHE.renderer.width / 2) - Math.floor(_this28._windowSprite.width / 2);
+      _this28._windowSprite.y = TCHE.renderer.height - _this28._windowSprite.height;
 
-      _this27.addChild(_this27._windowSprite);
-      return _this27;
+      _this28.addChild(_this28._windowSprite);
+      return _this28;
     }
 
     _createClass(SceneTitle, [{
@@ -4137,7 +4235,7 @@ function Trigger(el) {
     }]);
 
     return SceneTitle;
-  })(TCHE.SceneWindow);
+  }(TCHE.SceneWindow);
 
   TCHE.registerClass('SceneTitle', SceneTitle);
 })();
@@ -4145,7 +4243,7 @@ function Trigger(el) {
   var collisionMapDirty = true;
   var shouldCreateCollisionMap = true;
 
-  var Map = (function () {
+  var Map = function () {
     function Map() {
       _classCallCheck(this, Map);
 
@@ -4233,7 +4331,7 @@ function Trigger(el) {
           objectList = TCHE.MapManager.getMapObjects(this._mapData) || objectList;
         }
 
-        objectList.forEach((function (obj) {
+        objectList.forEach(function (obj) {
           var data = map.getImportantObjectData(this._mapData, obj);
           var characterClass = TCHE.Character;
 
@@ -4247,7 +4345,7 @@ function Trigger(el) {
           }
 
           this._objects.push(objCharacter);
-        }).bind(this));
+        }.bind(this));
 
         collisionMapDirty = true;
         shouldCreateCollisionMap = true;
@@ -4598,12 +4696,12 @@ function Trigger(el) {
     }]);
 
     return Map;
-  })();
+  }();
 
   TCHE.registerClass('Map', Map);
 })();
 (function () {
-  var Player = (function (_TCHE$Character) {
+  var Player = function (_TCHE$Character) {
     _inherits(Player, _TCHE$Character);
 
     function Player() {
@@ -4648,7 +4746,7 @@ function Trigger(el) {
     }]);
 
     return Player;
-  })(TCHE.Character);
+  }(TCHE.Character);
 
   TCHE.registerClass('Player', Player);
 })();
