@@ -69,31 +69,49 @@ var STUDIO = {};
     });
   };
 
+  STUDIO.confirmWithCancel = function(message, okCallback, noCallback, title, cancelCallback) {
+    STUDIO.customConfirm(message, title || "Confirmation", "Yes", "Cancel", okCallback, cancelCallback, "No", noCallback);
+  };
+
   STUDIO.confirm = function(message, okCallback, title, cancelCallback){
     STUDIO.customConfirm(message, title || "Confirmation", "Ok", "Cancel", okCallback, cancelCallback);
   };
 
-  STUDIO.customConfirm = function(message, title, okLabel, cancelLabel, okCallback, cancelCallback) {
-    STUDIO.openDialog($("<div></div>").html(message), title, [
-      {
-        text : okLabel,
+  STUDIO.customConfirm = function(message, title, okLabel, cancelLabel, okCallback, cancelCallback, noLabel, noCallback) {
+    var buttons = [];
+    buttons.push({
+      text : okLabel,
+      click : function() {
+        if (!!okCallback) {
+          okCallback();
+        }
+        $(this).dialog("close");
+      }
+    });
+
+    if (!!noLabel) {
+      buttons.push({
+        text : noLabel,
         click : function() {
-          if (!!okCallback) {
-            okCallback();
+          if (!!noCallback) {
+            noCallback();
           }
           $(this).dialog("close");
         }
-      },
-      {
-        text : cancelLabel,
-        click : function() {
-          if (!!cancelCallback) {
-            cancelCallback();
-          }
-          $(this).dialog("close");
-        }        
-      }
-    ]);
+      });
+    }
+
+    buttons.push({
+      text : cancelLabel,
+      click : function() {
+        if (!!cancelCallback) {
+          cancelCallback();
+        }
+        $(this).dialog("close");
+      }        
+    });
+
+    STUDIO.openDialog($("<div></div>").html(message), title, buttons);
   };
 
   STUDIO.deepClone = function(obj) {
@@ -360,7 +378,7 @@ var STUDIO = {};
     var newWin = gui.Window.open('file://' + STUDIO.loadedGame.folder + '/index.html?debug', {
       position : 'center',
       title : STUDIO.gameData.name,
-      toolbar : true
+      toolbar : false
     });
 
     try {
@@ -382,8 +400,10 @@ var STUDIO = {};
     }
 
     if (STUDIO.isGameModified()) {
-      STUDIO.confirm("Save before running?", function(){
+      STUDIO.confirmWithCancel("Save before running?", function(){
         STUDIO.saveProject();
+        STUDIO.playProject();
+      }, function(){
         STUDIO.playProject();
       });
     } else {
@@ -823,8 +843,10 @@ var STUDIO = {};
 
   STUDIO.exitButton = function(){
     if (STUDIO.isGameModified()) {
-      STUDIO.confirm("Save before leaving?", function(){
+      STUDIO.confirmWithCancel("Save before leaving?", function(){
         STUDIO.saveProject();
+        STUDIO.exit();
+      }, function(){
         STUDIO.exit();
       });
     } else {
