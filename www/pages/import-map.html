@@ -3,42 +3,29 @@
         <h1 class="page-header">Import Map</h1>
     </div>
 </div>
-<!-- /.row -->
+
 <div class="row">
-  <div class="col-lg-12">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-          
+  <div class="col-lg-6">
+    <form role="form">
+      <div class="form-group">
+        <label>Map File</label>
+        <input type="file" id="import-map-file">
+        <p class="help-block">Select the Map to import.</p>
       </div>
 
-      <div class="panel-body">
-        <div class="row">
-          <div class="col-lg-6">
-            <form role="form">
-              <div class="form-group">
-                <label>Map File</label>
-                <input type="file" id="import-map-file">
-                <p class="help-block">Select the Map to import.</p>
-              </div>
-
-              <div class="form-group">
-                <label>Map Type</label>
-                <select id="mapType" class="form-control">
-                  <option value="tiled">Tiled</option>
-                </select>
-                <p class="help-block">Select the type of the Map that you want to import.</p>
-              </div>
-
-              <button id="import-map-continue-btn" type="button" class="btn btn-primary">Continue</button>
-              <button id="import-map-cancel-btn" type="button" class="btn btn-default">Cancel</button>
-            </form>
-          </div>
-        </div>
+      <div class="form-group">
+        <label>Map Type</label>
+        <select id="mapType" class="form-control">
+          <option value="tiled">Tiled</option>
+        </select>
+        <p class="help-block">Select the type of the Map that you want to import.</p>
       </div>
-    </div>
+
+      <button id="import-map-continue-btn" type="button" class="btn btn-primary">Continue</button>
+      <button id="import-map-cancel-btn" type="button" class="btn btn-default">Cancel</button>
+    </form>
   </div>
 </div>
-
 
 <script type="text/javascript">
 $(function(){
