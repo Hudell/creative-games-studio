@@ -803,6 +803,15 @@ var STUDIO = {};
     return filePath.indexOf(loadedPath) === 0;
   };
 
+  STUDIO.openCodeEditor = function() {
+    STUDIO.openWindow('code-editor', function(){
+      var el = document.getElementById('code-editor');
+      el.innerHTML = '';
+
+      CodeMirror(el);
+    });
+  };
+
   STUDIO.isGameLoaded = function(){
     return !!STUDIO.loadedGame.folder && !!STUDIO.gameData;
   };
@@ -872,6 +881,10 @@ var STUDIO = {};
     });
 
     $('#plugins-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'plugins'); });
+    $('#code-editor-btn').on('click', function(event) {
+      event.preventDefault();
+      STUDIO.openCodeEditor();
+    });
     
     $('#open-btn').on('click', function(event) {
       event.preventDefault();
