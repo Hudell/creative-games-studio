@@ -98,6 +98,12 @@
                         <i class="fa fa-check-square-o fa-fw"></i> Show grid
                     </a>
                 </li>
+                <li class="divider"></li>
+                <li>
+                    <a id="mapeditor-options-objects-anywhere" href="#">
+                        <i class="fa fa-check-square-o fa-fw"></i> Place objects anywhere.
+                    </a>
+                </li>
             </ul>
         </li>
 
@@ -114,7 +120,7 @@
   <div class="navbar-default sidebar" role="">
       <div class="sidebar-nav navbar-collapse">
           <nav class="navbar navbar-default" role="" style="margin-bottom: 0">
-            <ul class="nav sidebar-toolbar navbar-left">
+            <ul class="nav sidebar-toolbar navbar-left" id="tileset-toolbar">
                 <li>
                     <a id="map-editor-tileset-new" href="#" title="Add Tileset">
                         <i class="fa fa-plus fa-fw"></i>
@@ -140,7 +146,24 @@
                         <i class="fa fa-search-minus fa-fw"></i>
                     </a>
                 </li>
-              </ul>
+            </ul>
+            <ul class="nav sidebar-toolbar navbar-left hidden" id="object-toolbar">
+                <li>
+                    <a id="map-editor-object-new" href="#" title="Add Object">
+                        <i class="fa fa-plus fa-fw"></i>
+                    </a>
+                </li>
+                <li class="hidden">
+                    <a id="map-editor-object-remove" href="#" title="Remove Object">
+                        <i class="fa fa-trash-o fa-fw"></i>
+                    </a>
+                </li>
+                <li class="hidden">
+                    <a id="" href="#" title="Object Settings">
+                        <i class="fa fa-gears fa-fw"></i>
+                    </a>
+                </li>
+            </ul>
           </nav>
       </div>
 

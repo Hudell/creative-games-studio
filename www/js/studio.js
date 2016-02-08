@@ -949,7 +949,7 @@ var STUDIO = {};
     el.html('');
 
     if (STUDIO._windowName !== 'map-editor') {
-      el.append('<li><a id="current-map-btn" href="#"><i class="fa fa-map fa-fw"></i> Map Editor</a></li>');
+      el.append('<li><a id="current-map-btn" href="#"><i class="fa fa-map-o fa-fw"></i> Map Editor</a></li>');
       el.append('<li class="divider"></li>');
     }
 

@@ -625,3 +625,7 @@ table.dataTable thead .sorting:after {
 
 .tileset-canvas {
 }
+
+.object-list {
+    background-color: white;
+}

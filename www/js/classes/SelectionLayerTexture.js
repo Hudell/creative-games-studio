@@ -18,7 +18,11 @@ SelectionLayerTexture.prototype.refreshSelection = function() {
   var mapRows = mapData.height;
 
   if (STUDIO.MapEditor._currentTileIds.length === 0 || STUDIO.MapEditor._currentTileIds[0] < 0) {
-    return;
+    //Don't return if the layer type is objectgroup
+    var layer = mapData.layers[STUDIO.MapEditor._currentLayerIndex];
+    if (!layer || layer.type !== 'objectgroup') {
+      return;
+    }
   }
 
   var pos = STUDIO.MapEditor.getMousePos();
@@ -169,45 +173,57 @@ SelectionLayerTexture.prototype.changeTile = function(x, y, drawRect) {
   var rightColumn = leftColumn;
   var bottomRow = topRow;
 
+  var drawTiles = true;
+
+  var layer = mapData.layers[STUDIO.MapEditor._currentLayerIndex];
+  if (!!layer && layer.type == 'objectgroup') {
+    rightColumn = leftColumn + 1;
+    bottomRow = topRow + 1;
+    drawTiles = false;
+  }
+
   var previousIndex = 0;
   var previousRow = row;
-  for (var i = 0; i < STUDIO.MapEditor._currentTileIds.length; i++) {
-    var tileId = STUDIO.MapEditor._currentTileIds[i];
 
-    if (tileId === undefined || tileId === 0) continue;
-    if (STUDIO.MapEditor._currentTool == 'eraser') {
-      tileId = -1;
+  if (drawTiles && !!STUDIO.MapEditor._currentTileIds) {
+    for (var i = 0; i < STUDIO.MapEditor._currentTileIds.length; i++) {
+      var tileId = STUDIO.MapEditor._currentTileIds[i];
+
+      if (tileId === undefined || tileId === 0) continue;
+      if (STUDIO.MapEditor._currentTool == 'eraser') {
+        tileId = -1;
+      }
+
+      if (column >= mapColumns) continue;
+
+      var newColumn = column + i;
+      var newRow = row;
+
+      while (newColumn >= mapColumns) {
+        newColumn -= mapColumns;
+        newRow++;
+      }
+
+      if (newColumn < column) {
+        continue;
+      }
+
+      if (newColumn < leftColumn) {
+        leftColumn = newColumn;
+      } else if (newColumn > rightColumn) {
+        rightColumn = newColumn;
+      }
+
+      if (newRow < topRow) {
+        topRow = newRow;
+      } else if (newRow > bottomRow) {
+        bottomRow = newRow;
+      }
+
+      this.drawTile(newColumn, newRow, tileId);
+      previousIndex = i;
+      previousRow = newRow;
     }
-
-    if (column >= mapColumns) continue;
-
-    var newColumn = column + i;
-    var newRow = row;
-
-    while (newColumn >= mapColumns) {
-      newColumn -= mapColumns;
-      newRow++;
-    }
-
-    if (newColumn < column) {
-      continue;
-    }
-
-    if (newColumn < leftColumn) {
-      leftColumn = newColumn;
-    } else if (newColumn > rightColumn) {
-      rightColumn = newColumn;
-    }
-
-    if (newRow < topRow) {
-      topRow = newRow;
-    } else if (newRow > bottomRow) {
-      bottomRow = newRow;
-    }
-
-    this.drawTile(newColumn, newRow, tileId);
-    previousIndex = i;
-    previousRow = newRow;
   }
 
   if (drawRect) {
