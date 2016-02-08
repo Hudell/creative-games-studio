@@ -5,61 +5,53 @@
 </div>
 
 <div class="row">
-  <div class="col-lg-12">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-          
-      </div>
-      <div class="panel-body">
+  <div class="">
+    <form role="form">
+      <div class="col-lg-6">
+        <div class="form-group">
+          <label>Name</label>
+          <input class="form-control" type="text" placeholder="Name" id="edit-object-name" disabled>
+        </div>
+
+        <div class="form-group">
+          <label>Event</label>
+          <select id="edit-object-event" class="form-control">
+          </select>
+        </div>
+
         <div class="row">
-          <div class="">
-            <form role="form">
-              <div class="col-lg-6">
-                <div class="form-group">
-                  <label>Name</label>
-                  <input class="form-control" type="text" placeholder="Name" id="edit-object-name" disabled>
-                </div>
-
-                <div class="form-group">
-                  <label>Event</label>
-                  <select id="edit-object-event" class="form-control">
-                  </select>
-                </div>
-
-                <div class="row">
-                  <div class="col-lg-12">
-                    <div class="panel panel-default">
-                      <div class="panel-heading">
-                        Code
-                      </div>
-
-                      <div class="table-responsive">
-                        <select multiple class="form-control game-code-list" id="edit-object-list">
-                          <option></option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <button id="edit-object-add-btn" type="button" class="btn btn-primary">Add Command</button>
-                <button id="edit-object-modify-btn" type="button" class="btn btn-default">Modify Command</button>
-                <button id="edit-object-remove-btn" type="button" class="btn btn-default">Remove Command</button>
-                <p></p>
-                <hr>
-                <p></p>
-
-                <button id="edit-object-save-btn" type="button" class="btn btn-save">Save</button>
-                <button id="edit-object-delete" type="button" class="btn btn-danger">Remove Object Type</button>
-                <button id="edit-object-cancel-btn" type="button" class="btn btn-default">Close</button>
+          <div class="col-lg-12">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                Code
               </div>
-            </form>
+
+              <div class="table-responsive">
+                <select multiple class="form-control game-code-list" id="edit-object-list">
+                  <option></option>
+                </select>
+              </div>
+            </div>
           </div>
         </div>
+
+        <button id="edit-object-add-btn" type="button" class="btn btn-primary">Add Command</button>
+        <button id="edit-object-modify-btn" type="button" class="btn btn-default">Modify Command</button>
+        <button id="edit-object-remove-btn" type="button" class="btn btn-default">Remove Command</button>
+        <p></p>
+        <hr>
+        <p></p>
+
+        <button id="edit-object-save-btn" type="button" class="btn btn-save">Save</button>
+        <button id="edit-object-delete" type="button" class="btn btn-danger">Remove Object Type</button>
+        <button id="edit-object-cancel-btn" type="button" class="btn btn-default">Close</button>
       </div>
-    </div>
+    </form>
   </div>
 </div>
+
+<br/>
+
 
 <script type="text/javascript">
 $(function(){

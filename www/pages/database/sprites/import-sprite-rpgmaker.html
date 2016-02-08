@@ -2,98 +2,87 @@
     <div class="col-lg-12">
         <h1 class="page-header">Import RPG Maker Sprite</h1>
     </div>
-    <!-- /.col-lg-12 -->
 </div>
-<!-- /.row -->
+
 <div class="row">
-  <div class="col-lg-12">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-          
+  <div class="col-lg-6">
+    <form role="form">
+      <div class="form-group">
+        <label>Image</label>
+        <input type="file" id="import-rpgmaker-sprite-image">
+        <p class="help-block">Select the RPG Maker Spriteset to import.</p>
       </div>
-      <div class="panel-body">
-        <div class="row">
-          <div class="col-lg-6">
-            <form role="form">
-              <div class="form-group">
-                <label>Image</label>
-                <input type="file" id="import-rpgmaker-sprite-image">
-                <p class="help-block">Select the RPG Maker Spriteset to import.</p>
-              </div>
 
-              <div class="form-group preview-image" id="import-rpgmaker-sprite-image-preview">
-              </div>
-
-              <div class="form-group">
-                <label>New Name</label>
-                <input class="form-control" type="text" placeholder="New Image File Name" id="import-rpgmaker-sprite-new-name">
-                <p class="help-block">The path and name where the image will be saved.</p>
-              </div>
-
-              <div class="form-group">
-                <label>Image Width</label>
-                <input class="form-control" type="text" placeholder="Width" disabled id="import-rpgmaker-sprite-width">
-              </div>
-
-              <div class="form-group">
-                <label>Image Height</label>
-                <input class="form-control" type="text" placeholder="Height" disabled id="import-rpgmaker-sprite-height">
-              </div>
-
-              <div class="form-group">
-                <label>If you specify names for the sprites below, they will automatically be added to the game.</label>
-              </div>
-
-              <div class="form-group">
-                <label>Name of Sprite 0</label>
-                <input class="form-control" type="text" placeholder="Name" id="import-rpgmaker-sprite-0">
-              </div>
-
-              <div class="form-group">
-                <label>Name of Sprite 1</label>
-                <input class="form-control" type="text" placeholder="Name" id="import-rpgmaker-sprite-1">
-              </div>
-
-              <div class="form-group">
-                <label>Name of Sprite 2</label>
-                <input class="form-control" type="text" placeholder="Name" id="import-rpgmaker-sprite-2">
-              </div>
-
-              <div class="form-group">
-                <label>Name of Sprite 3</label>
-                <input class="form-control" type="text" placeholder="Name" id="import-rpgmaker-sprite-3">
-              </div>
-
-              <div class="form-group">
-                <label>Name of Sprite 4</label>
-                <input class="form-control" type="text" placeholder="Name" id="import-rpgmaker-sprite-4">
-              </div>
-
-              <div class="form-group">
-                <label>Name of Sprite 5</label>
-                <input class="form-control" type="text" placeholder="Name" id="import-rpgmaker-sprite-5">
-              </div>
-
-              <div class="form-group">
-                <label>Name of Sprite 6</label>
-                <input class="form-control" type="text" placeholder="Name" id="import-rpgmaker-sprite-6">
-              </div>
-
-              <div class="form-group">
-                <label>Name of Sprite 7</label>
-                <input class="form-control" type="text" placeholder="Name" id="import-rpgmaker-sprite-7">
-              </div>
-
-              <button id="import-rpgmaker-sprite-save" type="button" class="btn btn-primary">OK</button>
-              <button id="import-rpgmaker-sprite-cancel" type="button" class="btn btn-default">Go Back</button>
-            </form>
-          </div>
-        </div>
+      <div class="form-group preview-image" id="import-rpgmaker-sprite-image-preview">
       </div>
-    </div>
+
+      <div class="form-group">
+        <label>New Name</label>
+        <input class="form-control" type="text" placeholder="New Image File Name" id="import-rpgmaker-sprite-new-name">
+        <p class="help-block">The path and name where the image will be saved.</p>
+      </div>
+
+      <div class="form-group">
+        <label>Image Width</label>
+        <input class="form-control" type="text" placeholder="Width" disabled id="import-rpgmaker-sprite-width">
+      </div>
+
+      <div class="form-group">
+        <label>Image Height</label>
+        <input class="form-control" type="text" placeholder="Height" disabled id="import-rpgmaker-sprite-height">
+      </div>
+
+      <div class="form-group">
+        <label>If you specify names for the sprites below, they will automatically be added to the game.</label>
+      </div>
+
+      <div class="form-group">
+        <label>Name of Sprite 0</label>
+        <input class="form-control" type="text" placeholder="Name" id="import-rpgmaker-sprite-0">
+      </div>
+
+      <div class="form-group">
+        <label>Name of Sprite 1</label>
+        <input class="form-control" type="text" placeholder="Name" id="import-rpgmaker-sprite-1">
+      </div>
+
+      <div class="form-group">
+        <label>Name of Sprite 2</label>
+        <input class="form-control" type="text" placeholder="Name" id="import-rpgmaker-sprite-2">
+      </div>
+
+      <div class="form-group">
+        <label>Name of Sprite 3</label>
+        <input class="form-control" type="text" placeholder="Name" id="import-rpgmaker-sprite-3">
+      </div>
+
+      <div class="form-group">
+        <label>Name of Sprite 4</label>
+        <input class="form-control" type="text" placeholder="Name" id="import-rpgmaker-sprite-4">
+      </div>
+
+      <div class="form-group">
+        <label>Name of Sprite 5</label>
+        <input class="form-control" type="text" placeholder="Name" id="import-rpgmaker-sprite-5">
+      </div>
+
+      <div class="form-group">
+        <label>Name of Sprite 6</label>
+        <input class="form-control" type="text" placeholder="Name" id="import-rpgmaker-sprite-6">
+      </div>
+
+      <div class="form-group">
+        <label>Name of Sprite 7</label>
+        <input class="form-control" type="text" placeholder="Name" id="import-rpgmaker-sprite-7">
+      </div>
+
+      <button id="import-rpgmaker-sprite-save" type="button" class="btn btn-primary">OK</button>
+      <button id="import-rpgmaker-sprite-cancel" type="button" class="btn btn-default">Go Back</button>
+    </form>
   </div>
 </div>
 
+<br/>
 
 <script type="text/javascript">
 $(function(){

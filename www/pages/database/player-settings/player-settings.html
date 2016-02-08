@@ -5,55 +5,46 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                Player's Initial Settings
+    <div class="col-lg-6">
+        <form role="form">
+            <div class="form-group">
+                <label>Sprite</label>
+                <select class="form-control" id="settings-player-sprite">
+                </select>
             </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <form role="form">
-                            <div class="form-group">
-                                <label>Sprite</label>
-                                <select class="form-control" id="settings-player-sprite">
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>X position</label>
-                                <input class="form-control" placeholder="0" type="number" id="settings-player-x">
-                                <p class="help-block">The map X position where the player will start the game.</p>
-                            </div>
-                            <div class="form-group">
-                                <label>Y position</label>
-                                <input class="form-control" placeholder="0" type="number" id="settings-player-y">
-                                <p class="help-block">The map Y position where the player will start the game.</p>
-                            </div>
-                            <div class="form-group">
-                                <label>Hitbox X</label>
-                                <input class="form-control" placeholder="0" type="number" id="settings-player-hitbox-x">
-                            </div>
-                            <div class="form-group">
-                                <label>Hitbox Y</label>
-                                <input class="form-control" placeholder="0" type="number" id="settings-player-hitbox-y">
-                            </div>
-                            <div class="form-group">
-                                <label>Hitbox Width</label>
-                                <input class="form-control" placeholder="0" type="number" id="settings-player-hitbox-width">
-                            </div>
-                            <div class="form-group">
-                                <label>Hitbox Height</label>
-                                <input class="form-control" placeholder="0" type="number" id="settings-player-hitbox-height">
-                            </div>
+            <div class="form-group">
+                <label>X position</label>
+                <input class="form-control" placeholder="0" type="number" id="settings-player-x">
+                <p class="help-block">The map X position where the player will start the game.</p>
+            </div>
+            <div class="form-group">
+                <label>Y position</label>
+                <input class="form-control" placeholder="0" type="number" id="settings-player-y">
+                <p class="help-block">The map Y position where the player will start the game.</p>
+            </div>
+            <div class="form-group">
+                <label>Hitbox X</label>
+                <input class="form-control" placeholder="0" type="number" id="settings-player-hitbox-x">
+            </div>
+            <div class="form-group">
+                <label>Hitbox Y</label>
+                <input class="form-control" placeholder="0" type="number" id="settings-player-hitbox-y">
+            </div>
+            <div class="form-group">
+                <label>Hitbox Width</label>
+                <input class="form-control" placeholder="0" type="number" id="settings-player-hitbox-width">
+            </div>
+            <div class="form-group">
+                <label>Hitbox Height</label>
+                <input class="form-control" placeholder="0" type="number" id="settings-player-hitbox-height">
+            </div>
 
-                            <button id="settings-player-save" type="button" class="btn btn-save">Save</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <button id="settings-player-save" type="button" class="btn btn-save">Save</button>
+        </form>
     </div>
 </div>
+
+<br/>
 
 
 <script type="text/javascript">
