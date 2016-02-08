@@ -62,8 +62,7 @@
                                 <p class="help-block">This value will be ignored if Dynamic Resolution is enabled.</p>
                             </div>
 
-                            <button id="settings-game-save" type="button" class="btn btn-save">OK</button>
-                            <button id="settings-game-cancel" type="button" class="btn btn-default">Go Back</button>
+                            <button id="settings-game-save" type="button" class="btn btn-save">Save</button>
                         </form>
                     </div>
                 </div>
@@ -76,9 +75,6 @@
 $(function(){
   $('#settings-game-save').on('click', function(){
     STUDIO.saveGameSettings();
-  });
-  $('#settings-game-cancel').on('click', function(){
-    STUDIO.openWindow('settings');
   });
 
   STUDIO.fillMaps('settings-game-initial-map');

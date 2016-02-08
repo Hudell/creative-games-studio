@@ -35,6 +35,18 @@ STUDIO.MapEditor = {};
   //Preloads the transparent png
   namespace._transparentSpriteTexture = PIXI.Texture.fromImage(path.join('img', 'transparent.png'));
 
+  namespace.closeProject = function() {
+    namespace._currentMapName = '';
+    namespace._currentMapData = null;
+    namespace._currentLayerIndex = 0;
+    namespace._clickedPos = false;
+    namespace._history = [];
+    namespace._drawingRectangle = false;
+    namespace._drawingTile = false;
+
+    namespace.clearCaches();
+  };
+
   namespace.openMapEditor = function(mapName, callback) {
     STUDIO.gameData._lastMapName = mapName;
 
@@ -846,7 +858,23 @@ STUDIO.MapEditor = {};
     namespace._needsTilesetRefresh = true;
   };
 
+  namespace.hasAnyTileset = function() {
+    if (!STUDIO.gameData.tilesets) {
+      return false;
+    }
+
+    for (var key in STUDIO.gameData.tilesets) {
+      return true;
+    }
+
+    return false;
+  };
+
   namespace.createNewTileset = function() {
+    if (!namespace.hasAnyTileset()) {
+      throw new Error("There are no registered tilesets. <br/>You need to register them on the Database before using on maps.");
+    }
+
     STUDIO.openPopupForm('map-editor-new-tileset', 'Add Tileset', function(){
       var tilesetName = $('#map-editor-new-tileset-name').val();
       if (!tilesetName || !tilesetName.trim()) {
@@ -1418,6 +1446,7 @@ STUDIO.MapEditor = {};
     namespace._tileCache = {};
     namespace._gridLayerTexture = false;
     namespace._selectionLayerTexture = false;
+    namespace._currentTileIds = [];
   };
 
   namespace.createLayers = function(width, height) {

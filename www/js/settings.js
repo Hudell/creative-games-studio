@@ -15,7 +15,7 @@
     STUDIO.gameData.resolution.useDynamicResolution = $('#settings-game-resolution-use-dynamic-resolution')[0].checked;
 
     STUDIO.markAsModified();
-    STUDIO.openWindow('settings');
+    STUDIO.DatabaseManager.openDatabaseWindow();
   };
 
   STUDIO.savePlayerSettings = function(){
@@ -28,7 +28,7 @@
     STUDIO.gameData.player.height = $('#settings-player-hitbox-height').val();
 
     STUDIO.markAsModified();
-    STUDIO.openWindow('settings');
+    STUDIO.DatabaseManager.openDatabaseWindow();
   };
 
   STUDIO.loadGameSettings = function(){

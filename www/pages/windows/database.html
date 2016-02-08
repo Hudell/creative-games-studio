@@ -1,0 +1,523 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Database</h1>
+    </div>
+    <a href="#" id="database-variables-option" class="hidden">
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-blue">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-puzzle-piece fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge" id="variable-count">0</div>
+                            <div>Variables</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <span class="pull-left">Variables</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </a>
+    <a href="#" id="database-objects-option" class="">
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-blue">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-umbrella fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge" id="object-count">0</div>
+                            <div>Objects</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <span class="pull-left">Objects</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <a href="#" id="database-sprites-option" class="">
+      <div class="col-lg-3 col-md-6">
+          <div class="panel panel-blue">
+              <div class="panel-heading">
+                  <div class="row">
+                      <div class="col-xs-3">
+                          <i class="fa fa-image fa-5x"></i>
+                      </div>
+                      <div class="col-xs-9 text-right">
+                          <div class="huge" id="sprite-count">0</div>
+                          <div>Sprites</div>
+                      </div>
+                  </div>
+              </div>
+              <div class="panel-footer">
+                  <span class="pull-left">Sprites</span>
+                  <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                  <div class="clearfix"></div>
+              </div>
+          </div>
+      </div>
+    </a>
+
+    <a href="#" id="database-tilesets-option" class="">
+      <div class="col-lg-3 col-md-6">
+          <div class="panel panel-blue">
+              <div class="panel-heading">
+                  <div class="row">
+                      <div class="col-xs-3">
+                          <i class="fa fa-th fa-5x"></i>
+                      </div>
+                      <div class="col-xs-9 text-right">
+                          <div class="huge" id="tileset-count">0</div>
+                          <div>Tilesets</div>
+                      </div>
+                  </div>
+              </div>
+              <div class="panel-footer">
+                  <span class="pull-left">Tilesets</span>
+                  <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                  <div class="clearfix"></div>
+              </div>
+          </div>
+      </div>
+    </a>
+
+    <a href="#" id="database-characters-option" class="hidden">
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-blue">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-female fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge" id="character-count">0</div>
+                            <div>Characters</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <span class="pull-left">Characters</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </a>
+
+
+    <a href="#" id="database-languages-option" class="hidden">
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-blue">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-pencil fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge" id="language-count">0</div>
+                            <div>Languages</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <span class="pull-left">Languages (Translation)</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <a href="#" id="database-music-option" class="hidden">
+      <div class="col-lg-3 col-md-6">
+          <div class="panel panel-blue">
+              <div class="panel-heading">
+                  <div class="row">
+                      <div class="col-xs-3">
+                          <i class="fa fa-music fa-5x"></i>
+                      </div>
+                      <div class="col-xs-9 text-right">
+                          <div class="huge" id="music-count">0</div>
+                          <div>Music</div>
+                      </div>
+                  </div>
+              </div>
+              <div class="panel-footer">
+                  <span class="pull-left">Music</span>
+                  <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                  <div class="clearfix"></div>
+              </div>
+          </div>
+      </div>
+    </a>
+
+
+    <a href="#" id="database-sounds-option" class="hidden">
+      <div class="col-lg-3 col-md-6">
+          <div class="panel panel-blue">
+              <div class="panel-heading">
+                  <div class="row">
+                      <div class="col-xs-3">
+                          <i class="fa fa-file-sound-o fa-5x"></i>
+                      </div>
+                      <div class="col-xs-9 text-right">
+                          <div class="huge" id="sound-count">0</div>
+                          <div>Sounds</div>
+                      </div>
+                  </div>
+              </div>
+              <div class="panel-footer">
+                  <span class="pull-left">Sounds</span>
+                  <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                  <div class="clearfix"></div>
+              </div>
+          </div>
+      </div>
+    </a>
+
+    <a href="#" id="database-movies-option" class="hidden">
+      <div class="col-lg-3 col-md-6">
+          <div class="panel panel-blue">
+              <div class="panel-heading">
+                  <div class="row">
+                      <div class="col-xs-3">
+                          <i class="fa fa-film fa-5x"></i>
+                      </div>
+                      <div class="col-xs-9 text-right">
+                          <div class="huge" id="movie-count">0</div>
+                          <div>Movies</div>
+                      </div>
+                  </div>
+              </div>
+              <div class="panel-footer">
+                  <span class="pull-left">Movies</span>
+                  <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                  <div class="clearfix"></div>
+              </div>
+          </div>
+      </div>
+    </a>
+
+    <a href="#" id="database-items-option" class="hidden">
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-blue">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-flask fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge" id="item-count">0</div>
+                            <div>Items</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <span class="pull-left">Items</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+      </div>
+    </a>
+    <a href="#" id="database-animations-option" class="hidden">
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-blue">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-flash fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge" id="animation-count">0</div>
+                            <div>Animations</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <span class="pull-left">Animations</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </a>
+    <a href="#" id="database-faces-option" class="hidden">
+      <div class="col-lg-3 col-md-6">
+          <div class="panel panel-blue">
+              <div class="panel-heading">
+                  <div class="row">
+                      <div class="col-xs-3">
+                          <i class="fa fa-user fa-5x"></i>
+                      </div>
+                      <div class="col-xs-9 text-right">
+                          <div class="huge" id="face-count">0</div>
+                          <div>Faces</div>
+                      </div>
+                  </div>
+              </div>
+              <div class="panel-footer">
+                  <span class="pull-left">Faces</span>
+                  <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                  <div class="clearfix"></div>
+              </div>
+          </div>
+      </div>
+    </a>
+
+    <a href="#" id="database-skins-option" class="">
+      <div class="col-lg-3 col-md-6">
+          <div class="panel panel-blue">
+              <div class="panel-heading">
+                  <div class="row">
+                      <div class="col-xs-3">
+                          <i class="fa fa-sticky-note-o fa-5x"></i>
+                      </div>
+                      <div class="col-xs-9 text-right">
+                          <div class="huge" id="skin-count">0</div>
+                          <div>Skins</div>
+                      </div>
+                  </div>
+              </div>
+              <div class="panel-footer">
+                  <span class="pull-left">Skins</span>
+                  <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                  <div class="clearfix"></div>
+              </div>
+          </div>
+      </div>
+    </a>
+
+
+    <a href="#" id="database-classes-option" class="hidden">
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-blue">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-user-md fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge" id="class-count">0</div>
+                            <div>Classes</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <span class="pull-left">Classes (Jobs)</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </a>
+    <a href="#" id="database-enemies-option" class="hidden">
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-blue">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-bug fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge" id="enemy-count">0</div>
+                            <div>Enemies</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <span class="pull-left">Enemies</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+      </div>
+    </a>
+    <a href="#" id="database-skills-option" class="hidden">
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-blue">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-fire fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge" id="skill-count">0</div>
+                            <div>Skills</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <span class="pull-left">Skills</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </a>
+  <a href="#" id="database-states-option" class="hidden">
+      <div class="col-lg-3 col-md-6">
+          <div class="panel panel-blue">
+              <div class="panel-heading">
+                  <div class="row">
+                      <div class="col-xs-3">
+                          <i class="fa fa-eye-slash fa-5x"></i>
+                      </div>
+                      <div class="col-xs-9 text-right">
+                          <div class="huge" id="state-count">0</div>
+                          <div>States</div>
+                      </div>
+                  </div>
+              </div>
+              <div class="panel-footer">
+                  <span class="pull-left">States</span>
+                  <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                  <div class="clearfix"></div>
+              </div>
+          </div>
+      </div>
+  </a>
+
+
+
+
+    <a href="#" id="database-achievements-option" class="hidden">
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-blue">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-trophy fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge" id="achievement-count">0</div>
+                            <div>Achievements</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <span class="pull-left">Achievements</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </a>
+
+
+    <a href="#" id="database-huds-option" class="hidden">
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-blue">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-external-link fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge" id="hud-count">0</div>
+                            <div>Huds</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <span class="pull-left">Huds</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </a>
+    <a href="#" id="database-packages-option" class="hidden">
+      <div class="col-lg-3 col-md-6">
+          <div class="panel panel-blue">
+              <div class="panel-heading">
+                  <div class="row">
+                      <div class="col-xs-3">
+                          <i class="fa fa-shopping-cart fa-5x"></i>
+                      </div>
+                      <div class="col-xs-9 text-right">
+                          <div class="huge" id="package-count">0</div>
+                          <div>Packages</div>
+                      </div>
+                  </div>
+              </div>
+              <div class="panel-footer">
+                  <span class="pull-left">Packages (DLC)</span>
+                  <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                  <div class="clearfix"></div>
+              </div>
+          </div>
+      </div>
+  </a>
+
+
+  <a href="#" id="database-vehicles-option" class="hidden">
+      <div class="col-lg-3 col-md-6">
+          <div class="panel panel-blue">
+              <div class="panel-heading">
+                  <div class="row">
+                      <div class="col-xs-3">
+                          <i class="fa fa-car fa-5x"></i>
+                      </div>
+                      <div class="col-xs-9 text-right">
+                          <div class="huge" id="vehicle-count">0</div>
+                          <div>Vehicles</div>
+                      </div>
+                  </div>
+              </div>
+              <div class="panel-footer">
+                  <span class="pull-left">Vehicles</span>
+                  <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                  <div class="clearfix"></div>
+              </div>
+          </div>
+      </div>
+  </a>
+</div>
+
+<script type="text/javascript">
+$(function(){
+  $('#database-maps-option').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'maps', 'maps'); });
+  $('#database-code-option').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'code', 'code'); });
+  $('#database-plugins-option').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'plugins', 'plugins'); });
+  $('#database-settings-option').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'settings', 'settings'); });
+
+  $('#database-characters-option').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'characters', 'characters'); });
+  $('#database-objects-option').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'objects', 'objects'); });
+  $('#database-sprites-option').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'sprites', 'sprites'); });
+  $('#database-tilesets-option').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'tilesets', 'tilesets'); });
+  $('#database-variables-option').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'variables', 'variables'); });
+  
+  $('#database-classes-option').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'classes', 'classes'); });
+  $('#database-enemies-option').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'enemies', 'enemies'); });
+  $('#database-faces-option').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'faces', 'faces'); });
+  $('#database-items-option').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'items', 'items'); });
+  $('#database-languages-option').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'languages', 'languages'); });
+  $('#database-music-option').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'music', 'music'); });
+  $('#database-skills-option').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'skills', 'skills'); });
+  $('#database-sounds-option').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'sounds', 'sounds'); });
+  
+  $('#database-achievements-option').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'achievements', 'achievements'); });
+  $('#database-animations-option').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'animations', 'animations'); });
+  $('#database-huds-option').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'huds', 'huds'); });
+  $('#database-movies-option').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'movies', 'movies'); });
+  $('#database-packages-option').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'packages', 'packages'); });
+  $('#database-skins-option').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'skins', 'skins'); });
+  $('#database-states-option').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'states', 'states'); });
+  $('#database-vehicles-option').on('click', function(event) { STUDIO.DatabaseManager.eventOpenWindow(event, 'vehicles', 'vehicles'); });
+
+  STUDIO.updateCounters();
+});
+</script>

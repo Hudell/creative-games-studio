@@ -30,7 +30,6 @@
                             </div>
 
                             <button id="new-project-continue" type="button" class="btn btn-primary">Continue</button>
-                            <button id="new-project-cancel" type="button" class="btn btn-default">Cancel</button>
                         </form>
                     </div>
                 </div>
@@ -47,10 +46,6 @@ $(function(){
 
   $('#new-project-continue').on('click', function(){
     STUDIO.saveNewProject();
-  });
-
-  $('#new-project-cancel').on('click', function(){
-    STUDIO.openWindow('index');
   });
 });
 </script>

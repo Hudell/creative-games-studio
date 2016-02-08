@@ -214,13 +214,8 @@ var STUDIO = {};
     if (windowName !== 'new-project') {
       if (!STUDIO.isGameLoaded()) {
         STUDIO.openWindow('new-project');
-
-        if (windowName !== 'index') {
-          STUDIO.showError("There's no game loaded.");
-          return;
-        } else {
-          return;
-        }
+        STUDIO.showError("There's no game loaded.");
+        return;
       }
     }
 
@@ -287,6 +282,7 @@ var STUDIO = {};
 
   STUDIO.closeProject = function(){
     STUDIO.changeLoadedPath('');
+    STUDIO.MapEditor.closeProject();
   };
 
   STUDIO.closeProjectAndRedirect = function() {
@@ -378,7 +374,7 @@ var STUDIO = {};
     var newWin = gui.Window.open('file://' + STUDIO.loadedGame.folder + '/index.html?debug', {
       position : 'center',
       title : STUDIO.gameData.name,
-      toolbar : false
+      toolbar : true
     });
 
     try {
@@ -534,19 +530,29 @@ var STUDIO = {};
   STUDIO.loadProject = function(folderPath) {
     STUDIO.changeLoadedPath(folderPath);
     STUDIO.loadGameData();
-    STUDIO.loadMaps();
-    STUDIO.markAsSaved();
 
-    STUDIO.openLastMap();
+    if (STUDIO.isGameLoaded()) {
+      STUDIO.loadMaps();
+      STUDIO.markAsSaved();
+
+      STUDIO.openLastMap();
+    } else {
+      STUDIO.openWindow('new-project');
+    }
   };
 
   STUDIO.openLastMap = function() {
-    if (STUDIO.MapEditor._currentMapName !== '') {
-      STUDIO.openMapEditor(STUDIO.MapEditor._currentMapName);
-    } else if (STUDIO.gameData._lastMapName !== '') {
-      STUDIO.openMapEditor(STUDIO.gameData._lastMapName);
+    if (STUDIO.isGameLoaded()) {
+      if (STUDIO.MapEditor._currentMapName !== '') {
+        STUDIO.openMapEditor(STUDIO.MapEditor._currentMapName);
+      } else if (STUDIO.gameData._lastMapName !== '') {
+        STUDIO.openMapEditor(STUDIO.gameData._lastMapName);
+      } else {
+        STUDIO.MapEditor.createNewMap();
+      }
     } else {
-      STUDIO.MapEditor.createNewMap();
+      STUDIO.openWindow('new-project');
+      STUDIO.showError("There's no game loaded.");
     }
   };
 
@@ -643,8 +649,6 @@ var STUDIO = {};
     if (!!STUDIO.gameData && !!STUDIO.gameData.name) {
       STUDIO.changeGameTitle(STUDIO.gameData.name);
     }
-
-    // STUDIO.openWindow('index');
   };
 
   STUDIO.getAllScenes = function() {
@@ -869,11 +873,6 @@ var STUDIO = {};
 
     $('#plugins-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'plugins'); });
     
-    $('#settings-player-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'settings-player'); });
-    $('#settings-game-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'settings-game'); });
-    $('#settings-steam-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'settings-steam'); });
-    $('#settings-time-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'settings-time'); });
-
     $('#open-btn').on('click', function(event) {
       event.preventDefault();
       STUDIO.openProjectDialog();

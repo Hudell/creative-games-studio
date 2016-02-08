@@ -46,8 +46,7 @@
                                 <input class="form-control" placeholder="0" type="number" id="settings-player-hitbox-height">
                             </div>
 
-                            <button id="settings-player-save" type="button" class="btn btn-save">OK</button>
-                            <button id="settings-player-cancel" type="button" class="btn btn-default">Go Back</button>
+                            <button id="settings-player-save" type="button" class="btn btn-save">Save</button>
                         </form>
                     </div>
                 </div>
@@ -64,9 +63,6 @@ $(function(){
 
   $('#settings-player-save').on('click', function(){
     STUDIO.savePlayerSettings();
-  });
-  $('#settings-player-cancel').on('click', function(){
-    STUDIO.openWindow('settings');
   });
 });
 </script>
