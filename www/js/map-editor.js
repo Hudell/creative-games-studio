@@ -1,8 +1,8 @@
 STUDIO.MapEditor = {};
 
 (function(namespace){
-  var fs = require("fs");
-  var path = require("path");
+  var fs = require('fs');
+  var path = require('path');
   var gui = require('nw.gui');
   var win = gui.Window.get();
 
@@ -56,7 +56,7 @@ STUDIO.MapEditor = {};
 
     var mapData = STUDIO.getMapData(mapName);
     if (!mapData) {
-      throw new Error("Couldn't find map " + mapName + " data.");
+      throw new Error(t("Couldn't find the data for the map ") + mapName);
     }
     namespace._currentMapName = mapName;
     namespace._currentMapData = mapData;
@@ -262,7 +262,7 @@ STUDIO.MapEditor = {};
     var list = $('#map-editor-layer-list');
     list.html('');
 
-    list.append('<li><a class="map-editor-manage-layers" id="map-editor-manage-layers-btn" href="#"><i class="fa fa-cogs fa-fw"></i> Manage Layers </a></li>');
+    list.append('<li><a class="map-editor-manage-layers" id="map-editor-manage-layers-btn" href="#"><i class="fa fa-cogs fa-fw"></i> ' + t("Manage Layers") + ' </a></li>');
     list.append('<li class="divider"></li>');
 
     var layers = namespace._currentMapData.layers;
@@ -281,7 +281,7 @@ STUDIO.MapEditor = {};
       list.append('<li><a class="map-editor-layer-link" data-index="' + i + '" href="#"><i class="fa ' + icon + ' fa-fw layer-icon"></i> ' + layers[i].name + '</a></li>');
     }
     list.append('<li class="divider"></li>');
-    list.append('<li><a class="map-editor-layer-new" href="#"><i class="fa fa-plus fa-fw"></i> New Layer </a></li>');
+    list.append('<li><a class="map-editor-layer-new" href="#"><i class="fa fa-plus fa-fw"></i> ' + t("New Layer") + ' </a></li>');
 
     $('.map-editor-layer-link').on('click', function(event) {
       event.preventDefault();
@@ -305,11 +305,13 @@ STUDIO.MapEditor = {};
   namespace.changeLayerIndex = function(index) {
     namespace._currentLayerIndex = index;
 
+    var layersStr = t("Layers");
+
     if (namespace._currentMapData.layers.length > index && index >= 0) {
       var layerName = namespace._currentMapData.layers[index].name;
-      $('#map-editor-layer-name').html('Layers - ' + layerName);
+      $('#map-editor-layer-name').html(layersStr + ' - ' + layerName);
     } else {
-      $('#map-editor-layer-name').html('Layers');
+      $('#map-editor-layer-name').html(layersStr);
     }
 
     namespace.refreshTilesetWindow();
@@ -325,7 +327,7 @@ STUDIO.MapEditor = {};
     }
 
     list.append('<li class="divider"></li>');
-    list.append('<li><a class="map-editor-tileset-new" href="#"><i class="fa fa-plus fa-fw"></i> Add New Tileset</a></li>');
+    list.append('<li><a class="map-editor-tileset-new" href="#"><i class="fa fa-plus fa-fw"></i> ' + t("Add New Tileset") + '</a></li>');
 
     $('.map-editor-tileset-link').on('click', function(event) {
       event.preventDefault();
@@ -389,16 +391,16 @@ STUDIO.MapEditor = {};
 
   namespace.openMapSettings = function() {
     var mapData = namespace._currentMapData;
-    STUDIO.openPopupForm('map-settings', 'Map Settings', function(){
+    STUDIO.openPopupForm('map-settings', t("Map Settings"), function(){
       var newWidth = parseInt($('#map-settings-width').val(), 10);
       var newHeight = parseInt($('#map-settings-height').val(), 10);
 
       if (newWidth <= 0) {
-        throw new Error("The width needs to be a positive number.");
+        throw new Error(t("The width needs to be a positive number."));
       }
 
       if (newHeight <= 0) {
-        throw new Error("The height needs to be a positive number.");
+        throw new Error(t("The height needs to be a positive number."));
       }
 
       mapData.width = newWidth;
@@ -607,7 +609,7 @@ STUDIO.MapEditor = {};
 
       var name = object.name;
       if (name.trim() === '') {
-        name = 'Object #' + object.id;
+        name = t("Object") + ' #' + object.id;
       }
 
       list.append('<li><a href="#"><i class="menu-option fa fa-umbrella fa-fw"></i> ' + name + '</span></a></li>');
@@ -653,7 +655,7 @@ STUDIO.MapEditor = {};
   };
 
   namespace.getNameForNewObject = function() {
-    var name = 'Object ';
+    var name = t("Object") + ' ';
     var index = 1;
 
     while (namespace.checkIfObjectNameExists(name + index)) {
@@ -684,7 +686,7 @@ STUDIO.MapEditor = {};
       y = Math.floor(y / (mapData.tileheight * 2)) * mapData.tileheight * 2;
     }
 
-    STUDIO.openPopupForm('new-map-object', 'New Map Object', function(){
+    STUDIO.openPopupForm('new-map-object', t("New Map Object"), function(){
       var newObject = {
         height : mapData.tileheight * 2,
         width : mapData.tilewidth * 2,
@@ -761,8 +763,8 @@ STUDIO.MapEditor = {};
         tilesetEditor.html('');
         tilesetEditor[0].appendChild(namespace._tilesetRenderer.view);
 
-        namespace._tilesetRenderer.view.style.width = imageWidth + "px";
-        namespace._tilesetRenderer.view.style.height = imageHeight + "px";
+        namespace._tilesetRenderer.view.style.width = imageWidth + 'px';
+        namespace._tilesetRenderer.view.style.height = imageHeight + 'px';
         var canvas = $(namespace._tilesetRenderer.view);
 
         canvas.on('webglcontextlost', function(evt){
@@ -820,11 +822,11 @@ STUDIO.MapEditor = {};
           }
         });
 
-        canvas.on("mousemove", function(evt){
+        canvas.on('mousemove', function(evt){
           namespace._needsTilesetRefresh = true;
         });
 
-        canvas.on("mouseout", function(evt){
+        canvas.on('mouseout', function(evt){
           namespace._needsTilesetRefresh = true;
         });
 
@@ -1075,12 +1077,12 @@ STUDIO.MapEditor = {};
     var index = namespace._currentTilesetIndex;
 
     if (index < 0 || index >= mapData.tilesets.length) {
-      throw new Error("There's no Tileset to remove.");
+      throw new Error(t("There's no Tileset to remove."));
     }
 
-    STUDIO.confirm("The current tileset will be removed from this map", function(){
+    STUDIO.confirm(t("The current tileset will be removed from this map"), function(){
       namespace.removeCurrentTileset();
-    }, "Delete Confirmation");
+    }, t("Delete Confirmation"));
   };
 
   namespace.removeCurrentTileset = function() {
@@ -1088,7 +1090,7 @@ STUDIO.MapEditor = {};
     var index = namespace._currentTilesetIndex;
 
     if (index < 0 || index >= mapData.tilesets.length) {
-      throw new Error("There's no Tileset to remove.");
+      throw new Error(t("There's no Tileset to remove."));
     }
 
     namespace.removeTilesetFromMap(mapData, index);
@@ -1104,10 +1106,10 @@ STUDIO.MapEditor = {};
 
   namespace.removeCurrentMapConfirmation = function() {
     if (STUDIO._windowName !== 'map-editor') {
-      throw new Error("There's no map loaded.");
+      throw new Error(t("There's no map loaded."));
     }
 
-    STUDIO.confirm("The map " + STUDIO.removeFileExtension(namespace._currentMapName) + " will be removed.", function(){
+    STUDIO.confirm(t("The following map will be removed:" + STUDIO.removeFileExtension(namespace._currentMapName)), function(){
       namespace.removeCurrentMap();
     });
   };
@@ -1167,13 +1169,13 @@ STUDIO.MapEditor = {};
 
   namespace.createNewTileset = function() {
     if (!namespace.hasAnyTileset()) {
-      throw new Error("There are no registered tilesets. <br/>You need to register them on the Database before using on maps.");
+      throw new Error(t("There are no registered tilesets. <br/>You need to register them on the Database before using on maps."));
     }
 
-    STUDIO.openPopupForm('map-editor-new-tileset', 'Add Tileset', function(){
+    STUDIO.openPopupForm('map-editor-new-tileset', t("Add Tileset"), function(){
       var tilesetName = $('#map-editor-new-tileset-name').val();
       if (!tilesetName || !tilesetName.trim()) {
-        throw new Error("Select a Tileset.");
+        throw new Error(t("Select a Tileset."));
       }
       
       namespace.addTilesetToMap(namespace._currentMapData, tilesetName, true);
@@ -1185,15 +1187,15 @@ STUDIO.MapEditor = {};
   namespace.addTilesetToMap = function(mapData, tilesetName, switchMap) {
     var tilesetData = STUDIO.gameData.tilesets[tilesetName];
     if (!tilesetData) {
-      throw new Error("Tileset not found.");
+      throw new Error(t("Tileset not found."));
     }
 
     if (tilesetData.tileWidth > 0 && tilesetData.tileWidth !== mapData.tilewidth) {
-      throw new Error("This tileset is not compatible with this map.");
+      throw new Error(t("This tileset is not compatible with this map."));
     }
 
     if (tilesetData.tileHeight > 0 && tilesetData.tileHeight !== mapData.tileheight) {
-      throw new Error("This tileset is not compatible with this map.");
+      throw new Error(t("This tileset is not compatible with this map."));
     }
 
     var relativeFileName = path.join('..', tilesetData.image);
@@ -1395,9 +1397,9 @@ STUDIO.MapEditor = {};
   };
 
   namespace.trashLayerConfirmation = function(layerIndex) {
-    STUDIO.confirm("The layer will be removed", function(){
+    STUDIO.confirm(t("The layer will be removed"), function(){
       namespace.trashLayer(layerIndex);
-    }, "Delete Confirmation");
+    }, t("Delete Confirmation"));
   };
 
   namespace.trashLayer = function(layerIndex) {
@@ -1412,7 +1414,7 @@ STUDIO.MapEditor = {};
   };
 
   namespace.manageLayers = function() {
-    STUDIO.openPopupForm('map-editor-manage-layers', 'Manage Layers', function(){
+    STUDIO.openPopupForm('map-editor-manage-layers', t("Manage Layers"), function(){
       namespace.refreshLayers();
     }, function(){
       namespace.loadLayerManagerList();
@@ -1438,14 +1440,14 @@ STUDIO.MapEditor = {};
   };
 
   namespace.createNewLayer = function() {
-    STUDIO.openPopupForm('map-editor-new-layer', 'New Layer', function(){
+    STUDIO.openPopupForm('map-editor-new-layer', t("New Layer"), function(){
       var layerName = $('#map-editor-new-layer-name').val();
       if (!layerName || !layerName.trim()) {
-        throw new Error("Please give this layer a name.");
+        throw new Error(t("Please give this layer a name."));
       }
 
       if (namespace.checkIfLayerNameExists(layerName)) {
-        throw new Error("There's already a layer called " + layerName);
+        throw new Error(t("There's already a layer called ") + layerName);
       }
 
       var layerType = $('#map-editor-new-layer-type').val();
@@ -1495,16 +1497,16 @@ STUDIO.MapEditor = {};
       });
       STUDIO.renderers.push(namespace._renderer);
 
-      namespace._renderer.view.addEventListener("mousedown", function(evt) {
+      namespace._renderer.view.addEventListener('mousedown', function(evt) {
         var pos = namespace.getMousePos();
         mouseClicked[evt.button] = true;
       });
 
-      namespace._renderer.view.addEventListener("mousemove", function(evt) {
+      namespace._renderer.view.addEventListener('mousemove', function(evt) {
         namespace._needsSelectionRefresh = true;
       });
 
-      namespace._renderer.view.addEventListener("mouseout", function(evt) {
+      namespace._renderer.view.addEventListener('mouseout', function(evt) {
         namespace._needsSelectionRefresh = true;
       });
 
@@ -1527,12 +1529,12 @@ STUDIO.MapEditor = {};
       });
 
       if (!namespace._addedWindowEvents) {
-        window.addEventListener("mouseout", function(evt){
+        window.addEventListener('mouseout', function(evt){
           namespace._needsSelectionRefresh = true;
           namespace._needsTilesetRefresh = true;
         });
 
-        window.addEventListener("mouseup", function(evt) {
+        window.addEventListener('mouseup', function(evt) {
           mouseClicked[evt.button] = false;
           if (evt.button === 0) {
             namespace._tileMouseDown = false;
@@ -1554,8 +1556,8 @@ STUDIO.MapEditor = {};
 
     $('.map-editor').html('');
     $('.map-editor')[0].appendChild(namespace._renderer.view);
-    namespace._renderer.view.style.width = width + "px";
-    namespace._renderer.view.style.height = height + "px";
+    namespace._renderer.view.style.width = width + 'px';
+    namespace._renderer.view.style.height = height + 'px';
     namespace._currentTileIds = [];
 
     namespace._stage = new PIXI.Container();
@@ -1925,7 +1927,7 @@ STUDIO.MapEditor = {};
     if (mapData.layers.length <= 0) return;
     var layer = mapData.layers[namespace._currentLayerIndex];
     if (!layer) return;
-    if (layer.type != "tilelayer") return;
+    if (layer.type != 'tilelayer') return;
 
     var tileWidth = mapData.tilewidth;
     var tileHeight = mapData.tileheight;
@@ -2054,7 +2056,7 @@ STUDIO.MapEditor = {};
     var mapData = namespace._currentMapData;
     if (mapData.layers.length <= 0) return;
     var layer = mapData.layers[namespace._currentLayerIndex];
-    if (layer.type != "tilelayer") return;
+    if (layer.type != 'tilelayer') return;
 
     var tileWidth = mapData.tilewidth;
     var tileHeight = mapData.tileheight;
