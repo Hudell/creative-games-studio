@@ -170,7 +170,7 @@
       }
     }
 
-    var newPath = path.join(STUDIO.loadedGame.folder, newName);
+    var newPath = path.join(STUDIO.settings.folder, newName);
     STUDIO.copyFileSync(imageFile, newPath);
 
     if (!!name && !!name.trim()) {
@@ -188,7 +188,7 @@
 
   STUDIO.loadImageSpriteData = function(spriteName) {
     var spriteData = STUDIO.gameData.sprites[spriteName];
-    var fullImagePath = path.join(STUDIO.loadedGame.folder, spriteData.image);
+    var fullImagePath = path.join(STUDIO.settings.folder, spriteData.image);
 
     STUDIO.showImageSpritePreview(fullImagePath, 'edit');
     $('#edit-image-sprite-name').val(spriteName);

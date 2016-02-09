@@ -561,7 +561,7 @@ STUDIO.MapEditor = {};
     if (!!layer && layer.type == 'objectgroup') {
       namespace.setupObjectList();
     } else {
-      var imgPath = path.join(STUDIO.loadedGame.folder, 'maps', tileset.image);
+      var imgPath = path.join(STUDIO.settings.folder, 'maps', tileset.image);
       var width = tileset.imagewidth;
       var height = tileset.imageheight;
 
@@ -1194,7 +1194,7 @@ STUDIO.MapEditor = {};
     }
 
     var relativeFileName = path.join('..', tilesetData.image);
-    var fullPath = path.join(STUDIO.loadedGame.folder, tilesetData.image);
+    var fullPath = path.join(STUDIO.settings.folder, tilesetData.image);
 
     namespace._history = [];
 
@@ -1632,7 +1632,7 @@ STUDIO.MapEditor = {};
       frame.y = line * (theTileset.tileheight + tileSpacing);
     }
 
-    var baseTexture = PIXI.Texture.fromImage(path.join(STUDIO.loadedGame.folder, 'map', theTileset.image));
+    var baseTexture = PIXI.Texture.fromImage(path.join(STUDIO.settings.folder, 'map', theTileset.image));
     var texture = new PIXI.Texture(baseTexture);
     if (texture.baseTexture.isLoading) {
       texture.baseTexture.addListener('loaded', function(){

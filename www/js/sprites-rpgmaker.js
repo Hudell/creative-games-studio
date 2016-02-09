@@ -123,7 +123,7 @@
       throw new Error("A sprite called " + spriteName + " already exists.");
     }
 
-    var imageRelativePath = imageFile.replace(STUDIO.loadedGame.folder, '');
+    var imageRelativePath = imageFile.replace(STUDIO.settings.folder, '');
     while (imageRelativePath.length > 0 && (imageRelativePath.substr(0, 1) == "\\" || imageRelativePath.substr(0, 1) == '/')) {
       imageRelativePath = imageRelativePath.slice(1, imageRelativePath.length);
     }
@@ -177,7 +177,7 @@
       }
     }
 
-    var newPath = path.join(STUDIO.loadedGame.folder, newName);
+    var newPath = path.join(STUDIO.settings.folder, newName);
     STUDIO.copyFileSync(imageFile, newPath);
 
     for (var i = 0; i < 8; i++) {
@@ -213,7 +213,7 @@
 
     var imageFile = $('#edit-rpgmaker-sprite-image').val();
     if (!imageFile || !imageFile.trim()) {
-      imageFile = path.join(STUDIO.loadedGame.folder, data.image);
+      imageFile = path.join(STUDIO.settings.folder, data.image);
     }
 
     if (!STUDIO.isFileImported(imageFile)) {
@@ -235,7 +235,7 @@
       throw new Error("Invalid Index.");
     }
 
-    var imageRelativePath = imageFile.replace(STUDIO.loadedGame.folder, '');
+    var imageRelativePath = imageFile.replace(STUDIO.settings.folder, '');
     while (imageRelativePath.length > 0 && (imageRelativePath.substr(0, 1) == "\\" || imageRelativePath.substr(0, 1) == '/')) {
       imageRelativePath = imageRelativePath.slice(1, imageRelativePath.length);
     }
@@ -261,7 +261,7 @@
   STUDIO.loadRpgMakerSpriteData = function(spriteName) {
     var spriteData = STUDIO.gameData.sprites[spriteName];
 
-    var fullImagePath = path.join(STUDIO.loadedGame.folder, spriteData.image);
+    var fullImagePath = path.join(STUDIO.settings.folder, spriteData.image);
 
     STUDIO.loadRpgMakerSpriteImage(fullImagePath, 'edit');
     

@@ -15,12 +15,39 @@ var STUDIO = {};
   STUDIO.version = 1;
 
   STUDIO.gameData = undefined;
-  STUDIO.loadedGame = {
-    folder : ""
+  STUDIO.settings = {
+    folder : "",
+    language : ""
   };
   STUDIO.modifiedMaps = {
   };
   STUDIO.modified = false;
+  STUDIO.translation = null;
+
+  STUDIO.loadTranslation = function(fileName) {
+    var fileName = path.join('translation', fileName + '.json');
+
+    try {
+      if (fs.existsSync(fileName)) {
+        STUDIO.translation = STUDIO.loadJson(fileName);
+        if (!STUDIO.translation) {
+          STUDIO.translation = false;
+        }
+      } else {
+        STUDIO.translation = false;
+      }
+    }
+    catch(e) {
+      STUDIO.translation = false;
+    }
+  };
+
+  STUDIO.getTranslationMessage = function(key, englishTranslation) {
+    if (!STUDIO.translation) return englishTranslation;
+    if (!STUDIO.key) return englishTranslation;
+
+    return STUDIO.key;
+  };
 
   STUDIO.requestPage = function(pageName, onSuccess, onError) {
     var mimeType = "text/html";
@@ -265,12 +292,13 @@ var STUDIO = {};
   };
 
   STUDIO.changeLoadedPath = function(newPath) {
-    if (!STUDIO.loadedGame) {
-      STUDIO.loadLoadedGameInfo();
+    debugger;
+    if (!STUDIO.settings) {
+      STUDIO.loadSettings();
     }
 
-    STUDIO.loadedGame.folder = newPath;
-    STUDIO.saveLoadedGame();
+    STUDIO.settings.folder = newPath;
+    STUDIO.saveSettings();
 
     STUDIO.changeGamePath(newPath);
   };
@@ -318,11 +346,11 @@ var STUDIO = {};
     STUDIO.saveMaps();
     STUDIO.copyEngineFiles();
     STUDIO.markAsSaved();
-    STUDIO.saveLoadedGame();
+    STUDIO.saveSettings();
   };
 
   STUDIO.copyEngineFiles = function() {
-    var projectFolder = STUDIO.loadedGame.folder;
+    var projectFolder = STUDIO.settings.folder;
 
     STUDIO.copyFolderSync(path.join('emptyGame', 'tche'), path.join(projectFolder, 'tche'));
   };
@@ -371,10 +399,10 @@ var STUDIO = {};
   };
 
   STUDIO.playProject = function() {
-    var newWin = gui.Window.open('file://' + STUDIO.loadedGame.folder + '/index.html?debug', {
+    var newWin = gui.Window.open('file://' + STUDIO.settings.folder + '/index.html?debug', {
       position : 'center',
       title : STUDIO.gameData.name,
-      toolbar : true
+      toolbar : false
     });
 
     try {
@@ -511,12 +539,12 @@ var STUDIO = {};
       return null;
     }
 
-    return STUDIO.loadJson(path.join(STUDIO.loadedGame.folder, 'maps', mapName));
+    return STUDIO.loadJson(path.join(STUDIO.settings.folder, 'maps', mapName));
   };
 
   STUDIO.saveMapData = function(mapName) {
     var mapData = STUDIO.getMapData(mapName);
-    var filePath = path.join(STUDIO.loadedGame.folder, 'maps', mapName);
+    var filePath = path.join(STUDIO.settings.folder, 'maps', mapName);
 
     if (mapData === null) {
       fs.unlinkSync(filePath);
@@ -610,25 +638,36 @@ var STUDIO = {};
     STUDIO.gameData.recentObjects.push({type : type, name : objectName});
   };
 
-  STUDIO.saveLoadedGame = function() {
-    STUDIO.saveJson('loadedGame.json', STUDIO.loadedGame);
+  STUDIO.saveSettings = function() {
+    STUDIO.settings.folder = STUDIO.settings.folder || '';
+    STUDIO.settings.language = STUDIO.settings.language || '';
+
+    STUDIO.saveJson('settings.json', STUDIO.settings);
   };
 
-  STUDIO.loadLoadedGameInfo = function() {
+  STUDIO.loadSettings = function() {
     try {
-      STUDIO.loadedGame = STUDIO.loadJson('loadedGame.json');
+      if (fs.existsSync('settings.json')) {
+        STUDIO.settings = STUDIO.loadJson('settings.json');
+      } else {
+        STUDIO.settings = {
+          folder : '',
+          language : ''
+        };
+      }
     }
     catch(e) {
       STUDIO.changeGamePath("");
       throw e;
     }
 
-    STUDIO.changeGamePath(STUDIO.loadedGame.folder);
+    STUDIO.changeGamePath(STUDIO.settings.folder);
+    STUDIO.loadTranslation(STUDIO.settings.language);
   };
 
   STUDIO.loadGameData = function() {
     try {
-      STUDIO.gameData = STUDIO.loadJson(path.join(STUDIO.loadedGame.folder, 'game.json'));
+      STUDIO.gameData = STUDIO.loadJson(path.join(STUDIO.settings.folder, 'game.json'));
     }
     catch(e) {
       try{
@@ -783,7 +822,7 @@ var STUDIO = {};
 
   STUDIO.saveGameData = function() {
     STUDIO.gameData.version = STUDIO.version;
-    STUDIO.saveJson(path.join(STUDIO.loadedGame.folder, 'game.json'), STUDIO.gameData);
+    STUDIO.saveJson(path.join(STUDIO.settings.folder, 'game.json'), STUDIO.gameData);
   };
 
   STUDIO.markAsSaved = function(){
@@ -798,7 +837,7 @@ var STUDIO = {};
   };
 
   STUDIO.isFileImported = function(filePath) {
-    var loadedPath = STUDIO.loadedGame.folder;
+    var loadedPath = STUDIO.settings.folder;
 
     return filePath.indexOf(loadedPath) === 0;
   };
@@ -813,7 +852,7 @@ var STUDIO = {};
   };
 
   STUDIO.isGameLoaded = function(){
-    return !!STUDIO.loadedGame.folder && !!STUDIO.gameData;
+    return !!STUDIO.settings.folder && !!STUDIO.gameData;
   };
 
   STUDIO.isGameModified = function() {
@@ -918,9 +957,9 @@ var STUDIO = {};
 
     STUDIO.DatabaseManager.attachEvents();
 
-    STUDIO.loadLoadedGameInfo();
-    if (!!STUDIO.loadedGame.folder) {
-      STUDIO.loadProject(STUDIO.loadedGame.folder);
+    STUDIO.loadSettings();
+    if (!!STUDIO.settings.folder) {
+      STUDIO.loadProject(STUDIO.settings.folder);
     } else {
       STUDIO.openWindow('new-project');
     }
@@ -1076,7 +1115,7 @@ var STUDIO = {};
   };
 
   STUDIO.getImageRelativePath = function(imageFile) {
-    var imageRelativePath = imageFile.replace(STUDIO.loadedGame.folder, '');
+    var imageRelativePath = imageFile.replace(STUDIO.settings.folder, '');
     while (imageRelativePath.length > 0 && (imageRelativePath.substr(0, 1) == "\\" || imageRelativePath.substr(0, 1) == '/')) {
       imageRelativePath = imageRelativePath.slice(1, imageRelativePath.length);
     }
@@ -1093,3 +1132,5 @@ var STUDIO = {};
     }, 100);
   };
 })();
+
+window.t = STUDIO.getTranslationMessage;

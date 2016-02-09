@@ -28,7 +28,7 @@ STUDIO.TilesetManager = {};
         break;
     }
 
-    var imagePath = path.join(STUDIO.loadedGame.folder, tilesetData.image);
+    var imagePath = path.join(STUDIO.settings.folder, tilesetData.image);
     data.push('<img src="' + imagePath + '"/>');
     data.push(tilesetData.tileWidth + ' x ' + tilesetData.tileHeight);
 
@@ -100,7 +100,7 @@ STUDIO.TilesetManager = {};
       throw new Error("A Tileset called " + name + " already exists.");
     }
 
-    var fullpath = path.join(STUDIO.loadedGame.folder, newPath);
+    var fullpath = path.join(STUDIO.settings.folder, newPath);
     if (filePath !== fullpath) {
       STUDIO.copyFileSync(filePath, fullpath);
     }
@@ -135,7 +135,7 @@ STUDIO.TilesetManager = {};
       $('#edit-tileset-tile-height').val(tilesetData.tileHeight);
       $('#edit-tileset-tile-spacing').val(tilesetData.spacing || 0);
 
-      var fullPath = path.join(STUDIO.loadedGame.folder, tilesetData.image);
+      var fullPath = path.join(STUDIO.settings.folder, tilesetData.image);
       $('#edit-tileset-image-preview').html('<img src="' + fullPath + '"/>');
     });
   };

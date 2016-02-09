@@ -6,7 +6,7 @@
     data.push(name);
     data.push(spriteData.type);
 
-    var imagePath = path.join(STUDIO.loadedGame.folder, spriteData.image);
+    var imagePath = path.join(STUDIO.settings.folder, spriteData.image);
     data.push('<img src="' + imagePath + '"/>');
 
     data.push(spriteData.imageWidth || spriteData.width || 0);
@@ -47,7 +47,7 @@
 
   STUDIO.viewSpriteImage = function(spriteName) {
     var image = STUDIO.gameData.sprites[spriteName].image;
-    var imagePath = path.join(STUDIO.loadedGame.folder, image);
+    var imagePath = path.join(STUDIO.settings.folder, image);
 
     STUDIO.openDialog($('<div><img src="' + imagePath + '"></img></div>'), image);
   };

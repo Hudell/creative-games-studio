@@ -42,7 +42,7 @@
       var originalFile = path.join(mapFileFolder, mapData.tilesets[i].image);
       var fileName = path.basename(originalFile);
 
-      var newFileName = path.join(STUDIO.loadedGame.folder, 'assets', 'tilesets', fileName);
+      var newFileName = path.join(STUDIO.settings.folder, 'assets', 'tilesets', fileName);
       var referencedFileName = path.join('..', 'assets', 'tilesets', fileName);
       mapData.tilesets[i].image = referencedFileName;
 
@@ -81,7 +81,7 @@
     var mapName = path.basename(filePath);
 
     try {
-      STUDIO.saveJson(path.join(STUDIO.loadedGame.folder, 'maps', mapName), mapData);
+      STUDIO.saveJson(path.join(STUDIO.settings.folder, 'maps', mapName), mapData);
     }
     catch(e) {
       console.error(e);
@@ -124,7 +124,7 @@
 
   STUDIO.viewMapImage = function(mapName) {
     var image = STUDIO.gameData.maps[mapName].image;
-    var imagePath = path.join(STUDIO.loadedGame.folder, image);
+    var imagePath = path.join(STUDIO.settings.folder, image);
 
     STUDIO.openDialog($('<div><img src="' + imagePath + '"></img></div>'), image);
   };

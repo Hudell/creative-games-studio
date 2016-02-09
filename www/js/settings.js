@@ -1,9 +1,6 @@
 (function(){
   var path = require("path");
 
-  STUDIO.saveSettings = function(){
-  };
-
   STUDIO.saveGameSettings = function(){
     STUDIO.gameData.initialScene = $('#settings-game-initial-scene').val();
     STUDIO.gameData.initialMap = $('#settings-game-initial-map').val();

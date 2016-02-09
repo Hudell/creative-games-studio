@@ -6,7 +6,7 @@
     data.push(name);
     data.push(skinData.type);
 
-    var imagePath = path.join(STUDIO.loadedGame.folder, skinData.image);
+    var imagePath = path.join(STUDIO.settings.folder, skinData.image);
     data.push('<img src="' + imagePath + '"/>');
 
     STUDIO.addRowToTable('skins-table', data, 'skins', name);
@@ -43,7 +43,7 @@
 
   STUDIO.viewSkinImage = function(skinName) {
     var image = STUDIO.gameData.skins[skinName].image;
-    var imagePath = path.join(STUDIO.loadedGame.folder, image);
+    var imagePath = path.join(STUDIO.settings.folder, image);
 
     STUDIO.openDialog($('<div><img src="' + imagePath + '"></img></div>'), image);
   };

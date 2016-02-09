@@ -59,7 +59,7 @@
       throw new Error("A Skin called " + skinName + " already exists.");
     }
 
-    var imageRelativePath = imageFile.replace(STUDIO.loadedGame.folder, '');
+    var imageRelativePath = imageFile.replace(STUDIO.settings.folder, '');
     while (imageRelativePath.length > 0 && (imageRelativePath.substr(0, 1) == "\\" || imageRelativePath.substr(0, 1) == '/')) {
       imageRelativePath = imageRelativePath.slice(1, imageRelativePath.length);
     }
@@ -99,7 +99,7 @@
       name = '';
     }
     
-    var newPath = path.join(STUDIO.loadedGame.folder, newName);
+    var newPath = path.join(STUDIO.settings.folder, newName);
     STUDIO.copyFileSync(imageFile, newPath);
 
     if (!!name) {
@@ -127,14 +127,14 @@
 
     var imageFile = $('#edit-rpgmaker-skin-image').val();
     if (!imageFile || !imageFile.trim()) {
-      imageFile = path.join(STUDIO.loadedGame.folder, data.image);
+      imageFile = path.join(STUDIO.settings.folder, data.image);
     }
 
     if (!STUDIO.isFileImported(imageFile)) {
       throw new Error("The selected image file was not imported.");
     }
 
-    var imageRelativePath = imageFile.replace(STUDIO.loadedGame.folder, '');
+    var imageRelativePath = imageFile.replace(STUDIO.settings.folder, '');
     while (imageRelativePath.length > 0 && (imageRelativePath.substr(0, 1) == "\\" || imageRelativePath.substr(0, 1) == '/')) {
       imageRelativePath = imageRelativePath.slice(1, imageRelativePath.length);
     }
@@ -153,7 +153,7 @@
 
   STUDIO.loadRpgMakerSkinData = function(skinName) {
     var skinData = STUDIO.gameData.skins[skinName];
-    var fullImagePath = path.join(STUDIO.loadedGame.folder, skinData.image);
+    var fullImagePath = path.join(STUDIO.settings.folder, skinData.image);
 
     var img = $("<img src='" + fullImagePath + "'>");
     $('#edit-rpgmaker-skin-image-preview').html(img);
