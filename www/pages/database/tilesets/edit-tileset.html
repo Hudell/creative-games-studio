@@ -30,16 +30,24 @@
       <div class="image-preview" id="edit-tileset-image-preview">
       </div>
 
+      <br/>
+
       <div class="form-group">
         <label>Tile Width</label>
-        <input class="form-control" type="number" placeholder="0" id="edit-tileset-tile-width">
+        <input class="form-control" type="number" placeholder="0" id="edit-tileset-tile-width" min="0">
         <p class="help-block">Leave it at 0 to use this tileset in any map.</p>
       </div>
 
       <div class="form-group">
         <label>Tile Height</label>
-        <input class="form-control" type="number" placeholder="0" id="edit-tileset-tile-height">
+        <input class="form-control" type="number" placeholder="0" id="edit-tileset-tile-height" min="0">
         <p class="help-block">Leave it at 0 to use this tileset in any map.</p>
+      </div>
+
+      <div class="form-group">
+        <label>Tile Spacing</label>
+        <input class="form-control" type="number" placeholder="0" id="edit-tileset-tile-spacing" min="0">
+        <p class="help-block">The space between tiles on this tileset.</p>
       </div>
 
       <button id="edit-tileset-continue-btn" type="button" class="btn btn-primary">Continue</button>

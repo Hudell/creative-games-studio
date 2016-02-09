@@ -27,6 +27,31 @@
     STUDIO.openWindow(windowName);
   };
 
+  STUDIO.checkIfMapNameExists = function(mapName) {
+    for (var key in STUDIO.gameData.maps) {
+      if (key.toLowerCase() == (mapName.toLowerCase() + '.json')) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  STUDIO.importMapTilesets = function(mapData, mapFileFolder) {
+    for (var i = 0; i < mapData.tilesets.length; i++) {
+      var originalFile = path.join(mapFileFolder, mapData.tilesets[i].image);
+      var fileName = path.basename(originalFile);
+
+      var newFileName = path.join(STUDIO.loadedGame.folder, 'assets', 'tilesets', fileName);
+      var referencedFileName = path.join('..', 'assets', 'tilesets', fileName);
+      mapData.tilesets[i].image = referencedFileName;
+
+      if (fs.existsSync(originalFile)) {
+        STUDIO.copyFileSync(originalFile, newFileName);
+      }
+    }
+  };  
+
   STUDIO.doContinueImportMap = function(type, filePath) {
     try {
       var mapData = STUDIO.loadJson(filePath);
@@ -42,6 +67,9 @@
       switch(type) {
         case 'tiled' :
           STUDIO.importTiledMapTilesets(mapData, fileFolder);
+          break;
+        case 'tche' :
+          STUDIO.importTcheMapTilesets(mapData, fileFolder);
           break;
       }
     }

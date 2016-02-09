@@ -86,6 +86,7 @@ STUDIO.TilesetManager = {};
 
     var width = $('#import-tileset-tile-width').val() || 0;
     var height = $('#import-tileset-tile-height').val() || 0;
+    var spacing = $('#import-tileset-tile-spacing').val() || 0;
 
     var baseName = path.basename(filePath);
     var newPath = path.join('assets', 'tilesets', baseName);
@@ -109,7 +110,8 @@ STUDIO.TilesetManager = {};
       image : newPath,
       type : tileType,
       tileWidth : Math.max(0, parseInt(width)),
-      tileHeight : Math.max(0, parseInt(height))
+      tileHeight : Math.max(0, parseInt(height)),
+      spacing : Math.max(0, parseInt(spacing))
     };
 
     STUDIO.gameData.tilesets[name] = tilesetData;
@@ -131,6 +133,7 @@ STUDIO.TilesetManager = {};
       $('#tileType').val(tilesetData.type);
       $('#edit-tileset-tile-width').val(tilesetData.tileWidth);
       $('#edit-tileset-tile-height').val(tilesetData.tileHeight);
+      $('#edit-tileset-tile-spacing').val(tilesetData.spacing || 0);
 
       var fullPath = path.join(STUDIO.loadedGame.folder, tilesetData.image);
       $('#edit-tileset-image-preview').html('<img src="' + fullPath + '"/>');
@@ -143,6 +146,7 @@ STUDIO.TilesetManager = {};
     var type = $('#tileType').val();
     var tileWidth = $('#edit-tileset-tile-width').val() || 0;
     var tileHeight = $('#edit-tileset-tile-height').val() || 0;
+    var tileSpacing = $('#edit-tileset-tile-spacing').val() || 0;
 
     if (!oldName || !oldName.trim()) {
       throw new Error("I forgot what tileset you were editing.");
@@ -169,6 +173,7 @@ STUDIO.TilesetManager = {};
     tilesetData.name = newName;
     tilesetData.tileWidth = Math.max(parseInt(tileWidth), 0);
     tilesetData.tileHeight = Math.max(parseInt(tileHeight), 0);
+    tilesetData.spacing = Math.max(parseInt(tileSpacing), 0);
     tilesetData.type = type;
 
     STUDIO.gameData.tilesets[newName] = tilesetData;

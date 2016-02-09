@@ -28,8 +28,6 @@ TilesetSelectionLayerTexture.prototype.drawMousePos = function(mapData, tileset)
   var x = pos.x;
   var y = pos.y;
   
-  var tileWidth = mapData.tilewidth;
-  var tileHeight = mapData.tileheight;
   var width = tileset.imagewidth;
   var height = tileset.imageheight;
 
@@ -47,15 +45,32 @@ TilesetSelectionLayerTexture.prototype.drawMousePos = function(mapData, tileset)
 
 TilesetSelectionLayerTexture.prototype.getTilePosition = function(mapData, tileset, tileId) {
   var subTileId = tileId - tileset.firstgid;
-  var columns = tileset.imagewidth / mapData.tilewidth;
+  var tileWidthWithSpacing = mapData.tilewidth;
+  var tileHeightWithSpacing = mapData.tileheight;
+
+  var fakeSize = STUDIO.MapEditor.getFakeTileSize();
+  var halfSpacing = fakeSize.halfSpacing;
+  var spacing = fakeSize.spacing;
+
+  tileWidthWithSpacing += halfSpacing;
+  tileHeightWithSpacing += halfSpacing;
+
+  var columns = (tileset.imagewidth + spacing) / tileWidthWithSpacing;
 
   var column = subTileId % columns;
   var row = Math.floor(subTileId / columns);
 
-  return {
-    x : column * mapData.tilewidth,
-    y : row * mapData.tileheight
-  };
+  if (STUDIO.MapEditor.mapType() == 'tche') {
+    return {
+      x : column * fakeSize.realWidth + Math.floor(column / 2) * spacing,
+      y : row * fakeSize.realHeight  + Math.floor(row / 2) * spacing
+    };
+  } else {
+    return {
+      x : column * fakeSize.realWidthWithSpacing,
+      y : row * fakeSize.realHeightWithSpacing
+    }
+  }
 };
 
 TilesetSelectionLayerTexture.prototype.drawPickedTiles = function(mapData, tileset, individually) {
@@ -101,10 +116,17 @@ TilesetSelectionLayerTexture.prototype.drawPickedTiles = function(mapData, tiles
     }
   }
 
-  if (left !== false && right !== false && top !== false && bottom !== false) {
-    var xAmount = (right + mapData.tilewidth - left) / mapData.tilewidth;
-    var yAmount = (bottom + mapData.tileheight - top) / mapData.tileheight;
+  if (!individually && left !== false && right !== false && top !== false && bottom !== false) {
+    var size = STUDIO.MapEditor.getFakeTileSize();
+
+    var xAmount = (right + size.realWidth - left + size.spacing) / size.realWidth;
+    var yAmount = (bottom + size.realHeight - top + size.spacing) / size.realHeight;
     var amount = xAmount * yAmount;
+
+    // var xAmount = (right + size.realWidthWithSpacing - left + size.spacing) / size.realWidthWithSpacing;
+    // var yAmount = (bottom + size.realHeightWithSpacing - top + size.spacing) / size.realHeightWithSpacing;
+    // var newAmount = xAmount * yAmount;
+
 
     //If the amount of tiles inside the rect match the amount of selected tiles, then draw a single rect
     if (amount === length) {
@@ -159,8 +181,8 @@ TilesetSelectionLayerTexture.prototype.addRectangle = function(x, y, x2, y2) {
   }
 
   var size = STUDIO.MapEditor.getFakeTileSize();
-  var tileWidth = size.width;
-  var tileHeight = size.height;
+  var tileWidth = size.widthWithSpacing;
+  var tileHeight = size.heightWithSpacing;
 
   var realLeft = Math.floor(left / tileWidth) * tileWidth;
   var realTop = Math.floor(top / tileHeight) * tileHeight;
@@ -183,8 +205,8 @@ TilesetSelectionLayerTexture.prototype.addTile = function(x, y) {
   var columns = width / tileWidth;
 
   var size = STUDIO.MapEditor.getFakeTileSize();
-  var tileWidth = size.width;
-  var tileHeight = size.height;
+  var tileWidth = size.widthWithSpacing;
+  var tileHeight = size.heightWithSpacing;
 
   var realX = Math.floor(x / tileWidth) * tileWidth;
   var realY = Math.floor(y / tileHeight) * tileHeight;
