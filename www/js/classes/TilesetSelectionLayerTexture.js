@@ -74,7 +74,9 @@ TilesetSelectionLayerTexture.prototype.getTilePosition = function(mapData, tiles
 };
 
 TilesetSelectionLayerTexture.prototype.drawPickedTiles = function(mapData, tileset, individually) {
-  if (STUDIO.MapEditor._currentTileIds.length === 0) {
+  var tiles = STUDIO.MapEditor._currentTileIds;
+  
+  if (tiles.length === 0) {
     return;
   }
 
@@ -85,9 +87,12 @@ TilesetSelectionLayerTexture.prototype.drawPickedTiles = function(mapData, tiles
   var top = false;
   var bottom = false;
   var length = 0;
+  var tileId;
+  var tilesPerXPos = {};
+  var tilesPerYPos = {};
 
-  for (var i = 0; i < STUDIO.MapEditor._currentTileIds.length; i++) {
-    var tileId = STUDIO.MapEditor._currentTileIds[i];
+  for (var i = 0; i < tiles.length; i++) {
+    tileId = tiles[i];
     if (!tileId) continue;
 
     length++;
@@ -98,6 +103,16 @@ TilesetSelectionLayerTexture.prototype.drawPickedTiles = function(mapData, tiles
     if (individually) {
       this.drawSelectionRect(pos.x, pos.y, mapData.tilewidth, mapData.tileheight, 0x333333, 1, 2);
     } else {
+      if (!tilesPerXPos[pos.x]) {
+        tilesPerXPos[pos.x] = 0;
+      }
+      if (!tilesPerYPos[pos.y]) {
+        tilesPerYPos[pos.y] = 0;
+      }
+
+      tilesPerXPos[pos.x]++;
+      tilesPerYPos[pos.y]++;
+
       if (left === false || pos.x < left) {
         left = pos.x;
       }
@@ -119,14 +134,21 @@ TilesetSelectionLayerTexture.prototype.drawPickedTiles = function(mapData, tiles
   if (!individually && left !== false && right !== false && top !== false && bottom !== false) {
     var size = STUDIO.MapEditor.getFakeTileSize();
 
-    var xAmount = (right + size.realWidth - left + size.spacing) / size.realWidth;
-    var yAmount = (bottom + size.realHeight - top + size.spacing) / size.realHeight;
+    var xExtraSpacing = 0;
+    var yExtraSpacing = 0;
+    if (size.spacing > 0) {
+      if (size.allowHalf) {
+        xExtraSpacing = (tilesPerYPos[top] / 2 - 1) * size.spacing;
+        yExtraSpacing = (tilesPerXPos[left] / 2 - 1) * size.spacing;
+      } else {
+        xExtraSpacing = (tilesPerYPos[top] - 1) * size.spacing;
+        yExtraSpacing = (tilesPerXPos[left] - 1) * size.spacing;
+      }
+    }
+
+    var xAmount = (right + size.realWidth - left - xExtraSpacing) / size.realWidth;
+    var yAmount = (bottom + size.realHeight - top - yExtraSpacing) / size.realHeight;
     var amount = xAmount * yAmount;
-
-    // var xAmount = (right + size.realWidthWithSpacing - left + size.spacing) / size.realWidthWithSpacing;
-    // var yAmount = (bottom + size.realHeightWithSpacing - top + size.spacing) / size.realHeightWithSpacing;
-    // var newAmount = xAmount * yAmount;
-
 
     //If the amount of tiles inside the rect match the amount of selected tiles, then draw a single rect
     if (amount === length) {
