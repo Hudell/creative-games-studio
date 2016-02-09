@@ -1379,16 +1379,16 @@ function Trigger(el) {
   TCHE.mapTypes["2d"] = Default2DMapType;
 })();
 (function () {
-  var TiledMapType = function (_TCHE$MapType2) {
-    _inherits(TiledMapType, _TCHE$MapType2);
+  var TcheMapType = function (_TCHE$MapType2) {
+    _inherits(TcheMapType, _TCHE$MapType2);
 
-    function TiledMapType() {
-      _classCallCheck(this, TiledMapType);
+    function TcheMapType() {
+      _classCallCheck(this, TcheMapType);
 
-      return _possibleConstructorReturn(this, Object.getPrototypeOf(TiledMapType).apply(this, arguments));
+      return _possibleConstructorReturn(this, Object.getPrototypeOf(TcheMapType).apply(this, arguments));
     }
 
-    _createClass(TiledMapType, null, [{
+    _createClass(TcheMapType, null, [{
       key: 'getMapWidth',
       value: function getMapWidth(mapData) {
         return mapData.width * mapData.tilewidth;
@@ -1401,7 +1401,7 @@ function Trigger(el) {
     }, {
       key: 'getSpriteClass',
       value: function getSpriteClass(mapData) {
-        return TCHE.TiledMap;
+        return TCHE.TcheMap;
       }
     }, {
       key: 'getMapObjects',
@@ -1426,6 +1426,30 @@ function Trigger(el) {
         TCHE.FileManager.loadTiledMapFiles(mapData);
       }
     }, {
+      key: 'getTileFrame',
+      value: function getTileFrame(mapData, tileset, tileId) {
+        var columns = (tileset.imagewidth + tileset.spacing) / (tileset.tilewidth + tileset.spacing / 2);
+
+        var subTileId = tileId - tileset.firstgid;
+        var column = subTileId % columns;
+        var line = Math.floor(subTileId / columns);
+
+        var frame = {
+          width: tileset.tilewidth,
+          height: tileset.tileheight,
+          x: 0,
+          y: 0
+        };
+
+        var xSpacing = Math.floor(column / 2) * tileset.spacing;
+        var ySpacing = Math.floor(line / 2) * tileset.spacing;
+
+        frame.x = column * tileset.tilewidth + xSpacing;
+        frame.y = line * tileset.tileheight + ySpacing;
+
+        return frame;
+      }
+    }, {
       key: 'getImportantObjectData',
       value: function getImportantObjectData(mapData, obj) {
         return {
@@ -1444,8 +1468,48 @@ function Trigger(el) {
       }
     }]);
 
-    return TiledMapType;
+    return TcheMapType;
   }(TCHE.MapType);
+
+  TCHE.mapTypes.tche = TcheMapType;
+})();
+(function () {
+  var TiledMapType = function (_TCHE$mapTypes$tche) {
+    _inherits(TiledMapType, _TCHE$mapTypes$tche);
+
+    function TiledMapType() {
+      _classCallCheck(this, TiledMapType);
+
+      return _possibleConstructorReturn(this, Object.getPrototypeOf(TiledMapType).apply(this, arguments));
+    }
+
+    _createClass(TiledMapType, null, [{
+      key: 'getSpriteClass',
+      value: function getSpriteClass(mapData) {
+        return TCHE.TiledMap;
+      }
+    }, {
+      key: 'getTileFrame',
+      value: function getTileFrame(mapData, tileset, tileId) {
+        var columns = (tileset.imagewidth + tileset.spacing) / (tileset.tilewidth + tileset.spacing);
+
+        var subTileId = tileId - tileset.firstgid;
+        var column = subTileId % columns;
+        var line = Math.floor(subTileId / columns);
+
+        var frame = {
+          width: tileset.tilewidth,
+          height: tileset.tileheight,
+          x: column * (tileset.tilewidth + tileset.spacing),
+          y: line * (tileset.tileheight + tileset.spacing)
+        };
+
+        return frame;
+      }
+    }]);
+
+    return TiledMapType;
+  }(TCHE.mapTypes.tche);
 
   TCHE.mapTypes.tiled = TiledMapType;
 })();
@@ -1711,12 +1775,12 @@ function Trigger(el) {
     function ObjectObjectType() {
       _classCallCheck(this, ObjectObjectType);
 
-      var _this8 = _possibleConstructorReturn(this, Object.getPrototypeOf(ObjectObjectType).call(this));
+      var _this9 = _possibleConstructorReturn(this, Object.getPrototypeOf(ObjectObjectType).call(this));
 
-      _this8._events['On Block Player'] = {
+      _this9._events['On Block Player'] = {
         codeLines: []
       };
-      return _this8;
+      return _this9;
     }
 
     _createClass(ObjectObjectType, [{
@@ -1786,10 +1850,10 @@ function Trigger(el) {
 
       //Removes this event, as it is invalid
 
-      var _this11 = _possibleConstructorReturn(this, Object.getPrototypeOf(PlayerObjectType).call(this));
+      var _this12 = _possibleConstructorReturn(this, Object.getPrototypeOf(PlayerObjectType).call(this));
 
-      delete _this11._events['On Block Player'];
-      return _this11;
+      delete _this12._events['On Block Player'];
+      return _this12;
     }
 
     _createClass(PlayerObjectType, [{
@@ -1811,11 +1875,11 @@ function Trigger(el) {
     function CharacterSprite(character) {
       _classCallCheck(this, CharacterSprite);
 
-      var _this12 = _possibleConstructorReturn(this, Object.getPrototypeOf(CharacterSprite).call(this));
+      var _this13 = _possibleConstructorReturn(this, Object.getPrototypeOf(CharacterSprite).call(this));
 
-      _this12._character = character;
-      _this12.createPixiSprite();
-      return _this12;
+      _this13._character = character;
+      _this13.createPixiSprite();
+      return _this13;
     }
 
     _createClass(CharacterSprite, [{
@@ -1875,10 +1939,10 @@ function Trigger(el) {
     function MapSprite(map) {
       _classCallCheck(this, MapSprite);
 
-      var _this13 = _possibleConstructorReturn(this, Object.getPrototypeOf(MapSprite).call(this));
+      var _this14 = _possibleConstructorReturn(this, Object.getPrototypeOf(MapSprite).call(this));
 
-      _this13._map = map;
-      return _this13;
+      _this14._map = map;
+      return _this14;
     }
 
     _createClass(MapSprite, [{
@@ -1897,22 +1961,22 @@ function Trigger(el) {
   TCHE.registerClass('MapSprite', MapSprite);
 })();
 (function () {
-  var TiledLayerSprite = function (_TCHE$Sprite3) {
-    _inherits(TiledLayerSprite, _TCHE$Sprite3);
+  var TcheLayerSprite = function (_TCHE$Sprite3) {
+    _inherits(TcheLayerSprite, _TCHE$Sprite3);
 
-    function TiledLayerSprite(layerData) {
-      _classCallCheck(this, TiledLayerSprite);
+    function TcheLayerSprite(layerData) {
+      _classCallCheck(this, TcheLayerSprite);
 
-      var _this14 = _possibleConstructorReturn(this, Object.getPrototypeOf(TiledLayerSprite).call(this));
+      var _this15 = _possibleConstructorReturn(this, Object.getPrototypeOf(TcheLayerSprite).call(this));
 
-      _this14._layerData = layerData;
-      _this14._texture = null;
-      _this14._sprite = null;
-      _this14.createPixiSprite();
-      return _this14;
+      _this15._layerData = layerData;
+      _this15._texture = null;
+      _this15._sprite = null;
+      _this15.createPixiSprite();
+      return _this15;
     }
 
-    _createClass(TiledLayerSprite, [{
+    _createClass(TcheLayerSprite, [{
       key: 'addSprite',
       value: function addSprite(texture, x, y, tileId) {
         var tileX = x * texture.frame.width;
@@ -1997,27 +2061,27 @@ function Trigger(el) {
       }
     }]);
 
-    return TiledLayerSprite;
+    return TcheLayerSprite;
   }(TCHE.Sprite);
 
-  TCHE.registerClass('TiledLayerSprite', TiledLayerSprite);
+  TCHE.registerClass('TcheLayerSprite', TcheLayerSprite);
 })();
 (function () {
-  var TiledObjectLayerSprite = function (_TCHE$Sprite4) {
-    _inherits(TiledObjectLayerSprite, _TCHE$Sprite4);
+  var TcheObjectLayerSprite = function (_TCHE$Sprite4) {
+    _inherits(TcheObjectLayerSprite, _TCHE$Sprite4);
 
-    function TiledObjectLayerSprite(layerData) {
-      _classCallCheck(this, TiledObjectLayerSprite);
+    function TcheObjectLayerSprite(layerData) {
+      _classCallCheck(this, TcheObjectLayerSprite);
 
-      var _this15 = _possibleConstructorReturn(this, Object.getPrototypeOf(TiledObjectLayerSprite).call(this));
+      var _this16 = _possibleConstructorReturn(this, Object.getPrototypeOf(TcheObjectLayerSprite).call(this));
 
-      _this15._layerData = layerData;
-      _this15._objectSprites = [];
-      _this15._countdown = 0;
-      return _this15;
+      _this16._layerData = layerData;
+      _this16._objectSprites = [];
+      _this16._countdown = 0;
+      return _this16;
     }
 
-    _createClass(TiledObjectLayerSprite, [{
+    _createClass(TcheObjectLayerSprite, [{
       key: 'updateSprites',
       value: function updateSprites() {
         this._objectSprites.forEach(function (sprite) {
@@ -2073,10 +2137,10 @@ function Trigger(el) {
       }
     }]);
 
-    return TiledObjectLayerSprite;
+    return TcheObjectLayerSprite;
   }(TCHE.Sprite);
 
-  TCHE.registerClass('TiledObjectLayerSprite', TiledObjectLayerSprite);
+  TCHE.registerClass('TcheObjectLayerSprite', TcheObjectLayerSprite);
 })();
 (function () {
   var WindowSprite = function (_TCHE$Sprite5) {
@@ -2085,7 +2149,7 @@ function Trigger(el) {
     function WindowSprite(width, height, skinName) {
       _classCallCheck(this, WindowSprite);
 
-      var _this16 = _possibleConstructorReturn(this, Object.getPrototypeOf(WindowSprite).call(this));
+      var _this17 = _possibleConstructorReturn(this, Object.getPrototypeOf(WindowSprite).call(this));
 
       if (skinName === undefined) {
         if (!!TCHE.data.game.mainSkin) {
@@ -2093,12 +2157,12 @@ function Trigger(el) {
         }
       }
 
-      _this16.createBackground(skinName);
+      _this17.createBackground(skinName);
 
-      _this16.createContents(width, height, skinName);
-      _this16.createSprite();
-      _this16.refresh();
-      return _this16;
+      _this17.createContents(width, height, skinName);
+      _this17.createSprite();
+      _this17.refresh();
+      return _this17;
     }
 
     _createClass(WindowSprite, [{
@@ -2209,24 +2273,23 @@ function Trigger(el) {
   TCHE.registerClass('WindowSprite', WindowSprite);
 })();
 (function () {
-  var TiledMap = function (_TCHE$MapSprite) {
-    _inherits(TiledMap, _TCHE$MapSprite);
+  var TcheMap = function (_TCHE$MapSprite) {
+    _inherits(TcheMap, _TCHE$MapSprite);
 
-    function TiledMap(map) {
-      _classCallCheck(this, TiledMap);
+    function TcheMap(map) {
+      _classCallCheck(this, TcheMap);
 
-      var _this17 = _possibleConstructorReturn(this, Object.getPrototypeOf(TiledMap).call(this, map));
+      var _this18 = _possibleConstructorReturn(this, Object.getPrototypeOf(TcheMap).call(this, map));
 
-      _this17._layers = [];
-
-      _this17.createLayers();
-      return _this17;
+      _this18._layers = [];
+      _this18.createLayers();
+      return _this18;
     }
 
-    _createClass(TiledMap, [{
+    _createClass(TcheMap, [{
       key: 'createTileLayer',
       value: function createTileLayer(layer) {
-        var layerSprite = new TCHE.TiledLayerSprite(layer);
+        var layerSprite = new TCHE.TcheLayerSprite(layer);
         this._layers.push(layerSprite);
         this.addChild(layerSprite);
       }
@@ -2269,7 +2332,7 @@ function Trigger(el) {
     }, {
       key: 'creatObjectLayer',
       value: function creatObjectLayer(layer) {
-        var layerSprite = new TCHE.TiledObjectLayerSprite(layer);
+        var layerSprite = new TCHE.TcheObjectLayerSprite(layer);
         this._layers.push(layerSprite);
         this.addChild(layerSprite);
 
@@ -2295,7 +2358,7 @@ function Trigger(el) {
     }, {
       key: 'update',
       value: function update() {
-        _get(Object.getPrototypeOf(TiledMap.prototype), 'update', this).call(this);
+        _get(Object.getPrototypeOf(TcheMap.prototype), 'update', this).call(this);
 
         this.updateLayers();
 
@@ -2304,8 +2367,23 @@ function Trigger(el) {
       }
     }]);
 
-    return TiledMap;
+    return TcheMap;
   }(TCHE.MapSprite);
+
+  TCHE.registerClass('TcheMap', TcheMap);
+})();
+(function () {
+  var TiledMap = function (_TCHE$TcheMap) {
+    _inherits(TiledMap, _TCHE$TcheMap);
+
+    function TiledMap(map) {
+      _classCallCheck(this, TiledMap);
+
+      return _possibleConstructorReturn(this, Object.getPrototypeOf(TiledMap).call(this, map));
+    }
+
+    return TiledMap;
+  }(TCHE.TcheMap);
 
   TCHE.registerClass('TiledMap', TiledMap);
 })();
@@ -2316,15 +2394,15 @@ function Trigger(el) {
     function Map2d(map) {
       _classCallCheck(this, Map2d);
 
-      var _this18 = _possibleConstructorReturn(this, Object.getPrototypeOf(Map2d).call(this, map));
+      var _this20 = _possibleConstructorReturn(this, Object.getPrototypeOf(Map2d).call(this, map));
 
-      _this18._objectSprites = [];
+      _this20._objectSprites = [];
 
-      _this18.createBackground();
-      _this18.createObjects();
+      _this20.createBackground();
+      _this20.createObjects();
 
-      _this18.createPlayer();
-      return _this18;
+      _this20.createPlayer();
+      return _this20;
     }
 
     _createClass(Map2d, [{
@@ -2396,13 +2474,13 @@ function Trigger(el) {
     function ChoiceWindow(width, height) {
       _classCallCheck(this, ChoiceWindow);
 
-      var _this19 = _possibleConstructorReturn(this, Object.getPrototypeOf(ChoiceWindow).call(this, width, height));
+      var _this21 = _possibleConstructorReturn(this, Object.getPrototypeOf(ChoiceWindow).call(this, width, height));
 
-      _this19.interactive = true;
-      _this19._index = 0;
+      _this21.interactive = true;
+      _this21._index = 0;
 
-      _this19.redraw();
-      return _this19;
+      _this21.redraw();
+      return _this21;
     }
 
     _createClass(ChoiceWindow, [{
@@ -2701,12 +2779,12 @@ function Trigger(el) {
     function MessageWindow(width, height) {
       _classCallCheck(this, MessageWindow);
 
-      var _this20 = _possibleConstructorReturn(this, Object.getPrototypeOf(MessageWindow).call(this, width, height));
+      var _this22 = _possibleConstructorReturn(this, Object.getPrototypeOf(MessageWindow).call(this, width, height));
 
-      _this20.interactive = true;
+      _this22.interactive = true;
 
-      _this20.redraw();
-      return _this20;
+      _this22.redraw();
+      return _this22;
     }
 
     _createClass(MessageWindow, [{
@@ -3382,6 +3460,11 @@ function Trigger(el) {
       value: function getImportantObjectData(mapData, obj) {
         return this.getMapType(mapData).getImportantObjectData(mapData, obj);
       }
+    }, {
+      key: 'getTileFrame',
+      value: function getTileFrame(mapData, tileset, tileId) {
+        return this.getMapType(mapData).getTileFrame(mapData, tileset, tileId);
+      }
     }]);
 
     return MapManager;
@@ -3890,19 +3973,7 @@ function Trigger(el) {
 
           return false;
         });
-
-        var columns = theTileset.imagewidth / theTileset.tilewidth;
-
-        var subTileId = tileId - theTileset.firstgid;
-        var column = subTileId % columns;
-        var line = Math.floor(subTileId / columns);
-
-        var frame = {
-          width: theTileset.tilewidth,
-          height: theTileset.tileheight,
-          x: column * theTileset.tilewidth,
-          y: line * theTileset.tileheight
-        };
+        var frame = TCHE.MapManager.getTileFrame(mapData, theTileset, tileId);
 
         var baseTexture = PIXI.Texture.fromImage('./map/' + theTileset.image);
         texture = new PIXI.Texture(baseTexture);
@@ -3976,11 +4047,11 @@ function Trigger(el) {
     function SceneLoading() {
       _classCallCheck(this, SceneLoading);
 
-      var _this23 = _possibleConstructorReturn(this, Object.getPrototypeOf(SceneLoading).call(this));
+      var _this25 = _possibleConstructorReturn(this, Object.getPrototypeOf(SceneLoading).call(this));
 
-      _this23.createBackground();
-      _this23.createMessage();
-      return _this23;
+      _this25.createBackground();
+      _this25.createMessage();
+      return _this25;
     }
 
     _createClass(SceneLoading, [{
@@ -4112,12 +4183,12 @@ function Trigger(el) {
     function SceneMapLoading(params) {
       _classCallCheck(this, SceneMapLoading);
 
-      var _this25 = _possibleConstructorReturn(this, Object.getPrototypeOf(SceneMapLoading).call(this));
+      var _this27 = _possibleConstructorReturn(this, Object.getPrototypeOf(SceneMapLoading).call(this));
 
-      _this25._mapName = params.mapName;
+      _this27._mapName = params.mapName;
 
       TCHE.FileManager.loadMapFiles(params.mapName);
-      return _this25;
+      return _this27;
     }
 
     _createClass(SceneMapLoading, [{
@@ -4144,7 +4215,7 @@ function Trigger(el) {
     function SceneMap(params) {
       _classCallCheck(this, SceneMap);
 
-      var _this26 = _possibleConstructorReturn(this, Object.getPrototypeOf(SceneMap).call(this));
+      var _this28 = _possibleConstructorReturn(this, Object.getPrototypeOf(SceneMap).call(this));
 
       TCHE.globals.player.x = Number(TCHE.data.game.player.x || 0);
       TCHE.globals.player.y = Number(TCHE.data.game.player.y || 0);
@@ -4159,9 +4230,9 @@ function Trigger(el) {
       var mapData = TCHE.globals.map.mapData;
       var spriteClass = TCHE.MapManager.getSpriteClass(mapData);
 
-      _this26._mapSprite = new spriteClass(TCHE.globals.map);
-      _this26.addChild(_this26._mapSprite);
-      return _this26;
+      _this28._mapSprite = new spriteClass(TCHE.globals.map);
+      _this28.addChild(_this28._mapSprite);
+      return _this28;
     }
 
     _createClass(SceneMap, [{
@@ -4215,14 +4286,14 @@ function Trigger(el) {
     function SceneTitle(params) {
       _classCallCheck(this, SceneTitle);
 
-      var _this28 = _possibleConstructorReturn(this, Object.getPrototypeOf(SceneTitle).call(this));
+      var _this30 = _possibleConstructorReturn(this, Object.getPrototypeOf(SceneTitle).call(this));
 
-      _this28._windowSprite = new TCHE.WindowTitleChoices();
-      _this28._windowSprite.x = Math.floor(TCHE.renderer.width / 2) - Math.floor(_this28._windowSprite.width / 2);
-      _this28._windowSprite.y = TCHE.renderer.height - _this28._windowSprite.height;
+      _this30._windowSprite = new TCHE.WindowTitleChoices();
+      _this30._windowSprite.x = Math.floor(TCHE.renderer.width / 2) - Math.floor(_this30._windowSprite.width / 2);
+      _this30._windowSprite.y = TCHE.renderer.height - _this30._windowSprite.height;
 
-      _this28.addChild(_this28._windowSprite);
-      return _this28;
+      _this30.addChild(_this30._windowSprite);
+      return _this30;
     }
 
     _createClass(SceneTitle, [{
