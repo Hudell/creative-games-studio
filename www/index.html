@@ -21,8 +21,10 @@
   <link href="external/jquery-ui/jquery-ui.css" rel="stylesheet">
 </head>
 <body>
+    <div id="error" class="">
+    </div>
 
-    <div id="wrapper">
+    <div id="wrapper" class="hidden">
 
         <!-- Navigation -->
         <nav class="navbar navbar-default" role="navigation" style="margin-bottom: 0">
@@ -175,6 +177,24 @@
     <link rel="stylesheet" href="external/codemirror/lib/codemirror.css">
     <script src="external/codemirror/mode/javascript/javascript.js"></script>
 
+    <script type="text/JavaScript">
+        // $(function(){
+          window.onerror = function(msg, url, line, col, error) {
+            var title = 'Error';
+            if (!!window.t) {
+                title = window.t('Error');
+            } 
+
+            $('#error').html(error.message + '<br/>');
+
+            if (!!STUDIO && !!STUDIO.loaded) {
+              STUDIO.openDialog($("<div></div>").html(error.message),  title);
+            }
+            return false;
+          };
+        // });
+    </script>
+
     <!-- Custom Theme JavaScript -->
     <script src="js/studio.js"></script>
     <script src="js/classes/GridLayerTexture.js"></script>
@@ -199,8 +219,10 @@
 
     <script type="text/JavaScript">
         $(function(){
-          STUDIO.onLoad();
-        });    
+          if (!!STUDIO && !!STUDIO.loaded) {
+            STUDIO.onLoad();
+          }
+        });
     </script>
 
 </body>

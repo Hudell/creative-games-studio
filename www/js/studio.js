@@ -1,10 +1,3 @@
-$(function(){
-  window.onerror = function(msg, url, line, col, error) {
-    STUDIO.openDialog($("<div></div>").html(error.message), 'Error');
-    return false;
-  };
-});
-
 var STUDIO = {};
 (function(){
   var path = require("path");
@@ -43,10 +36,16 @@ var STUDIO = {};
   };
 
   STUDIO.getTranslationMessage = function(key, englishTranslation) {
-    if (!STUDIO.translation) return englishTranslation;
-    if (!STUDIO.key) return englishTranslation;
+    if (englishTranslation === undefined || englishTranslation === false) {
+      englishTranslation = key;
+    }
 
-    return STUDIO.key;
+    var key = key.trim();
+
+    if (!STUDIO.translation) return englishTranslation;
+    if (!STUDIO.translation[key]) return englishTranslation;
+
+    return STUDIO.translation[key];
   };
 
   STUDIO.requestPage = function(pageName, onSuccess, onError) {
@@ -75,7 +74,7 @@ var STUDIO = {};
     width = width || "auto";
 
     element.dialog({
-      title : title || "Information",
+      title : title || t('Information'),
       width : width,
       height : height,
       modal : true,
@@ -97,11 +96,11 @@ var STUDIO = {};
   };
 
   STUDIO.confirmWithCancel = function(message, okCallback, noCallback, title, cancelCallback) {
-    STUDIO.customConfirm(message, title || "Confirmation", "Yes", "Cancel", okCallback, cancelCallback, "No", noCallback);
+    STUDIO.customConfirm(message, title || t("Confirmation"), t("Yes"), t("Cancel"), okCallback, cancelCallback, t("No"), noCallback);
   };
 
   STUDIO.confirm = function(message, okCallback, title, cancelCallback){
-    STUDIO.customConfirm(message, title || "Confirmation", "Ok", "Cancel", okCallback, cancelCallback);
+    STUDIO.customConfirm(message, title || t("Confirmation"), t("Ok"), t("Cancel"), okCallback, cancelCallback);
   };
 
   STUDIO.customConfirm = function(message, title, okLabel, cancelLabel, okCallback, cancelCallback, noLabel, noCallback) {
@@ -161,12 +160,12 @@ var STUDIO = {};
 
   STUDIO.showError = function(message) {
     console.error(message);
-    STUDIO.openDialog($("<div></div>").html(message), 'Error');
+    STUDIO.openDialog($("<div></div>").html(message), t('Error'));
   };
 
   STUDIO.loadJson = function(fileName) {
     if (!fs.existsSync(fileName)) {
-      throw new Error("File not found: " + fileName);
+      throw new Error(t("File not found: ") + fileName);
       return;
     }
 
@@ -205,7 +204,7 @@ var STUDIO = {};
     STUDIO.requestPage(path.join('popups', popupName + '.html'), function(result, xhr){
       STUDIO.openDialog($('<div></div>').html(xhr.responseText), title, buttons || [
         {
-          text: "Close",
+          text: t("Close"),
           click: function() {
             $(this).dialog("close");
           }
@@ -222,7 +221,7 @@ var STUDIO = {};
   STUDIO.openPopupForm = function(popupName, title, okCallback, loadCallback, closeCallback) {
     STUDIO.openPopup(popupName, title, loadCallback || false, [
       {
-        text : "Confirm",
+        text : t("Confirm"),
         click : function(){
           var canClose = true;
           if (!!okCallback) {
@@ -241,7 +240,7 @@ var STUDIO = {};
     if (windowName !== 'new-project') {
       if (!STUDIO.isGameLoaded()) {
         STUDIO.openWindow('new-project');
-        STUDIO.showError("There's no game loaded.");
+        STUDIO.showError(t("There's no game loaded."));
         return;
       }
     }
@@ -262,10 +261,6 @@ var STUDIO = {};
         id = 'database-wrapper';
         $('#main-sidebar').removeClass('hidden');
         $('.database-option-list').removeClass('hidden');
-      } else if (STUDIO.getCurrentContext() == 'file-manager') {
-        id = 'file-manager-wrapper';
-        $('#main-sidebar').removeClass('hidden');
-        $('.file-manager-option-list').removeClass('hidden');
       }
 
       html = '<div id="' + id + '">' + html + '</div>';
@@ -273,9 +268,7 @@ var STUDIO = {};
       $('#page-wrapper').html(html);
       $('#content-wrapper').height(window.innerHeight - 52);
       $('#database-wrapper').height(window.innerHeight - 52);
-      $('#file-manager-wrapper').height(window.innerHeight - 52);
       $('.database-option-list').height(window.innerHeight - 52);
-      $('.file-manager-option-list').height(window.innerHeight - 52);
 
       STUDIO.fillSidebar();
       STUDIO.fixLinks();
@@ -319,15 +312,15 @@ var STUDIO = {};
 
   STUDIO.openProject = function(folderPath) {
     if (!fs.existsSync(path.join(folderPath, "game.json"))) {
-      STUDIO.showError("Game Data not found");
+      STUDIO.showError(t("Game Data not found"));
       return;
     }
     if (!fs.existsSync(path.join(folderPath, 'index.html'))) {
-      STUDIO.showError("Game Index not found");
+      STUDIO.showError(t("Game Index not found"));
       return;
     }
     if (!fs.existsSync(path.join(folderPath, 'main.js'))) {
-      STUDIO.showError("Main Game not found");
+      STUDIO.showError(t("Main Game not found"));
       return;
     }
 
@@ -336,7 +329,7 @@ var STUDIO = {};
 
   STUDIO.saveProject = function() {
     if (!STUDIO.isGameLoaded()) {
-      throw new Error("There's no game loaded.");
+      throw new Error(t("There's no game loaded."));
     }
 
     //If there's any save button visible on screen, click it.
@@ -361,7 +354,7 @@ var STUDIO = {};
 
   STUDIO.reloadProjectButton = function() {
     if (STUDIO.isGameLoaded() && STUDIO.isGameModified()) {
-      STUDIO.customConfirm("Unsaved changes will be lost.", "Attention", "No problem.", "Wait, No.", function(){
+      STUDIO.customConfirm(t("Unsaved changes will be lost."), t("Attention"), t("No problem."), t("Wait, No."), function(){
         STUDIO.reloadProject();
       });
     } else {
@@ -371,11 +364,11 @@ var STUDIO = {};
 
   STUDIO.closeProjectButton = function() {
     if (!STUDIO.isGameLoaded()) {
-      throw new Error("There's no game loaded.");
+      throw new Error(t("There's no game loaded."));
     }
 
     if (STUDIO.isGameModified()) {
-      STUDIO.customConfirm("Unsaved changes will be lost.", "Attention", "No problem.", "Wait, No.", function(){
+      STUDIO.customConfirm(t("Unsaved changes will be lost."), t("Attention"), t("No problem."), t("Wait, No."), function(){
         STUDIO.closeProjectAndRedirect();
       });
     } else {
@@ -389,7 +382,7 @@ var STUDIO = {};
 
   STUDIO.newProjectButton = function(){
     if (STUDIO.isGameModified()) {
-      STUDIO.customConfirm("Unsaved changes will be lost.", "Attention", "No problem.", "Wait, No.", function(){
+      STUDIO.customConfirm(t("Unsaved changes will be lost."), t("Attention"), t("No problem."), t("Wait, No."), function(){
         STUDIO.newProject();
       });
     } else {
@@ -419,11 +412,11 @@ var STUDIO = {};
 
   STUDIO.playProjectButton = function(){
     if (!STUDIO.isGameLoaded()) {
-      throw new Error("There's no game loaded.");
+      throw new Error(t("There's no game loaded."));
     }
 
     if (STUDIO.isGameModified()) {
-      STUDIO.confirmWithCancel("Save before running?", function(){
+      STUDIO.confirmWithCancel(t("Save before running?"), function(){
         STUDIO.saveProject();
         STUDIO.playProject();
       }, function(){
@@ -441,8 +434,8 @@ var STUDIO = {};
       files = fs.readdirSync(folderPath);
     }
     catch(e) {
-      console.log("Failed to clean folder content", folderPath);
-      STUDIO.showError("Failed clean folder content");
+      console.log(t("Failed to clean folder content"), folderPath);
+      STUDIO.showError(t("Failed to clean folder content"));
       return;
     }
 
@@ -579,7 +572,7 @@ var STUDIO = {};
       }
     } else {
       STUDIO.openWindow('new-project');
-      STUDIO.showError("There's no game loaded.");
+      STUDIO.showError(t("There's no game loaded."));
     }
   };
 
@@ -598,7 +591,7 @@ var STUDIO = {};
   };
 
   STUDIO.changeGamePath = function(newPath) {
-    win.title = 'Creative Studio - ' + newPath;
+    win.title = t('title', 'Creative Studio') + ' - ' + newPath;
   };
 
   STUDIO.indexOfObjectOnRecentList = function(type, objectName) {
@@ -649,6 +642,7 @@ var STUDIO = {};
       if (fs.existsSync('settings.json')) {
         STUDIO.settings = STUDIO.loadJson('settings.json');
       } else {
+        console.log("Settings file not found.");
         STUDIO.settings = {
           folder : '',
           language : ''
@@ -670,16 +664,16 @@ var STUDIO = {};
     }
     catch(e) {
       try{
-        STUDIO.changeGameTitle('No Game Loaded');
+        STUDIO.changeGameTitle(t("No Game Loaded"));
         STUDIO.closeProject();
       }
       catch(e) {
         console.error(e);
-        STUDIO.showError("Game Data is missing and another error happened while closing the project.");
+        STUDIO.showError(t("Game Data is missing and another error happened while closing the project."));
         return;
       }
 
-      STUDIO.showError("Game Data is missing. The project was unloaded.");
+      STUDIO.showError(t("Game Data is missing. The project was unloaded."));
       return;
     }
 
@@ -813,7 +807,7 @@ var STUDIO = {};
     STUDIO.gameData.resolution.screenWidth = STUDIO.gameData.resolution.screenWidth || 1280;
     STUDIO.gameData.resolution.screenHeight = STUDIO.gameData.resolution.screenHeight || 720;
     STUDIO.gameData.resolution.useDynamicResolution = STUDIO.gameData.resolution.useDynamicResolution || false;
-    STUDIO.gameData.name = STUDIO.gameData.name || "Untitled Project";
+    STUDIO.gameData.name = STUDIO.gameData.name || t("Untitled Project");
     STUDIO.gameData.initialMap = STUDIO.gameData.initialMap || "";
     STUDIO.gameData.initialScene = STUDIO.gameData.initialScene || "SceneTitle";
     STUDIO.gameData.mainSkin = STUDIO.gameData.mainSkin || "system";
@@ -894,7 +888,7 @@ var STUDIO = {};
 
   STUDIO.exitButton = function(){
     if (STUDIO.isGameModified()) {
-      STUDIO.confirmWithCancel("Save before leaving?", function(){
+      STUDIO.confirmWithCancel(t("Save before leaving?"), function(){
         STUDIO.saveProject();
         STUDIO.exit();
       }, function(){
@@ -980,6 +974,9 @@ var STUDIO = {};
     win.on('close', function(){
       STUDIO.exitButton();
     });
+
+    $("#error").addClass("hidden");
+    $("#wrapper").removeClass("hidden");
   };
 
   STUDIO.createMapMenu = function() {
@@ -987,17 +984,17 @@ var STUDIO = {};
     el.html('');
 
     if (STUDIO._windowName !== 'map-editor') {
-      el.append('<li><a id="current-map-btn" href="#"><i class="fa fa-map-o fa-fw"></i> Map Editor</a></li>');
+      el.append('<li><a id="current-map-btn" href="#"><i class="fa fa-map-o fa-fw"></i> ' + t("Map Editor") + '</a></li>');
       el.append('<li class="divider"></li>');
     }
 
-    el.append('<li><a id="btn-new-map" href="#"><i class="fa fa-plus fa-fw"></i> New Map</a></li>');
-    el.append('<li><a id="list-maps-btn" href="#"><i class="fa fa-list fa-fw"></i> List Maps</a></li>');
+    el.append('<li><a id="btn-new-map" href="#"><i class="fa fa-plus fa-fw"></i> ' + t("New Map") + '</a></li>');
+    el.append('<li><a id="list-maps-btn" href="#"><i class="fa fa-list fa-fw"></i> ' + t("List Maps") + '</a></li>');
 
     if (STUDIO._windowName === 'map-editor') {
       el.append('<li class="divider"></li>');
-      el.append('<li><a id="current-map-settings-btn" href="#"><i class="fa fa-wrench fa-fw"></i> Map Settings</a></li>');
-      el.append('<li><a id="delete-current-map-btn" href="#"><i class="fa fa-remove fa-fw"></i> Delete Current Map</a></li>');
+      el.append('<li><a id="current-map-settings-btn" href="#"><i class="fa fa-wrench fa-fw"></i> ' + t("Map Settings") + '</a></li>');
+      el.append('<li><a id="delete-current-map-btn" href="#"><i class="fa fa-remove fa-fw"></i> ' + t("Delete Current Map") + '</a></li>');
     }
 
     $('#current-map-btn').on('click', function(event) {
@@ -1130,6 +1127,8 @@ var STUDIO = {};
       });
     }, 100);
   };
+
+  STUDIO.loaded = true;
 })();
 
 window.t = STUDIO.getTranslationMessage;
