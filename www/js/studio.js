@@ -292,7 +292,6 @@ var STUDIO = {};
   };
 
   STUDIO.changeLoadedPath = function(newPath) {
-    debugger;
     if (!STUDIO.settings) {
       STUDIO.loadSettings();
     }

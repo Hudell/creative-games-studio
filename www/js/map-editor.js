@@ -33,6 +33,9 @@ STUDIO.MapEditor = {};
   namespace._placeObjectsAnywhere = false;
   namespace._needsGridRefresh = false;
 
+  //I've left this here so that I can later check if the requestAnimationFrame was called more times than it should
+  namespace._loops = 0;
+
   //Preloads the transparent png
   namespace._transparentSpriteTexture = PIXI.Texture.fromImage(path.join('img', 'transparent.png'));
 
@@ -1559,6 +1562,7 @@ STUDIO.MapEditor = {};
 
     namespace.createLayers(width, height);
     namespace.requestAnimationFrame();
+    namespace._loops++;
   };
 
   namespace.createTransparentLayer = function(width, height) {
@@ -1711,6 +1715,8 @@ STUDIO.MapEditor = {};
     if (!!namespace._selectionLayerTexture) return;
 
     var mapData = namespace._currentMapData;
+    if (!mapData) return;
+
     var width = mapData.width * mapData.tilewidth;
     var height = mapData.height * mapData.tileheight;
     namespace.createSelectionLayer(width, height);
@@ -1742,7 +1748,9 @@ STUDIO.MapEditor = {};
 
   namespace.refreshSelectionLayer = function() {
     namespace.createSelectionLayerIfNeeded();
-    namespace._selectionLayerTexture.refreshSelection();
+    if (!!namespace._selectionLayerTexture) {
+      namespace._selectionLayerTexture.refreshSelection();
+    }
   };
 
   namespace.createGridLayer = function(width, height) {
@@ -1795,9 +1803,7 @@ STUDIO.MapEditor = {};
   };
 
   namespace.requestAnimationFrame = function() {
-    if ($('.map-editor').length > 0) {
-      window.requestAnimationFrame(namespace.update.bind(namespace));
-    }
+    window.requestAnimationFrame(namespace.update.bind(namespace));
   };
 
   namespace.drawTile = function(column, row, tileId, layer, tileset) {
@@ -2113,13 +2119,20 @@ STUDIO.MapEditor = {};
   };
 
   namespace.update = function(){
-    namespace.requestAnimationFrame();
+    if ($('.map-editor').length > 0) {
+      namespace.requestAnimationFrame();
 
-    this.updateMap();
-    this.updateTileset();
+      namespace.updateMap();
+      namespace.updateTileset();
+    } else {
+      namespace._loops--;
+    }
   };
 
   namespace.updateMap = function(){
+    if (!namespace._renderer) return;
+    if (!namespace._stage) return;
+
     namespace._renderer.render(namespace._stage);
 
     var pos = namespace.getMousePos();
