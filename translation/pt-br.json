@@ -6,7 +6,7 @@
   "Error" : "Erro",
   "Information" : "Informação",
   "Cancel" : "Cancelar",
-  "File not found: " : "Arquivo não encontrado:",
+  "File not found:" : "Arquivo não encontrado:",
   "Close" : "Fechar",
   "Confirm" : "Confirmar",
   "There's no game loaded." : "Não há nenhum jogo carregado.",
@@ -329,5 +329,6 @@
   "Please give the tileset a name." : "Por favor, dê um nome para o tileset.",
   "I couldn't find the tileset data to modify." : "Não encontrei os dados do tileset para modificar.",
   "Code" : "Código",
-  "Map" : "Mapa"
+  "Map" : "Mapa",
+  "The map data was not found. Do you want to remove this map from the project?" : "Os dados do mapa não foram encontrados. Deseja remover este mapa do projeto?"
 }

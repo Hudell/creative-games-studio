@@ -134,13 +134,16 @@
       throw new Error(t("Map not found:") + ' ' + mapName);
     }
 
+    var mapData = STUDIO.getMapData(mapName);
+    if (!mapData) {
+      STUDIO.confirm(t("The map data was not found. Do you want to remove this map from the project?"), function(){
+        STUDIO.removeMap(mapName);
+        STUDIO.openWindow('maps');
+      }, t("Confirmation"));
+      return;
+    }
+
     STUDIO.openMapEditor(mapName);
-    // var mapType = STUDIO.gameData.maps[mapName];
-    // switch (mapType) {
-    //   case 'tiled' :
-    //     STUDIO.editTiledMap(mapName);
-    //     break;
-    // }
   };
 
   STUDIO.fillMaps = function(selectId) {

@@ -396,7 +396,7 @@ var STUDIO = {};
     var newWin = gui.Window.open('file://' + STUDIO.settings.folder + '/index.html?debug', {
       position : 'center',
       title : STUDIO.gameData.name,
-      toolbar : false
+      toolbar : true
     });
 
     try {
@@ -533,7 +533,12 @@ var STUDIO = {};
       return null;
     }
 
-    return STUDIO.loadJson(path.join(STUDIO.settings.folder, 'maps', mapName));
+    var fileName = path.join(STUDIO.settings.folder, 'maps', mapName);
+    if (fs.existsSync(fileName)) {
+      return STUDIO.loadJson(fileName);
+    } else {
+      return null;
+    }
   };
 
   STUDIO.saveMapData = function(mapName) {
@@ -907,11 +912,6 @@ var STUDIO = {};
     $('#database-btn').on('click', function(event) {
       event.preventDefault();
       STUDIO.DatabaseManager.openDatabaseWindow();
-    });
-
-    $('#file-manager-btn').on('click', function(event) {
-      event.preventDefault();
-      STUDIO.DatabaseManager.openDatabaseManagerWindow();
     });
 
     $('#plugins-btn').on('click', function(event) { STUDIO.eventOpenWindow(event, 'plugins'); });
