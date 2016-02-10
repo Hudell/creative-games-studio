@@ -855,7 +855,11 @@ STUDIO.MapEditor = {};
           event.preventDefault();
 
           var pos = getPosFromEvent(event, true);
-          namespace.pickArea(pos.column, pos.row, pos.column + 0.5, pos.row + 0.5);
+          var size = namespace.getFakeTileSize();
+
+          if (size.allowHalf) {
+            namespace.pickArea(pos.column, pos.row, pos.column + 0.5, pos.row + 0.5, true);
+          }
         });
       }
     };
@@ -863,11 +867,14 @@ STUDIO.MapEditor = {};
     img.src = imagePath;
   };
 
-  namespace.pickArea = function(column, row, column2, row2) {
+  namespace.pickArea = function(column, row, column2, row2, isOffGridBrush) {
     var left = column;
     var right = column2;
     var top = row;
     var bottom = row2;
+
+    //isOffGridBrush represents the alternative area that is highlighted with a red square when the brush is used
+    isOffGridBrush = isOffGridBrush || false;
 
     if (left > right) {
       right = column;
@@ -881,20 +888,22 @@ STUDIO.MapEditor = {};
 
     var size = namespace.getFakeTileSize();
     if (size.allowHalf) {
-      if (left != Math.floor(left)) {
-        left -= 0.5;
-      }
+      if (!isOffGridBrush) {
+        if (left != Math.floor(left)) {
+          left -= 0.5;
+        }
 
-      if (right != Math.floor(right)) {
-        right -= 0.5;
-      }
+        if (right != Math.floor(right)) {
+          right -= 0.5;
+        }
 
-      if (right == Math.floor(right)) {
-        right += 0.5;
-      }
+        if (right == Math.floor(right)) {
+          right += 0.5;
+        }
 
-      if (bottom == Math.floor(bottom)) {
-        bottom += 0.5;
+        if (bottom == Math.floor(bottom)) {
+          bottom += 0.5;
+        }
       }
     }
 
