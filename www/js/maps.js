@@ -58,7 +58,7 @@
     }
     catch (e) {
       console.error(e);
-      throw new Error("Failed to parse map data.");
+      throw new Error(t("Failed to parse map data."));
     }
 
     var fileFolder = path.dirname(filePath);
@@ -75,7 +75,7 @@
     }
     catch(e) {
       console.error(e);
-      throw new Error("Failed to import map tilesets.");
+      throw new Error(t("Failed to import map tilesets."));
     }
 
     var mapName = path.basename(filePath);
@@ -85,7 +85,7 @@
     }
     catch(e) {
       console.error(e);
-      throw new Error("Failed to save the map.");
+      throw new Error(t("Failed to save the map."));
     }
 
     STUDIO.gameData.maps[mapName] = type;
@@ -98,13 +98,13 @@
     var filePath = $('#import-map-file').val();
 
     if (!filePath || !filePath.trim()) {
-      throw new Error("Please select a map file to import.");
+      throw new Error(t("Please select a map file to import."));
     }
 
     var mapName = path.basename(filePath);
 
     if (STUDIO.gameData.maps[mapName] !== undefined) {
-      STUDIO.confirm('A map called ' + mapName + ' already exists. If you continue, it will be overwritten.', function(){
+      STUDIO.confirm(t("A map with this name already exists. If you continue, it will be overwritten."), function(){
         STUDIO.doContinueImportMap(type, filePath);
       });
     } else {
@@ -131,7 +131,7 @@
 
   STUDIO.editMap = function(mapName) {
     if (!STUDIO.gameData.maps[mapName]) {
-      throw new Error("Map " + mapName + " not found.");
+      throw new Error(t("Map not found:") + ' ' + mapName);
     }
 
     STUDIO.openMapEditor(mapName);

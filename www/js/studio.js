@@ -211,6 +211,7 @@ var STUDIO = {};
         }
       ], width, height, onClose);
       STUDIO.fixLinks();
+      STUDIO.applyTranslation();
 
       if (!!callback) {
         callback();
@@ -273,6 +274,7 @@ var STUDIO = {};
       STUDIO.fillSidebar();
       STUDIO.fixLinks();
       STUDIO.createMapMenu();
+      STUDIO.applyTranslation();
 
       if (!!callback) {
         callback();
@@ -975,6 +977,8 @@ var STUDIO = {};
       STUDIO.exitButton();
     });
 
+    STUDIO.applyTranslation();
+
     $("#error").addClass("hidden");
     $("#wrapper").removeClass("hidden");
   };
@@ -1126,6 +1130,51 @@ var STUDIO = {};
         return false;
       });
     }, 100);
+  };
+
+  STUDIO.translateSpans = function() {
+    var elements = $('.translation-span');
+    for (var i = 0; i < elements.length; i++) {
+      var el = elements[i];
+      var key = el.innerHTML;
+
+      if (!!key) {
+        el.innerHTML = t(key);
+        el.className = el.className.replace(/\btranslation-span\b/, '');
+      }
+    }
+  };
+
+  STUDIO.translateTitles = function() {
+    var elements = $('.translation-title');
+    for (var i = 0; i < elements.length; i++) {
+      var el = elements[i];
+      var key = el.title;
+
+      if (!!key) {
+        el.title = t(key);
+        el.className = el.className.replace(/\btranslation-title\b/, '');
+      }
+    }
+  };
+
+  STUDIO.translatePlaceholders = function() {
+    var elements = $('.translation-placeholder');
+    for (var i = 0; i < elements.length; i++) {
+      var el = elements[i];
+      var key = el.placeholder;
+
+      if (!!key) {
+        el.placeholder = t(key);
+        el.className = el.className.replace(/\btranslation-placeholder\b/, '');
+      }
+    }
+  };
+
+  STUDIO.applyTranslation = function() {
+    STUDIO.translateSpans();
+    STUDIO.translateTitles();
+    STUDIO.translatePlaceholders();
   };
 
   STUDIO.loaded = true;

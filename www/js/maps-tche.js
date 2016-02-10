@@ -5,12 +5,12 @@
   STUDIO.saveOldTcheMap = function(){
     var mapName = $('#edit-tche-map-name').val();
     if (!mapName || !mapName.trim()) {
-      throw new Error("I forgot what map you were modifying. Try again.");
+      throw new Error(t("I forgot what map you were modifying. Try again."));
     }
 
     var data = STUDIO.gameData.maps[mapName];
     if (!data) {
-      throw new Error("I couldn't find the existing map data.");
+      throw new Error(t("I couldn't find the existing map data."));
     }
 
     STUDIO.openWindow('maps');
@@ -19,11 +19,11 @@
   STUDIO.saveNewTcheMap = function(){
     var mapName = $('#new-tche-map-name').val();
     if (!mapName || !mapName.trim()) {
-      throw new Error("You need to give the map a name.");
+      throw new Error(t("You need to give the map a name."));
     }
 
     if (STUDIO.checkIfMapNameExists(mapName)) {
-      throw new Error("A map called " + mapName + " already exists.");
+      throw new Error(t("A map with this name already exists:") + ' ' + mapName);
     }
 
     var width = parseInt($('#new-tche-map-width').val(), 10);
@@ -32,31 +32,31 @@
     var tileHeight = $('#new-tche-map-tile-height').val();
 
     if (!width) {
-      throw new Error("Please type a valid map width.");
+      throw new Error(t("Please type a valid map width."));
     }
     if (width < 1) {
-      throw new Error("The Map width needs to be a positive number.");
+      throw new Error(t("The Map width needs to be a positive number."));
     }
 
     if (!height) {
-      throw new Error("Please type a valid map height.");
+      throw new Error(t("Please type a valid map height."));
     }
     if (height < 1) {
-      throw new Error("The Map height needs to be a positive number.");
+      throw new Error(t("The Map height needs to be a positive number."));
     }
 
     if (!tileWidth) {
-      throw new Error("Please type a valid width for the tiles.");
+      throw new Error(t("Please type a valid width for the tiles."));
     }
     if (tileWidth < 1) {
-      throw new Error("The tile width needs to be a positive number.");
+      throw new Error(t("The tile width needs to be a positive number."));
     }
 
     if (!tileHeight) {
-      throw new Error("Please type a valid height for the tiles.");
+      throw new Error(t("Please type a valid height for the tiles."));
     }
     if (tileHeight < 1) {
-      throw new Error("The tile height needs to be a positive number.");
+      throw new Error(t("The tile height needs to be a positive number."));
     }
 
     width *= 2;
@@ -78,11 +78,11 @@
       "tileheight" : Number(tileHeight)
     };
 
-    STUDIO.MapEditor.addLayerToMap(mapData, 'Ground', 'tilelayer');
-    STUDIO.MapEditor.addLayerToMap(mapData, 'Ground Overlay', 'tilelayer');
-    STUDIO.MapEditor.addLayerToMap(mapData, 'Walls', 'tilelayer');
-    STUDIO.MapEditor.addLayerToMap(mapData, 'Player', 'objectgroup');
-    STUDIO.MapEditor.addLayerToMap(mapData, 'Overlay', 'tilelayer');
+    STUDIO.MapEditor.addLayerToMap(mapData, t("Ground"), 'tilelayer');
+    STUDIO.MapEditor.addLayerToMap(mapData, t("Ground Overlay"), 'tilelayer');
+    STUDIO.MapEditor.addLayerToMap(mapData, t("Walls"), 'tilelayer');
+    STUDIO.MapEditor.addLayerToMap(mapData, t("Player"), 'objectgroup');
+    STUDIO.MapEditor.addLayerToMap(mapData, t("Overlay"), 'tilelayer');
 
     STUDIO.changeMap(mapName, mapData);
     STUDIO.openMapEditor(mapName);
@@ -108,19 +108,19 @@
       var objectIndex = event.currentTarget.dataset.objectIndex;
 
       if (layerIndex === undefined || objectIndex === undefined) {
-        throw new Error("Couldn't find object reference.");
+        throw new Error(t("Couldn't find object reference."));
       }
 
       var layer = mapData.layers[layerIndex];
       if (!layer) {
-        throw new Error("Invalid layer reference.");
+        throw new Error(t("Invalid layer reference."));
       }
       var object = layer.objects[objectIndex];
       if (!object) {
-        throw new Error("Invalid object reference.");
+        throw new Error(t("Invalid object reference."));
       }
 
-      STUDIO.openPopupForm('edit-tche-map-object', 'Edit Object Properties', function(){
+      STUDIO.openPopupForm('edit-tche-map-object', t("Edit Object Properties"), function(){
         var objectType = $('#edit-tche-map-object-type').val();
         var sprite = $('#edit-tche-map-object-sprite').val();
 
@@ -157,7 +157,7 @@
 
   STUDIO.importTcheMapTilesets = function(mapData, mapFileFolder) {
     if (mapData.tcheVersion === undefined) {
-      throw new Error("The selected file is not a default map.");
+      throw new Error(t("The selected file is not a default map."));
     }
 
     STUDIO.importMapTilesets(mapData, mapFileFolder);

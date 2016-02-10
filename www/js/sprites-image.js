@@ -20,7 +20,7 @@
 
   STUDIO.onChooseImageSpriteToImport = function(filePath) {
     if (STUDIO.isFileImported(filePath)) {
-      STUDIO.showMessage('The selected image was already imported.');
+      STUDIO.showMessage(t("The selected image was already imported."));
       $('#import-image-sprite-image').val('');
       return;
     }
@@ -54,37 +54,36 @@
     var imageFile = $('#' + prefix + '-image-sprite-image').val();
     if (!imageFile || !imageFile.trim()) {
       if (requireImage) {
-        throw new Error("Select a file to use.");
+        throw new Error(t("Select a file to use."));
       }
     } else {
       if (!STUDIO.isFileImported(imageFile.trim())) {
-        throw new Error("The selected image file was not imported.");
+        throw new Error(t("The selected image file was not imported."));
       }
     }
 
     var width = $('#' + prefix + '-image-sprite-width').val();
     if (isNaN(width) || width == 0) {
-      throw new Error("Invalid image width.");
+      throw new Error(t("Invalid image width."));
     }
 
     var height = $('#' + prefix + '-image-sprite-height').val();
     if (isNaN(height) || height == 0) {
-      throw new Error("Invalid image height.");
+      throw new Error(t("Invalid image height."));
     }
   };
 
   STUDIO.saveOldImageSprite = function() {
     var spriteName = $('#edit-image-sprite-name').val();
     if (!spriteName || !spriteName.trim) {
-      throw new Error("I forgot what sprite you were modifying, sorry.");
+      throw new Error(t("I forgot what sprite you were modifying, sorry."));
     }
 
     STUDIO.validateImageSpriteData('edit');
-
     var data = STUDIO.gameData.sprites[spriteName];
 
     if (!data) {
-      throw new Error("I couldn't find the existing sprite data.");
+      throw new Error(t("I couldn't find the existing sprite data."));
     }
 
     var imageFile = $('#edit-image-sprite-image').val().trim();
@@ -112,13 +111,13 @@
   STUDIO.saveNewImageSprite = function() {
     var spriteName = $('#new-image-sprite-name').val();
     if (!spriteName || !spriteName.trim) {
-      throw new Error("You need to give this sprite a name.");
+      throw new Error(t("You need to give this sprite a name."));
     }
 
     STUDIO.validateImageSpriteData('new');
 
     if (STUDIO.gameData.sprites[spriteName] !== undefined) {
-      throw new Error("A sprite called " + spriteName + " already exists.");
+      throw new Error(t("A sprite with that name already exists."));
     }
 
     var imageFile = $('#new-image-sprite-image').val().trim();
@@ -141,32 +140,32 @@
   STUDIO.importImageSprite = function() {
     var imageFile = $('#import-image-sprite-image').val();
     if (!imageFile || !imageFile.trim()) {
-      throw new Error("Select a file to import.");
+      throw new Error(t("Select a file to import."));
     }
 
     if (STUDIO.isFileImported(imageFile)) {
-      throw new Error("The selected image file was already imported.");
+      throw new Error(t("The selected image file was already imported."));
     }
 
     var width = $('#import-image-sprite-width').val();
     if (isNaN(width) || width == 0) {
-      throw new Error("Invalid image width.");
+      throw new Error(t("Invalid image width."));
     }
 
     var height = $('#import-image-sprite-height').val();
     if (isNaN(height) || height == 0) {
-      throw new Error("Invalid image height.");
+      throw new Error(t("Invalid image height."));
     }
 
     var newName = $('#import-image-sprite-new-name').val();
     if (!newName || !newName.trim) {
-      throw new Error("You need to give this file a new name.");
+      throw new Error(t("You need to give this file a new name."));
     }
 
     var name = $('#import-image-sprite-name').val();
     if (!!name && !!name.trim()) {
       if (STUDIO.gameData.sprites[name] !== undefined) {
-        throw new Error("A sprite called " + name + " already exists.");
+        throw new Error(t("A sprite with that name already exists."));
       }
     }
 

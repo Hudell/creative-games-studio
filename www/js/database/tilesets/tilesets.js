@@ -9,19 +9,19 @@ STUDIO.TilesetManager = {};
 
     switch(tilesetData.type) {
       case 'tiles' :
-        data.push('Simple Tiles');
+        data.push(t("Simple Tiles"));
         break;
       case 'rm-auto-tiles-a1' :
-        data.push('RPG Maker Animated Auto Tiles (A1)');
+        data.push(t("RPG Maker Animated Auto Tiles (A1)"));
         break;
       case 'rm-auto-tiles-a2' :
-        data.push('RPG Maker Auto Tiles (A2)');
+        data.push(t("RPG Maker Auto Tiles (A2)"));
         break;
       case 'rm-auto-tiles-a3' :
-        data.push('RPG Maker Auto Tiles (A3)');
+        data.push(t("RPG Maker Auto Tiles (A3)"));
         break;
       case 'rm-auto-tiles-a4' :
-        data.push('RPG Maker Auto Tiles (A4)');
+        data.push(t("RPG Maker Auto Tiles (A4)"));
         break;
       default :
         data.push(tilesetData.type);
@@ -79,7 +79,7 @@ STUDIO.TilesetManager = {};
     var filePath = $('#import-tileset-image').val();
 
     if (!filePath || !filePath.trim()) {
-      throw new Error("Please pick a tileset image to import.");
+      throw new Error(t("Please pick a tileset image to import."));
     }
 
     var tileType = $('#tileType').val();
@@ -93,11 +93,11 @@ STUDIO.TilesetManager = {};
     var name = $('#import-tileset-name').val();
 
     if (!name || !name.trim()) {
-      throw new Error("Plase give this tileset a name.");
+      throw new Error(t("Plase give this tileset a name."));
     }
 
     if (STUDIO.keyExists(STUDIO.gameData.tilesets, name)) {
-      throw new Error("A Tileset called " + name + " already exists.");
+      throw new Error(t("A Tileset with that name already exists."));
     }
 
     var fullpath = path.join(STUDIO.settings.folder, newPath);
@@ -123,7 +123,7 @@ STUDIO.TilesetManager = {};
   namespace.editTileset = function(tilesetName) {
     var tilesetData = STUDIO.gameData.tilesets[tilesetName];
     if (!tilesetData) {
-      throw new Error("Tileset Data not found.");
+      throw new Error(t("Tileset data not found."));
     }
 
     STUDIO.DatabaseManager.openWindow('tilesets', 'edit-tileset', function(){
@@ -149,21 +149,21 @@ STUDIO.TilesetManager = {};
     var tileSpacing = $('#edit-tileset-tile-spacing').val() || 0;
 
     if (!oldName || !oldName.trim()) {
-      throw new Error("I forgot what tileset you were editing.");
+      throw new Error(t("I forgot what tileset you were editing."));
     }
 
     if (!newName || !newName.trim()) {
-      throw new Error("Please give the tileset a name.");
+      throw new Error(t("Please give the tileset a name."));
     }
 
     var tilesetData = STUDIO.gameData.tilesets[oldName];
     if (!tilesetData) {
-      throw new Error("I couldn't find the tileset data to modify.");
+      throw new Error(t("I couldn't find the tileset data to modify."));
     }
 
     if (oldName !== newName) {
       if (STUDIO.keyExists(STUDIO.gameData.tilesets, newName)) {
-        throw new Error("A Tileset called " + newName + " already exists.");
+        throw new Error(t("A Tileset with that name already exists."));
       }
       
       delete STUDIO.gameData.tilesets[oldName];
@@ -186,7 +186,7 @@ STUDIO.TilesetManager = {};
     var oldName = $('#edit-tileset-old-name').val();
 
     if (!oldName || !oldName.trim()) {
-      throw new Error("I forgot what tileset you were editing.");
+      throw new Error(t("I forgot what tileset you were editing."));
     }
 
     delete STUDIO.gameData.tilesets[oldName];

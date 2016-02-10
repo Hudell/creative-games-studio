@@ -101,20 +101,20 @@ STUDIO.ObjectManager = {};
     $('#code-command-teleport').on('click', function(event){
       event.preventDefault();
 
-      STUDIO.openPopupForm('code-command-teleport', 'Teleport', function(){
+      STUDIO.openPopupForm('code-command-teleport', t("Teleport"), function(){
         var mapName = $('#code-command-teleport-map').val();
         var x = $('#code-command-teleport-x').val();
         var y = $('#code-command-teleport-y').val();
 
         if (!mapName || !mapName.trim()) {
-          throw new Error("Please select a map to teleport to.");
+          throw new Error(t("Please select a map to teleport to."));
         }
         if (x !== 0 && (!x || isNaN(x))) {
-          throw new Error("Invalid X position.");
+          throw new Error(t("Invalid X position."));
         }
         
         if (y !== 0 && (!y || isNaN(y))) {
-          throw new Error("Invalid Y position.");
+          throw new Error(t("Invalid Y position."));
         }
 
         namespace.addCommandToScreenObject({
@@ -156,14 +156,14 @@ STUDIO.ObjectManager = {};
     var y = $('#code-command-teleport-y').val();
 
     if (!mapName || !mapName.trim()) {
-      throw new Error("Please select a map to teleport to.");
+      throw new Error(t("Please select a map to teleport to."));
     }
     if (x !== 0 && (!x || isNaN(x))) {
-      throw new Error("Invalid X position.");
+      throw new Error(t("Invalid X position."));
     }
     
     if (y !== 0 && (!y || isNaN(y))) {
-      throw new Error("Invalid Y position.");
+      throw new Error(t("Invalid Y position."));
     }
 
     return {
@@ -176,7 +176,7 @@ STUDIO.ObjectManager = {};
   namespace.modifyCommand = function(command) {
     switch(command.code) {
       case 'teleport' :
-        STUDIO.openPopupForm('code-command-teleport', 'Teleport', function(){
+        STUDIO.openPopupForm('code-command-teleport', t("Teleport"), function(){
           command.params = namespace.getTeleportParams();
           namespace.closeCommandWindowAndRefresh(event);
         }, function(){
@@ -205,18 +205,18 @@ STUDIO.ObjectManager = {};
 
     switch (command.code) {
       case 'wait' :
-        return 'Wait';
+        return t("Wait");
       case 'exit' :
-        return 'Exit Code Block';
+        return t("Exit Code Block");
       case 'teleport' :
-        return 'Teleport to map ' + command.params.mapName + ' at ' + command.params.x + ', ' + command.params.y;
+        return t("Teleport to map") + command.params.mapName + t("at") + command.params.x + ', ' + command.params.y;
       default :
         return '';
     }
   };
 
   namespace.showObjectOptions = function() {
-    STUDIO.openPopup('code-command-list', 'Add Command', function(){
+    STUDIO.openPopup('code-command-list', t("Add Command"), function(){
       namespace.registerObjectCommandEvents();
     });
   };
@@ -253,16 +253,16 @@ STUDIO.ObjectManager = {};
   namespace.continueNewObject = function() {
     var name = $('#new-object-name').val();
     if (!name || !name.trim()) {
-      throw new Error("Please give this object a name.");
+      throw new Error(t("Please give this object a name."));
     }
 
     if (STUDIO.gameData.objects[name] !== undefined) {
-      throw new Error("An object called " + name + " already exists.");
+      throw new Error(t("An object with that name already exists."));
     }
 
     var objectType = $('#objectType').val();
     if (!objectType || !objectType.trim()) {
-      throw new Error("Please choose an object type.");
+      throw new Error(t("Please choose an object type."));
     }
 
     var objectData = {
@@ -417,7 +417,7 @@ STUDIO.ObjectManager = {};
 
   namespace.editObject = function(objectName) {
     if (!STUDIO.gameData.objects[objectName]) {
-      throw new Error("Object " + objectName + " not found.");
+      throw new Error(t("Object not found:") + ' ' + objectName);
     }
 
     namespace._currentObject = STUDIO.deepClone(STUDIO.gameData.objects[objectName]);

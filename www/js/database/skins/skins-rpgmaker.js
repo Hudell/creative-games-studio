@@ -2,12 +2,12 @@
   var path = require("path");
 
   STUDIO.goToRpgMakerSkinImportScreen = function(filePath) {
-    STUDIO.showMessage('File will need to be imported.');
+    STUDIO.showMessage(t("File will need to be imported."));
   };
 
   STUDIO.onChooseRpgMakerSkinToImport = function(filePath) {
     if (STUDIO.isFileImported(filePath)) {
-      STUDIO.showMessage('The selected image was already imported.');
+      STUDIO.showMessage(t("The selected image was already imported."));
       $('#import-rpgmaker-skin-image').val('');
       return;
     }
@@ -43,20 +43,20 @@
   STUDIO.saveNewRpgMakerSkin = function() {
     var imageFile = $('#new-rpgmaker-skin-image').val();
     if (!imageFile || !imageFile.trim()) {
-      throw new Error("Select a file to use.");
+      throw new Error(t("Select a file to use."));
     }
 
     if (!STUDIO.isFileImported(imageFile)) {
-      throw new Error("The selected image file was not imported.");
+      throw new Error(t("The selected image file was not imported."));
     }
 
     var skinName = $('#new-rpgmaker-skin-name').val();
     if (!skinName || !skinName.trim) {
-      throw new Error("You need to give this skin a name.");
+      throw new Error(t("You need to give this skin a name."));
     }
 
     if (STUDIO.gameData.skins[skinName] !== undefined) {
-      throw new Error("A Skin called " + skinName + " already exists.");
+      throw new Error(t("A Skin with that name already exists."));
     }
 
     var imageRelativePath = imageFile.replace(STUDIO.settings.folder, '');
@@ -77,23 +77,23 @@
   STUDIO.importRpgMakerSkin = function() {
     var imageFile = $('#import-rpgmaker-skin-image').val();
     if (!imageFile || !imageFile.trim()) {
-      throw new Error("Select a file to import.");
+      throw new Error(t("Select a file to import."));
     }
 
     if (STUDIO.isFileImported(imageFile)) {
-      throw new Error("The selected image file was already imported.");
+      throw new Error(t("The selected image file was already imported."));
     }
 
     var newName = $('#import-rpgmaker-skin-new-name').val();
     if (!newName || !newName.trim) {
-      throw new Error("You need to give this file a new name.");
+      throw new Error(t("You need to give this file a new name."));
     }
 
     var name = $('#import-rpgmaker-skin-name').val();
     if (!!name && !!name.trim()) {
       name = name.trim();
       if (STUDIO.gameData.skins[name] !== undefined) {
-        throw new Error("A skin called " + name + " already exists.");
+        throw new Error(t("A Skin with that name already exists."));
       }
     } else {
       name = '';
@@ -117,12 +117,12 @@
   STUDIO.saveOldRpgMakerSkin = function(){
     var skinName = $('#edit-rpgmaker-skin-name').val();
     if (!skinName || !skinName.trim) {
-      throw new Error("I forgot what skin you were modifying. Try again.");
+      throw new Error(t("I forgot what skin you were modifying. Try again."));
     }
 
     var data = STUDIO.gameData.skins[skinName];
     if (!data) {
-      throw new Error("I couldn't find the existing skin data.");
+      throw new Error(t("I couldn't find the existing skin data."));
     }
 
     var imageFile = $('#edit-rpgmaker-skin-image').val();
@@ -131,7 +131,7 @@
     }
 
     if (!STUDIO.isFileImported(imageFile)) {
-      throw new Error("The selected image file was not imported.");
+      throw new Error(t("The selected image file was not imported."));
     }
 
     var imageRelativePath = imageFile.replace(STUDIO.settings.folder, '');

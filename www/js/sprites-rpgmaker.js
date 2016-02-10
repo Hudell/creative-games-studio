@@ -2,7 +2,7 @@
   var path = require("path");
 
   STUDIO.goToRpgMakerSpriteImportScreen = function(filePath) {
-    STUDIO.showMessage('File will need to be imported.');
+    STUDIO.showMessage(t("File will need to be imported."));
   };
 
   STUDIO.loadRpgMakerSpriteImage = function(imagePath, prefix) {
@@ -28,7 +28,7 @@
 
   STUDIO.onChooseRpgMakerSpriteToImport = function(filePath) {
     if (STUDIO.isFileImported(filePath)) {
-      STUDIO.showMessage('The selected image was already imported.');
+      STUDIO.showMessage(t("The selected image was already imported."));
       $('#import-rpgmaker-sprite-image').val('');
       return;
     }
@@ -52,7 +52,7 @@
       var x = (i % 4) * spriteWidth;
       var y = i >= 4 ? spriteHeight : 0;
 
-      sitemap += "<area shape='rect' coords='" + x + ',' + y + ',' + (x + spriteWidth) + ',' + (y + spriteHeight) + "' alt='Sprite " + i + "' title='Sprite " + i + "' href='#' class='image-map' data-index='" + i + "'>";
+      sitemap += "<area shape='rect' coords='" + x + ',' + y + ',' + (x + spriteWidth) + ',' + (y + spriteHeight) + "' alt='Sprite " + i + "' title='Sprite " + i + "' href='#' class='image-map translation-title' data-index='" + i + "'>";
     }
     sitemap += "</map>";
 
@@ -92,35 +92,35 @@
   STUDIO.saveNewRpgMakerSprite = function() {
     var imageFile = $('#new-rpgmaker-sprite-image').val();
     if (!imageFile || !imageFile.trim()) {
-      throw new Error("Select a file to use.");
+      throw new Error(t("Select a file to use."));
     }
 
     if (!STUDIO.isFileImported(imageFile)) {
-      throw new Error("The selected image file was not imported.");
+      throw new Error(t("The selected image file was not imported."));
     }
 
     var spriteName = $('#new-rpgmaker-sprite-name').val();
     if (!spriteName || !spriteName.trim) {
-      throw new Error("You need to give this sprite a name.");
+      throw new Error(t("You need to give this sprite a name."));
     }
 
     var width = $('#new-rpgmaker-sprite-width').val();
     if (isNaN(width) || width == 0) {
-      throw new Error("Invalid image width.");
+      throw new Error(t("Invalid image width."));
     }
 
     var height = $('#new-rpgmaker-sprite-height').val();
     if (isNaN(height) || height == 0) {
-      throw new Error("Invalid image height.");
+      throw new Error(t("Invalid image height."));
     }
 
     var index = $('input[name="new-rpgmaker-sprite-index"]:checked').val();
     if (!index || isNaN(index) || index < 0 || index >= 8) {
-      throw new Error("Invalid Index.");
+      throw new Error(t("Invalid Index."));
     }
 
     if (STUDIO.gameData.sprites[spriteName] !== undefined) {
-      throw new Error("A sprite called " + spriteName + " already exists.");
+      throw new Error(t("A sprite with that name already exists."));
     }
 
     var imageRelativePath = imageFile.replace(STUDIO.settings.folder, '');
@@ -144,26 +144,26 @@
   STUDIO.importRpgMakerSprite = function() {
     var imageFile = $('#import-rpgmaker-sprite-image').val();
     if (!imageFile || !imageFile.trim()) {
-      throw new Error("Select a file to import.");
+      throw new Error(t("Select a file to import."));
     }
 
     if (STUDIO.isFileImported(imageFile)) {
-      throw new Error("The selected image file was already imported.");
+      throw new Error(t("The selected image file was already imported."));
     }
 
     var width = $('#import-rpgmaker-sprite-width').val();
     if (isNaN(width) || width == 0) {
-      throw new Error("Invalid image width.");
+      throw new Error(t("Invalid image width."));
     }
 
     var height = $('#import-rpgmaker-sprite-height').val();
     if (isNaN(height) || height == 0) {
-      throw new Error("Invalid image height.");
+      throw new Error(t("Invalid image height."));
     }
 
     var newName = $('#import-rpgmaker-sprite-new-name').val();
     if (!newName || !newName.trim) {
-      throw new Error("You need to give this file a new name.");
+      throw new Error(t("You need to give this file a new name."));
     }
 
     for (var i = 0; i < 8; i++) {
@@ -173,7 +173,7 @@
       }
 
       if (STUDIO.gameData.sprites[name] !== undefined) {
-        throw new Error("A sprite called " + name + " already exists.");
+        throw new Error(t("A sprite with that name already exists."));
       }
     }
 
@@ -203,12 +203,12 @@
   STUDIO.saveOldRpgMakerSprite = function(){
     var spriteName = $('#edit-rpgmaker-sprite-name').val();
     if (!spriteName || !spriteName.trim) {
-      throw new Error("I forgot what sprite you were modifying. Try again.");
+      throw new Error(t("I forgot what sprite you were modifying. Try again."));
     }
 
     var data = STUDIO.gameData.sprites[spriteName];
     if (!data) {
-      throw new Error("I couldn't find the existing sprite data.");
+      throw new Error(t("I couldn't find the existing sprite data."));
     }
 
     var imageFile = $('#edit-rpgmaker-sprite-image').val();
@@ -217,22 +217,22 @@
     }
 
     if (!STUDIO.isFileImported(imageFile)) {
-      throw new Error("The selected image file was not imported.");
+      throw new Error(t("The selected image file was not imported."));
     }
 
     var width = $('#edit-rpgmaker-sprite-width').val();
     if (isNaN(width) || width == 0) {
-      throw new Error("Invalid image width.");
+      throw new Error(t("Invalid image width."));
     }
 
     var height = $('#edit-rpgmaker-sprite-height').val();
     if (isNaN(height) || height == 0) {
-      throw new Error("Invalid image height.");
+      throw new Error(t("Invalid image height."));
     }
 
     var index = $('input[name="edit-rpgmaker-sprite-index"]:checked').val();
     if (!index || isNaN(index) || index < 0 || index >= 8) {
-      throw new Error("Invalid Index.");
+      throw new Error(t("Invalid Index."));
     }
 
     var imageRelativePath = imageFile.replace(STUDIO.settings.folder, '');

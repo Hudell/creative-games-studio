@@ -54,7 +54,7 @@
 
   STUDIO.editSprite = function(spriteName) {
     if (!STUDIO.gameData.sprites[spriteName]) {
-      throw new Error("Sprite " + spriteName + " not found.");
+      throw new Error(t("Sprite not found:") + ' ' + spriteName);
     }
 
     var spriteData = STUDIO.gameData.sprites[spriteName];

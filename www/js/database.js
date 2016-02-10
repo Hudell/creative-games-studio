@@ -53,6 +53,8 @@ STUDIO.DatabaseManager = {};
       $('#database-wrapper').html(html);
       $('#database-wrapper').height(window.innerHeight - 52);
 
+      STUDIO.applyTranslation();
+
       if (!!callback) {
         callback();
       }
