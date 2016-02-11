@@ -396,7 +396,7 @@ var STUDIO = {};
     var newWin = gui.Window.open('file://' + STUDIO.settings.folder + '/index.html?debug', {
       position : 'center',
       title : STUDIO.gameData.name,
-      toolbar : true
+      toolbar : false
     });
 
     try {

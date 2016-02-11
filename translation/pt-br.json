@@ -330,5 +330,12 @@
   "I couldn't find the tileset data to modify." : "Não encontrei os dados do tileset para modificar.",
   "Code" : "Código",
   "Map" : "Mapa",
-  "The map data was not found. Do you want to remove this map from the project?" : "Os dados do mapa não foram encontrados. Deseja remover este mapa do projeto?"
+  "The map data was not found. Do you want to remove this map from the project?" : "Os dados do mapa não foram encontrados. Deseja remover este mapa do projeto?",
+  "The WebGL context was lost." : "O contexto do WebGL foi perdido.",
+  "This is a bug and I'm going to fix it as soon as I find out what causes it." : "Isto é um bug e eu vou corrigí-lo assim que identificar a causa.",
+  "In the meantime, you can save your project and restart Creative Studio." : "Por enquanto, eu recomendo salvar o seu projeto e reiniciar o Creative Studio.",
+  "If you have too many open programs, that may have caused this crash." : "Se você tem muitos programas abertos, isso pode ter contribuído para esse problema acontecer.",
+  "Creative Studio recovered from a WebGl context loss. You can continue modifying your map now." : "O Programa se recuperou de uma falha no processamento gráfico. Você pode continuar editando seus mapas agora.",
+  "Project Name" : "Nome do Projeto",
+  "Parent Folder Name" : "Nome do Diretorio"
 }

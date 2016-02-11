@@ -9,14 +9,14 @@
         <form role="form">
             <div class="form-group">
                 <label class="translation-span">Name</label>
-                <input class="form-control" id="new-project-name" placeholder="Project Name">
+                <input class="form-control translation-placeholder" id="new-project-name" placeholder="Project Name">
             </div>
             <div class="form-group">
               <label class="translation-span">Folder</label>
               <p class="help-block translation-span">Select the folder where you want to save your project.</p>
-              <button type="button" class="btn btn-default" id="new-project-select-folder translation-span">Select Parent Folder</button>
+              <button type="button" class="btn btn-default translation-span" id="new-project-select-folder">Select Parent Folder</button>
               <p></p>
-              <input class="form-control" type="text" placeholder="Parent Folder Name" disabled id="new-project-parent-folder">
+              <input class="form-control translation-placeholder" type="text" placeholder="Parent Folder Name" disabled id="new-project-parent-folder">
             </div>
             <div class="form-group">
                 <label class="translation-span">Folder Name</label>
@@ -32,11 +32,13 @@
 
 <script type="text/javascript">
 $(function(){
-  $('#new-project-select-folder').on('click', function(){
+  $('#new-project-select-folder').on('click', function(event){
+    event.preventDefault();
     STUDIO.pickNewProjectFolder();
   });
 
-  $('#new-project-continue').on('click', function(){
+  $('#new-project-continue').on('click', function(event){
+    event.preventDefault();
     STUDIO.saveNewProject();
   });
 });

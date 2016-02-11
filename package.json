@@ -3,9 +3,11 @@
   "main": "www/index.html",
   "window" : {
     "frame": true,
-    "toolbar": true,
+    "toolbar": false,
     "fullscreen" : false,
     "width" : 1000,
-    "height" : 600
+    "height" : 600,
+    "min_width" : 1000,
+    "min_height" : 600
   }
 }

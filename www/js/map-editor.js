@@ -32,6 +32,7 @@ STUDIO.MapEditor = {};
   namespace._showGrid = true;
   namespace._placeObjectsAnywhere = false;
   namespace._needsGridRefresh = false;
+  namespace._lostContext = false;
 
   //I've left this here so that I can later check if the requestAnimationFrame was called more times than it should
   namespace._loops = 0;
@@ -52,6 +53,11 @@ STUDIO.MapEditor = {};
   };
 
   namespace.openMapEditor = function(mapName, callback) {
+    if (namespace._lostContext) {
+      STUDIO.openWindow('context-lost');
+      return;
+    }
+
     STUDIO.gameData._lastMapName = mapName;
 
     var mapData = STUDIO.getMapData(mapName);
@@ -177,6 +183,19 @@ STUDIO.MapEditor = {};
     return STUDIO.gameData.maps[namespace._currentMapName];
   };
 
+  namespace.updateMapZoom = function() {
+    if (!namespace._renderer) return;
+
+    var width = namespace._renderer.width;
+    var height = namespace._renderer.height;
+
+    width *= namespace.mapZoomLevel;
+    height *= namespace.mapZoomLevel;
+
+    namespace._renderer.view.style.width = width + 'px';
+    namespace._renderer.view.style.height = height + 'px';
+  };
+
   namespace.updateTilesetZoom = function() {
     namespace.refreshTilesetWindow();
   };
@@ -251,11 +270,19 @@ STUDIO.MapEditor = {};
   };
 
   namespace.zoomIn = function() {
+    if (namespace.mapZoomLevel < 4) {
+      namespace.mapZoomLevel += 0.25;
+    }
 
+    namespace.updateMapZoom();
   };
 
   namespace.zoomOut = function() {
+    if (namespace.mapZoomLevel > 0.25) {
+      namespace.mapZoomLevel -= 0.25;
+    }
 
+    namespace.updateMapZoom();
   };
 
   namespace.loadLayerList = function() {
@@ -734,8 +761,8 @@ STUDIO.MapEditor = {};
       transparent : true
     };
 
-    return new PIXI.CanvasRenderer(width, height, options);
-    // return PIXI.autoDetectRenderer(width, height, options);
+    // return new PIXI.CanvasRenderer(width, height, options);
+    return PIXI.autoDetectRenderer(width, height, options);
   };
 
   namespace.setupTileset = function(imagePath, tileWidth, tileHeight, columns, rows, allowHalf) {
@@ -778,10 +805,15 @@ STUDIO.MapEditor = {};
 
         canvas.on('webglcontextlost', function(evt){
           evt.preventDefault();
+          namespace._lostContext = true;
+          
           console.log("WebGL Context lost");
+          STUDIO.openWindow('context-lost');
         });
         canvas.on('webglcontextrestored', function(evt){
           console.log("WebGL Context restored");
+          namespace._lostContext = false;
+          STUDIO.showMessage(t("Creative Studio recovered from a WebGl context loss. You can continue modifying your map now."));
           namespace.openMapEditor(namespace._currentMapName);
         });
 
@@ -1576,8 +1608,9 @@ STUDIO.MapEditor = {};
 
     $('.map-editor').html('');
     $('.map-editor')[0].appendChild(namespace._renderer.view);
-    namespace._renderer.view.style.width = width + 'px';
-    namespace._renderer.view.style.height = height + 'px';
+    
+    namespace._renderer.view.style.width = (width * namespace.mapZoomLevel) + 'px';
+    namespace._renderer.view.style.height = (height * namespace.mapZoomLevel) + 'px';
     namespace._currentTileIds = [];
 
     namespace._stage = new PIXI.Container();
@@ -2141,7 +2174,8 @@ STUDIO.MapEditor = {};
   };
 
   namespace.update = function(){
-    if ($('.map-editor').length > 0) {
+    //Only continue the loop is the webgl context was not lost and the map editor is open
+    if (!namespace._lostContext && $('.map-editor').length > 0) {
       namespace.requestAnimationFrame();
 
       namespace.updateMap();
