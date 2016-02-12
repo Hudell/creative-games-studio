@@ -6,8 +6,6 @@ STUDIO.MapEditor = {};
   var gui = require('nw.gui');
   var win = gui.Window.get();
 
-  namespace.tilesetZoomLevel = 1;
-  namespace.mapZoomLevel = 1;
   namespace._currentTool = 'brush';
   namespace._currentDrawType = 'tile';
   namespace._currentTilesetIndex = -1;
@@ -28,9 +26,6 @@ STUDIO.MapEditor = {};
   namespace._history = [];
   namespace._drawingRectangle = false;
   namespace._drawingTile = false;
-  namespace._offgridPlacement = false;
-  namespace._showGrid = true;
-  namespace._placeObjectsAnywhere = false;
   namespace._needsGridRefresh = false;
   namespace._lostContext = false;
 
@@ -86,7 +81,7 @@ STUDIO.MapEditor = {};
       namespace.loadLayerList();
       namespace.openFirstTileset();
       namespace.attachEvents();
-      namespace.refreshOffgridPlacementIcon();
+      namespace.refreshoffgridPlacementIcon();
       namespace.refreshGridIcon();
       namespace.refreshObjectsAnywhereIcon();
 
@@ -118,7 +113,7 @@ STUDIO.MapEditor = {};
         $('#mapeditor-autotiles-btn').addClass('hidden');
         $('#mapeditor-options-offgrid').addClass('hidden');
         
-        namespace._offgridPlacement = false;
+        STUDIO.settings.offgridPlacement = false;
         namespace.changeToolToPencil();
         break;
     }
@@ -160,7 +155,7 @@ STUDIO.MapEditor = {};
 
     $('#mapeditor-options-offgrid').on('click', function(event){
       event.preventDefault();
-      namespace.toggleOffgridPlacement();
+      namespace.toggleoffgridPlacement();
     });
 
     $('#mapeditor-options-show-grid').on('click', function(event){
@@ -189,8 +184,8 @@ STUDIO.MapEditor = {};
     var width = namespace._renderer.width;
     var height = namespace._renderer.height;
 
-    width *= namespace.mapZoomLevel;
-    height *= namespace.mapZoomLevel;
+    width *= STUDIO.settings.mapZoomLevel;
+    height *= STUDIO.settings.mapZoomLevel;
 
     namespace._renderer.view.style.width = width + 'px';
     namespace._renderer.view.style.height = height + 'px';
@@ -201,16 +196,16 @@ STUDIO.MapEditor = {};
   };
 
   namespace.increaseTilesetZoom = function() {
-    if (namespace.tilesetZoomLevel < 2) {
-      namespace.tilesetZoomLevel += 0.25;
+    if (STUDIO.settings.tilesetZoomLevel < 2) {
+      STUDIO.settings.tilesetZoomLevel += 0.25;
     }
 
     namespace.updateTilesetZoom();
   };
 
   namespace.decreaseTilesetZoom = function() {
-    if (namespace.tilesetZoomLevel > 0.25) {
-      namespace.tilesetZoomLevel -= 0.25;
+    if (STUDIO.settings.tilesetZoomLevel > 0.25) {
+      STUDIO.settings.tilesetZoomLevel -= 0.25;
     }
 
     namespace.updateTilesetZoom();
@@ -270,16 +265,16 @@ STUDIO.MapEditor = {};
   };
 
   namespace.zoomIn = function() {
-    if (namespace.mapZoomLevel < 4) {
-      namespace.mapZoomLevel += 0.25;
+    if (STUDIO.settings.mapZoomLevel < 4) {
+      STUDIO.settings.mapZoomLevel += 0.25;
     }
 
     namespace.updateMapZoom();
   };
 
   namespace.zoomOut = function() {
-    if (namespace.mapZoomLevel > 0.25) {
-      namespace.mapZoomLevel -= 0.25;
+    if (STUDIO.settings.mapZoomLevel > 0.25) {
+      STUDIO.settings.mapZoomLevel -= 0.25;
     }
 
     namespace.updateMapZoom();
@@ -708,7 +703,7 @@ STUDIO.MapEditor = {};
     x = x || 0;
     y = y || 0;
 
-    if (!namespace._placeObjectsAnywhere) {
+    if (!STUDIO.settings.placeObjectsAnywhere) {
       x = Math.floor(x / (mapData.tilewidth * 2)) * mapData.tilewidth * 2;
       y = Math.floor(y / (mapData.tileheight * 2)) * mapData.tileheight * 2;
     }
@@ -774,7 +769,7 @@ STUDIO.MapEditor = {};
     img.onload = function() {
       var imageWidth = img.width;
       var imageHeight = img.height;
-      var zoomLevel = namespace.tilesetZoomLevel;
+      var zoomLevel = STUDIO.settings.tilesetZoomLevel;
 
       imageWidth *= zoomLevel;
       imageHeight *= zoomLevel;
@@ -833,8 +828,8 @@ STUDIO.MapEditor = {};
           var posX = event.offsetX;
           var posY = event.offsetY;
 
-          posX /= namespace.tilesetZoomLevel;
-          posY /= namespace.tilesetZoomLevel;
+          posX /= STUDIO.settings.tilesetZoomLevel;
+          posY /= STUDIO.settings.tilesetZoomLevel;
 
           console.log(posX, posY);
           var size = namespace.getFakeTileSize();
@@ -1084,20 +1079,20 @@ STUDIO.MapEditor = {};
     return false;
   };
 
-  namespace.toggleOffgridPlacement = function() {
-    namespace._offgridPlacement = !namespace._offgridPlacement;
-    namespace.refreshOffgridPlacementIcon();
+  namespace.toggleoffgridPlacement = function() {
+    STUDIO.settings.offgridPlacement = !STUDIO.settings.offgridPlacement;
+    namespace.refreshoffgridPlacementIcon();
     this.refreshGrid();
   };
 
   namespace.toggleGrid = function() {
-    namespace._showGrid = !namespace._showGrid;
+    STUDIO.settings.showGrid = !STUDIO.settings.showGrid;
     namespace.refreshGridIcon();
     namespace.refreshGrid();
   };
 
   namespace.toggleObjectsAnywhere = function() {
-    namespace._placeObjectsAnywhere = !namespace._placeObjectsAnywhere;
+    STUDIO.settings.placeObjectsAnywhere = !STUDIO.settings.placeObjectsAnywhere;
     namespace.refreshObjectsAnywhereIcon();
   };
 
@@ -1111,19 +1106,19 @@ STUDIO.MapEditor = {};
     }
   };
 
-  namespace.refreshOffgridPlacementIcon = function() {
+  namespace.refreshoffgridPlacementIcon = function() {
     var el = $('#mapeditor-options-offgrid').find('i');
-    namespace.refreshCheckIcon(el, !!namespace._offgridPlacement);
+    namespace.refreshCheckIcon(el, !!STUDIO.settings.offgridPlacement);
   };
 
   namespace.refreshGridIcon = function() {
     var el = $('#mapeditor-options-show-grid').find('i');
-    namespace.refreshCheckIcon(el, !!namespace._showGrid);
+    namespace.refreshCheckIcon(el, !!STUDIO.settings.showGrid);
   };
 
   namespace.refreshObjectsAnywhereIcon = function() {
     var el = $('#mapeditor-options-objects-anywhere').find('i');
-    namespace.refreshCheckIcon(el, !!namespace._placeObjectsAnywhere);
+    namespace.refreshCheckIcon(el, !!STUDIO.settings.placeObjectsAnywhere);
   };
 
   namespace.removeCurrentTilesetConfirmation = function() {
@@ -1609,8 +1604,8 @@ STUDIO.MapEditor = {};
     $('.map-editor').html('');
     $('.map-editor')[0].appendChild(namespace._renderer.view);
     
-    namespace._renderer.view.style.width = (width * namespace.mapZoomLevel) + 'px';
-    namespace._renderer.view.style.height = (height * namespace.mapZoomLevel) + 'px';
+    namespace._renderer.view.style.width = (width * STUDIO.settings.mapZoomLevel) + 'px';
+    namespace._renderer.view.style.height = (height * STUDIO.settings.mapZoomLevel) + 'px';
     namespace._currentTileIds = [];
 
     namespace._stage = new PIXI.Container();
@@ -1992,7 +1987,7 @@ STUDIO.MapEditor = {};
     if (!tileset) return;
 
     var fakeSize = STUDIO.MapEditor.getFakeTileSize();
-    if (fakeSize.allowHalf && !namespace._offgridPlacement && namespace._currentTool !== 'eraser') {
+    if (fakeSize.allowHalf && !STUDIO.settings.offgridPlacement && namespace._currentTool !== 'eraser') {
       x = Math.floor(x / fakeSize.width) * fakeSize.width;
       y = Math.floor(y / fakeSize.height) * fakeSize.height;
     }
@@ -2122,7 +2117,7 @@ STUDIO.MapEditor = {};
     if (y > maxY) return;
 
     var fakeSize = STUDIO.MapEditor.getFakeTileSize();
-    if (fakeSize.allowHalf && !namespace._offgridPlacement) {
+    if (fakeSize.allowHalf && !STUDIO.settings.offgridPlacement) {
       x = Math.floor(x / fakeSize.width) * fakeSize.width;
       y = Math.floor(y / fakeSize.height) * fakeSize.height;
     }    

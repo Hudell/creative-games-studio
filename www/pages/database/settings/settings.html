@@ -1,0 +1,36 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header"><span class="translation-span">Settings</span></h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <form role="form">
+            <div class="form-group">
+                <label><span class="translation-span">Language</span></label>
+                <select class="form-control" id="settings-language">
+                    <option value="">English</option>
+                    <option value="pt-br">Português</option>
+                </select>
+                <p class="help-block"><span class="translation-span">You'll need to reload Creative Studio for the language to change.</span></p>
+            </div>
+            <button id="settings-save" type="button" class="btn btn-save"><span class="translation-span">Save</span></button>
+        </form>
+    </div>
+</div>
+
+<br/>
+
+<script type="text/javascript">
+$(function(){
+  $('#settings-save').on('click', function(){
+    STUDIO.settings.language = $('#settings-language').val();
+    STUDIO.saveSettings();
+
+    STUDIO.DatabaseManager.openDatabaseWindow();
+  });
+
+  $('#settings-language').val(STUDIO.settings.language);
+});
+</script>

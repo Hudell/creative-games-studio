@@ -337,5 +337,9 @@
   "If you have too many open programs, that may have caused this crash." : "Se você tem muitos programas abertos, isso pode ter contribuído para esse problema acontecer.",
   "Creative Studio recovered from a WebGl context loss. You can continue modifying your map now." : "O Programa se recuperou de uma falha no processamento gráfico. Você pode continuar editando seus mapas agora.",
   "Project Name" : "Nome do Projeto",
-  "Parent Folder Name" : "Nome do Diretorio"
+  "Parent Folder Name" : "Nome do Diretorio",
+  "Settings" : "Configurações",
+  "Language" : "Idioma",
+  "You'll need to reload Creative Studio for the language to change." : "Você precisará recarregar o Creative Studio para que o idioma mude.",
+  "Studio Settings" : "Configurações do Studio"
 }

@@ -8,14 +8,31 @@ var STUDIO = {};
   STUDIO.version = 1;
 
   STUDIO.gameData = undefined;
-  STUDIO.settings = {
-    folder : "",
-    language : ""
-  };
-  STUDIO.modifiedMaps = {
-  };
+  STUDIO.settings = {};
+  STUDIO.modifiedMaps = {};
   STUDIO.modified = false;
   STUDIO.translation = null;
+
+  STUDIO.ensureValidSettings = function() {
+    STUDIO.settings.folder = STUDIO.settings.folder || "";
+    STUDIO.settings.language = STUDIO.settings.language || "";
+    STUDIO.settings.tilesetZoomLevel = STUDIO.settings.tilesetZoomLevel || 1;
+    STUDIO.settings.mapZoomLevel = STUDIO.settings.mapZoomLevel || 1;
+
+    if (STUDIO.settings.showGrid !== true && STUDIO.settings.showGrid !== false) {
+      STUDIO.settings.showGrid = true;
+    }
+
+    if (STUDIO.settings.offgridPlacement !== true && STUDIO.settings.offgridPlacement !== false) {
+      STUDIO.settings.offgridPlacement = false;
+    }
+
+    if (STUDIO.settings.placeObjectsAnywhere !== true && STUDIO.settings.placeObjectsAnywhere !== false) {
+      STUDIO.settings.placeObjectsAnywhere = false;
+    }
+  };
+
+  STUDIO.ensureValidSettings();
 
   STUDIO.loadTranslation = function(fileName) {
     var fileName = path.join('translation', fileName + '.json');
@@ -650,10 +667,7 @@ var STUDIO = {};
         STUDIO.settings = STUDIO.loadJson('settings.json');
       } else {
         console.log("Settings file not found.");
-        STUDIO.settings = {
-          folder : '',
-          language : ''
-        };
+        STUDIO.settings = {};
       }
     }
     catch(e) {
@@ -661,6 +675,7 @@ var STUDIO = {};
       throw e;
     }
 
+    STUDIO.ensureValidSettings();
     STUDIO.changeGamePath(STUDIO.settings.folder);
     STUDIO.loadTranslation(STUDIO.settings.language);
   };

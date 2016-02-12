@@ -32,6 +32,7 @@ STUDIO.DatabaseManager = {};
     $('#sounds-btn').on('click', function(event) { namespace.eventOpenWindow(event, 'sounds', 'sounds'); });
     $('#sprites-btn').on('click', function(event) { namespace.eventOpenWindow(event, 'sprites', 'sprites'); });
     $('#states-btn').on('click', function(event) { namespace.eventOpenWindow(event, 'states', 'states'); });
+    $('#studio-settings-btn').on('click', function(event) { namespace.eventOpenWindow(event, 'settings', 'settings'); });
     $('#tilesets-btn').on('click', function(event) { namespace.eventOpenWindow(event, 'tilesets', 'tilesets'); });
     $('#variables-btn').on('click', function(event) { namespace.eventOpenWindow(event, 'variables', 'variables'); });
     $('#vehicles-btn').on('click', function(event) { namespace.eventOpenWindow(event, 'vehicles', 'vehicles'); });

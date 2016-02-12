@@ -8,7 +8,7 @@ GridLayerTexture.prototype.constructor = GridLayerTexture;
 GridLayerTexture.prototype.refreshGrid = function() {
   this.clear();
 
-  if (STUDIO.MapEditor._showGrid) {
+  if (STUDIO.settings.showGrid) {
     var mapData = STUDIO.MapEditor._currentMapData;
     var mapColumns = mapData.width;
     var mapRows = mapData.height;
@@ -16,7 +16,7 @@ GridLayerTexture.prototype.refreshGrid = function() {
     var size = STUDIO.MapEditor.getFakeTileSize();
     this.drawGrid(size.width, size.height, mapColumns, mapRows);
 
-    if (size.allowHalf && !!STUDIO.MapEditor._offgridPlacement) {
+    if (size.allowHalf && !!STUDIO.settings.offgridPlacement) {
       this.drawGrid(size.width, size.height, mapColumns, mapRows, 0x990000, 0.1, size.width / 2, 0);
       this.drawGrid(size.width, size.height, mapColumns, mapRows, 0x990000, 0.1, 0, size.height / 2);
     }
