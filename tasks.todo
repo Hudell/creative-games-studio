@@ -13,7 +13,7 @@ Create the "Picker" class and screens:
    ✔ A Picker screen will let the user select an object of a specific type (the type of the picker) @done (16-02-13 14:19)
    ✔ Create a Sprite Picker @done (16-02-13 14:19)
    ☐ Create a Tileset Picker
-   ☐ Create a Position Picker
+   ☐ Create a Position Picker (A picker that loads a map and let you pick a position on that map)
    ☐ Create a Scene Picker
    ☐ Create a Skin Picker
    ☐ Create an Object Picker
@@ -37,7 +37,10 @@ Map Object Management:
   ☐ If the property is of type "object type", the user will be able to select an object type
    ☐ Other than "object type", it should be possible to create properties of types like "map object type", "creature type", "window type" and so on.
   ✔ If the property is a number or string, the user will be able to input the value they want to use @done (16-02-13 20:18)
-  ☐ If the property is of type "list"... I still don't know how I'll handle this.
+  ☐ If the property is of type "list"... 
+    I still don't know how I'll handle this.
+    Lists should specify what kind of item they expect
+    Then I can create a screen with and add/remove button 
   ✔ Add a new button to the object toolbar: "List Map Objects" @done (16-02-13 19:18)
    ✔ This button will restore the list of map objects (the one that is shown by default when accessing an object layer) @done (16-02-13 19:18)
   ☐ Add an option to block an object property (if a property is blocked, it can't be modified by child objects)
