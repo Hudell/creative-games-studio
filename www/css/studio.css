@@ -6,6 +6,14 @@ body {
     width: 100%;
 }
 
+label {
+    margin-bottom: 2px;
+}
+
+.form-group {
+    margin-bottom: 5px;
+}
+
 #wrapper {
     width: 100%;
 }
@@ -628,4 +636,8 @@ table.dataTable thead .sorting:after {
 
 .object-list {
     background-color: white;
+}
+
+.picker {
+    display: block;
 }

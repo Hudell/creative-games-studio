@@ -697,6 +697,10 @@ STUDIO.MapEditor = {};
     return id;
   };
 
+  namespace.updateSpriteThumbnail = function() {
+
+  };
+
   namespace.createNewMapObject = function(x, y) {
     var mapData = namespace._currentMapData;
     var layer = mapData.layers[namespace._currentLayerIndex];
@@ -724,26 +728,44 @@ STUDIO.MapEditor = {};
         y : 0
       };
 
-      newObject.name = $('#new-object-name').val();
-      newObject.type = $('#objectType').val();
-      newObject.properties.sprite = $('#objectSprite').val();
-      newObject.x = parseInt($('#new-object-x').val(), 10);
-      newObject.y = parseInt($('#new-object-y').val(), 10);
+      newObject.name = $('#map-object-name').val();
+      newObject.type = $('#map-object-type').val();
+      newObject.properties.sprite = $('#map-object-sprite').val();
+      newObject.x = parseInt($('#map-object-x').val(), 10);
+      newObject.y = parseInt($('#map-object-y').val(), 10);
+
+      //#ToDo: Validate type and sprite
 
       layer.objects.push(newObject);
       namespace.onMapChange();
 
       namespace.setupObjectList();
     }, function(){
-      STUDIO.ObjectManager.fillObjectTypes('objectType');
-      STUDIO.fillSprites('objectSprite');
+      // STUDIO.ObjectManager.fillFilteredObjects('objectType', 'MapObject');
+      // STUDIO.fillSprites('objectSprite');
 
-      $('#new-object-name').val(namespace.getNameForNewObject());
-      $('#new-object-x').attr('max', mapData.width * mapData.tilewidth);
-      $('#new-object-y').attr('max', mapData.height * mapData.tileheight);
+      $('#map-object-name').val(namespace.getNameForNewObject());
+      $('#map-object-x').attr('max', mapData.width * mapData.tilewidth);
+      $('#map-object-y').attr('max', mapData.height * mapData.tileheight);
+      $('#map-object-sprite-btn').on('click', function(){
+        STUDIO.Picker.pickSprite(function(spriteName){
+          $('#map-object-sprite').val(spriteName);
+          if (!!spriteName) {
+            $('#map-object-sprite-btn').html(spriteName);
+          } else {
+            $('#map-object-sprite-btn').html(t("Choose a Sprite"));
+          }
+        });
+      });
+      $('#map-object-type-btn').on('click', function(){
+        STUDIO.Picker.pickType('MapObject', function(typeName){
+          $('#map-object-type').val(typeName);
+          $('#map-object-type-btn').html(typeName);
+        });
+      });
 
-      $('#new-object-x').val(x);
-      $('#new-object-y').val(y);
+      $('#map-object-x').val(x);
+      $('#map-object-y').val(y);
     });
   };
 
