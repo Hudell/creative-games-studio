@@ -818,6 +818,14 @@ STUDIO.MapEditor = {};
     });
   };
 
+  namespace.changeEventProperty = function(propName, propData) {
+    var value = namespace.getPropertyValue(propName, []);
+
+    STUDIO.Picker.pickEvent(value, function(codeLines){
+      namespace.setPropertyValue(propName, codeLines);
+    });
+  };
+
   namespace.openPropertyPopup = function(propName, propData){
     switch(propData.type) {
       case 'string' :
@@ -828,6 +836,9 @@ STUDIO.MapEditor = {};
         break;
       case 'sprite' :
         namespace.changeSpriteProperty(propName, propData);
+        break;
+      case 'event' :
+        namespace.changeEventProperty(propName, propData);
         break;
     }
   };

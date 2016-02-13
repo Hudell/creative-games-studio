@@ -93,37 +93,11 @@ $(function(){
     STUDIO.DatabaseManager.openWindow('objects', 'objects');
   });
 
-  $('#edit-object-add-btn').on('click', function(event){
-    event.preventDefault();
-    STUDIO.ObjectManager.showObjectOptions();
-  });
-
-  $('#edit-object-remove-btn').on('click', function(event){
-    event.preventDefault();
-    STUDIO.ObjectManager.removeSelectedObjectCommand();
-  });
-
-  $('#edit-object-modify-btn').on('click', function(event){
-    event.preventDefault();
-    STUDIO.ObjectManager.modifySelectedObjectCommand();
-  });
-
-  $('#edit-object-event-value').on('dblclick', function(event){
-    STUDIO.ObjectManager.showObjectOptions();
-  });
-
-  $('#edit-object-event-value').on('keydown', function(event){
-    if (event.keyCode == 8 || event.keyCode == 46) {
-      STUDIO.ObjectManager.removeSelectedObjectCommand();
-    } else if (event.keyCode == 32) {
-      STUDIO.ObjectManager.modifySelectedObjectCommand();
-    }
-  });
-
   $('#edit-object-property').on('change', function(){
     STUDIO.ObjectManager.changeProperty();
     // STUDIO.ObjectManager.refreshObjectSelectList();
   });
 
+  STUDIO.ObjectManager.attachCodeEditionEvents();
 });
 </script>

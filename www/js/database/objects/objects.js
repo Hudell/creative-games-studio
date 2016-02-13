@@ -38,6 +38,11 @@ STUDIO.ObjectManager = {};
   };
 
   namespace.getCurrentCodeLines = function() {
+    //If the editCodeLines method was called instead of the editObject, pick the codelines specified there
+    if (!!namespace._currentCodeLines && !namespace._currentObject) {
+      return namespace._currentCodeLines;
+    }
+
     var selectedProperty = $('#edit-object-property').val();
     var eventData = namespace._currentObject.properties[selectedProperty];
 
@@ -723,7 +728,21 @@ STUDIO.ObjectManager = {};
     }
   };
 
+  namespace.refreshCodeLinesList = function() {
+    var selectedIndex = $('#edit-object-event-value')[0].selectedIndex;
+    namespace.createCodeSelectList('edit-object-event-value', namespace._currentCodeLines);
+
+    if (selectedIndex >= 0) {
+      $('#edit-object-event-value')[0].selectedIndex = selectedIndex;
+    }
+  };
+
   namespace.refreshObjectSelectList = function(){
+    if (!!namespace._currentCodeLines && !namespace._currentObject) {
+      namespace.refreshCodeLinesList();
+      return;
+    }
+
     var selectedProperty = $('#edit-object-property').val();
     var propertyData = namespace.findPropertyData(namespace._currentObject, selectedProperty);
 
@@ -838,12 +857,18 @@ STUDIO.ObjectManager = {};
     });
   };
 
+  namespace.editCodeLines = function(codeLines) {
+    namespace._currentCodeLines = codeLines;
+    namespace._currentObject = undefined;
+  };
+
   namespace.editObject = function(objectName) {
     if (!STUDIO.gameData.objects[objectName]) {
       throw new Error(t("Object not found:") + ' ' + objectName);
     }
 
     namespace._currentObject = STUDIO.deepClone(STUDIO.gameData.objects[objectName]);
+    namespace._currentCodeLines = undefined;
     
     STUDIO.DatabaseManager.openWindow('objects', 'edit-object', function(){
       $('#edit-object-name').val(objectName);
@@ -909,5 +934,34 @@ STUDIO.ObjectManager = {};
     for (var key in objects) {
       element.append('<li><a class="recent-link" data-type="object" data-name="' + key + '" href="#"><i class="menu-option fa fa-umbrella fa-fw"></i> ' + key + '</a></li>');
     }
+  };
+
+  namespace.attachCodeEditionEvents = function() {
+    $('#edit-object-add-btn').on('click', function(event){
+      event.preventDefault();
+      STUDIO.ObjectManager.showObjectOptions();
+    });
+
+    $('#edit-object-remove-btn').on('click', function(event){
+      event.preventDefault();
+      STUDIO.ObjectManager.removeSelectedObjectCommand();
+    });
+
+    $('#edit-object-modify-btn').on('click', function(event){
+      event.preventDefault();
+      STUDIO.ObjectManager.modifySelectedObjectCommand();
+    });
+
+    $('#edit-object-event-value').on('dblclick', function(event){
+      STUDIO.ObjectManager.showObjectOptions();
+    });
+
+    $('#edit-object-event-value').on('keydown', function(event){
+      if (event.keyCode == 8 || event.keyCode == 46) {
+        STUDIO.ObjectManager.removeSelectedObjectCommand();
+      } else if (event.keyCode == 32) {
+        STUDIO.ObjectManager.modifySelectedObjectCommand();
+      }
+    });
   };
 })(STUDIO.ObjectManager);

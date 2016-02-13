@@ -370,5 +370,7 @@
   "List Objects" : "Listar Objetos",
   "The informed property name can't be used." : "O nome de propriedade informado não pode ser usado.",
   "Type a String" : "Digite o texto",
-  "Type a Number" : "Digite o número"
+  "Type a Number" : "Digite o número",
+  "Apply" : "Aplicar",
+  "Write Event" : "Escrever Evento"
 }

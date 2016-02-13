@@ -17,6 +17,7 @@ Create the "Picker" class and screens:
    ☐ Create a Scene Picker
    ☐ Create a Skin Picker
    ☐ Create an Object Picker
+   ✔ Create an Event Writer @done (16-02-13 21:29)
    ✔ Create an Object Type Picker @done (16-02-13 17:17)
    ☐ Use the Picker on screens where the user has to choose one of those things
 
@@ -26,7 +27,7 @@ Map Object Management:
   ☐ Allow objects to be moved around the map with the mouse
   ✔ When the user clicks on an object on the list that appears over the tilesets, the list is replaced by a list of properties of that object. @done (16-02-13 19:18)
   ✔ Each property will have a small button that if clicked, will show a popup where the player can change the value of that property @done (16-02-13 19:18)
-  ☐ If the property is of type "event", the user will be able to add/modify a list of commands
+  ✔ If the property is of type "event", the user will be able to add/modify a list of commands @done (16-02-13 21:29)
   ✔ If the property is of type "sprite", the user will be able to pick a sprite using the sprite picker  @done (16-02-13 20:18)
   ☐ If the property is of type "tileset", the user will be able to pick a tileset using the tileset picker
   ☐ If the property is of type "skin", the user will be able to pick a skin using the skin picker

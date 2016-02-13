@@ -284,4 +284,46 @@ STUDIO.Picker = {};
       // On Load
     });
   };
+
+  Picker.pickEvent = function(currentCodeLines, onPick) {
+    Picker.onPick = onPick;
+
+    Picker.requestPicker('event', function(result, xhr){
+      var div = $('<div id="picker-div"></div>');
+      div.html(xhr.responseText);
+      $(document.body).append(div);
+      div = $('#picker-div');
+
+      STUDIO.fixLinks();
+      STUDIO.applyTranslation();
+
+      var codeLines = STUDIO.deepClone(currentCodeLines);
+
+      STUDIO.ObjectManager.editCodeLines(codeLines);
+      STUDIO.ObjectManager.attachCodeEditionEvents();
+      STUDIO.ObjectManager.refreshObjectSelectList();
+
+      STUDIO.openDialog(div, t("Write Event"), [
+        {
+          text : t("Apply"),
+          click : function(){
+            onPick(codeLines);
+          }
+        },
+        {
+          text : t("OK"),
+          click : function(){
+            $(this).dialog("close");
+            onPick(codeLines);
+          }
+        },
+        {
+          text : t("Close"),
+          click : function(){
+            $(this).dialog("close");
+          }
+        }
+      ], 600);
+    });
+  };
 })(STUDIO.Picker);
