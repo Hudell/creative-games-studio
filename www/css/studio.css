@@ -638,6 +638,14 @@ table.dataTable thead .sorting:after {
     background-color: white;
 }
 
+.property-list {
+    background-color: white;
+}
+
 .picker {
     display: block;
+}
+
+.condensed-list>li>a {
+    padding: 2px 5px;
 }

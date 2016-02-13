@@ -360,6 +360,9 @@ STUDIO.ObjectManager = {};
       name : 'MapObject',
       inherits : 'Object',
       properties : {
+        'name' : {
+          type : 'string'
+        },
         'x' : {
           type : 'number'
         },
@@ -464,6 +467,13 @@ STUDIO.ObjectManager = {};
 
       option.innerHTML = displayName;
     }
+  };
+
+  //Check if propName is one of the default tiled object properties (the ones that don't go inside the properties list)
+  namespace.isDefaultTiledObjectProperty = function(propName) {
+    var keywords = ["type", "name", "properties", "id", "x", "y", "width", "height", "rotation", "visible"];
+
+    return keywords.indexOf(propName.toLowerCase()) >= 0;
   };
 
   namespace.addObjectPropertiesToScreen = function(objectData, showObjectName) {
@@ -792,8 +802,10 @@ STUDIO.ObjectManager = {};
   };
 
   namespace.validatePropertyName = function(objectData, propName) {
-    if (propName == "type" || propName == "name") {
-      throw new Error(t("The informed property name can't be used on this object."));
+    var keywords = ["type", "name", "properties", "id"];
+
+    if (keywords.indexOf(propName.toLowerCase()) >= 0) {
+      throw new Error(t("The informed property name can't be used."));
     };
     
     if (!!objectData.properties[propName]) {

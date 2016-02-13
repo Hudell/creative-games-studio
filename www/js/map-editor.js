@@ -168,9 +168,24 @@ STUDIO.MapEditor = {};
       namespace.toggleObjectsAnywhere();
     });
 
+    $('#map-editor-object-remove').on('click', function(event){
+      event.preventDefault();
+      namespace.removeCurrentMapObject();
+    });
+
     $('#map-editor-object-new').on('click', function(event){
       event.preventDefault();
       namespace.createNewMapObject();
+    });
+
+    $('#map-editor-object-list-new').on('click', function(event){
+      event.preventDefault();
+      namespace.createNewMapObject();
+    });
+
+    $('#map-editor-list-objects').on('click', function(event){
+      event.preventDefault();
+      namespace.setupObjectList();
     });
   };
 
@@ -603,18 +618,26 @@ STUDIO.MapEditor = {};
     }
   };
 
-  namespace.setupObjectList = function() {
-    var el = $('.map-editor-tileset');
-    el.html('');
-
+  namespace.removeTilesetRenderer = function() {
     if (!!namespace._tilesetRenderer) {
       STUDIO.renderers.splice(STUDIO.renderers.indexOf(namespace._tilesetRenderer), 1);
       namespace._tilesetRenderer.destroy();
       namespace._tilesetRenderer = null;
     }
+  };
 
-    $('#object-toolbar').removeClass('hidden');
+  namespace.setupObjectList = function() {
+    namespace._currentObject = undefined;
+    namespace._currentObjectType = undefined;
+
+    var el = $('.map-editor-tileset');
+    el.html('');
+
+    namespace.removeTilesetRenderer();
+
+    $('#object-list-toolbar').removeClass('hidden');
     $('#tileset-toolbar').addClass('hidden');
+    $('#object-toolbar').addClass('hidden');
 
     el.html('<ul class="nav object-list"></ul>');
 
@@ -634,7 +657,178 @@ STUDIO.MapEditor = {};
         name = t("Object") + ' #' + object.id;
       }
 
-      list.append('<li><a href="#"><i class="menu-option fa fa-umbrella fa-fw"></i> ' + name + '</span></a></li>');
+      list.append('<li><a href="#" class="map-object-link" data-index="' + i + '"><i class="menu-option fa fa-umbrella fa-fw"></i> ' + name + '</span></a></li>');
+    }
+
+    $('.map-object-link').off('click');
+    $('.map-object-link').on('click', function(event){
+      event.preventDefault();
+      var index = event.currentTarget.dataset.index;
+      var object = layer.objects[index];
+
+      namespace.showObjectProperties(object);
+    });
+  };
+
+  namespace.showObjectProperties = function(objectData) {
+    var el = $('.map-editor-tileset');
+    el.html('');
+
+    namespace.removeTilesetRenderer();
+
+    $('#object-list-toolbar').addClass('hidden');
+    $('#tileset-toolbar').addClass('hidden');
+    $('#object-toolbar').removeClass('hidden');
+
+    el.html('<ul class="nav property-list"></ul>');
+
+    namespace._currentObject = objectData;
+    var objectTypeName = objectData.type;
+    var objectTypeData = STUDIO.ObjectManager.findObjectData(objectTypeName);
+    namespace._currentObjectType = objectTypeData;
+
+    var list = el.find('.property-list');
+
+    list.append('<li><a href="#" class="property-link" data-property-name="ID">ID<span class="right">' + objectData.id + '</span></a></li>');
+    list.append('<li><a href="#" class="property-link" data-property-name="name">Name<span class="right">' + objectData.name + '</span></a></li>');
+
+    for (var propName in objectTypeData.properties) {
+      //The name was already displayed, so ignore it now.
+      if (propName.toLowerCase() == 'name') continue;
+
+      var prop = objectTypeData.properties[propName];
+      var type = prop.type;
+
+      var value = '';
+      if (objectData[propName] !== undefined) {
+        value = objectData[propName];
+      } else {
+        value = objectData.properties[propName];
+      }
+
+      if (value === undefined) {
+        value = '';
+      }
+      if (value === null) {
+        value = 'null';
+      }
+
+      if (typeof(value) !== "string") {
+        if (!!value.toString) {
+          value = value.toString();
+        } else {
+          value = '';
+        }
+      }
+
+      var valueSpan = '';
+
+      switch (type) {
+        case 'sprite' :
+          var spriteIcon = '<i class="menu-option fa fa-image fa-fw"></i>';
+          if (value.trim() == '') {
+            valueSpan = '<span class="right">' + spriteIcon + '</span>';
+          } else {
+            valueSpan = '<span class="right">' + spriteIcon + ' ' + value + '</span>';
+          }
+          break;
+        case 'event' :
+          valueSpan = '<i class="menu-option fa fa-list-alt fa-fw right"></i>';
+          break;
+        default :
+          valueSpan = '<span class="right">' + value + '</span>';
+          break;
+      }
+
+      list.append('<li><a href="#" class="property-link" data-property-name="' + propName + '">' + propName + valueSpan + '</span></a></li>');
+    }
+
+    $('.property-link').off('click');
+    $('.property-link').on('click', function(event){
+      event.preventDefault();
+      var propName = event.currentTarget.dataset.propertyName;
+      var propData = objectTypeData.properties[propName];
+
+      if (propName == "ID") return;
+
+      namespace.openPropertyPopup(propName, propData);
+    });
+  };
+
+  namespace.setObjectPropertyValue = function(objectData, propName, propValue, addToBackup) {
+    var oldValue;
+
+    if (STUDIO.ObjectManager.isDefaultTiledObjectProperty(propName)) {
+      oldValue = objectData[propName];
+      objectData[propName] = propValue;
+    } else {
+      objectData.properties = objectData.properties || {};
+      oldValue = objectData.properties[propName];
+      objectData.properties[propName] = propValue;
+    }
+
+    if (addToBackup) {
+      namespace.addPropertyBackupToHistory(objectData, propName, oldValue, propValue);
+    }
+    namespace.onMapChange();
+  };
+
+  namespace.setPropertyValue = function(propName, propValue, addToBackup) {
+    if (addToBackup === undefined) addToBackup = true;
+
+    var objectData = namespace._currentObject;
+    namespace.setObjectPropertyValue(objectData, propName, propValue, addToBackup);
+
+    //Refresh the property list
+    namespace.showObjectProperties(objectData);
+  };
+
+  namespace.getPropertyValue = function(propName, defaultValue) {
+    var objectData = namespace._currentObject;
+
+    if (STUDIO.ObjectManager.isDefaultTiledObjectProperty(propName)) {
+      return objectData[propName] || defaultValue;
+    } else {
+      objectData.properties = objectData.properties || {};
+
+      return objectData.properties[propName] || defaultValue;
+    }
+  };
+
+  namespace.changeSpriteProperty = function(propName, propData) {
+    STUDIO.Picker.pickSprite(function(spriteName){
+      namespace.setPropertyValue(propName, spriteName);
+    });
+  };
+
+  namespace.changeNumberProperty = function(propName, propData) {
+    var currentValue = namespace.getPropertyValue(propName, 0);
+
+    STUDIO.Picker.pickNumber(currentValue, propName, function(numberValue){
+      numberValue = parseFloat(numberValue);
+      namespace.setPropertyValue(propName, numberValue);
+    });
+  };
+
+  namespace.changeStringProperty = function(propName, propData) {
+    var currentValue = namespace.getPropertyValue(propName, '');
+
+    STUDIO.Picker.pickString(currentValue, propName, function(stringValue){
+      namespace.setPropertyValue(propName, stringValue);
+    });
+  };
+
+  namespace.openPropertyPopup = function(propName, propData){
+    switch(propData.type) {
+      case 'string' :
+        namespace.changeStringProperty(propName, propData);
+        break;
+      case 'number' :
+        namespace.changeNumberProperty(propName, propData);
+        break;
+      case 'sprite' :
+        namespace.changeSpriteProperty(propName, propData);
+        break;
     }
   };
 
@@ -701,6 +895,54 @@ STUDIO.MapEditor = {};
 
   };
 
+  namespace.validateMapObjectType = function(objectTypeName) {
+    var objectData = STUDIO.ObjectManager.findObjectData(objectTypeName);
+
+    if (!objectData) {
+      throw new Error(t("Invalid Object Type"));
+    }
+
+    if (!STUDIO.ObjectManager.objectExtendsThis(objectTypeName, 'MapObject')) {
+      throw new Error(t("Selected Object Type is not a Map Object"));
+    }
+  };
+
+  namespace.validateMapObjectSprite = function(spriteName) {
+    if (spriteName == '') {
+      return;
+    }
+
+    if (!STUDIO.gameData.sprites[spriteName]) {
+      throw new Error("Invalid Sprite");
+    }
+  };
+
+  namespace.removeCurrentMapObject = function() {
+    var obj = namespace._currentObject;
+    var objType = namespace._currentObjectType;
+
+
+    var mapData = namespace._currentMapData;
+    if (!mapData) return;
+
+    var layer = mapData.layers[namespace._currentLayerIndex];
+    if (!layer) return;
+    if (layer.type !== 'objectgroup') return;
+
+    for (var i = 0; i < layer.objects.length; i++) {
+      if (layer.objects[i] == obj) {
+
+        namespace.addObjectBackupToHistory(obj, layer);
+
+        layer.objects.splice(i, 1);
+        break;
+      }
+    }
+
+    namespace.onMapChange();
+    namespace.setupObjectList();
+  };
+
   namespace.createNewMapObject = function(x, y) {
     var mapData = namespace._currentMapData;
     var layer = mapData.layers[namespace._currentLayerIndex];
@@ -734,38 +976,45 @@ STUDIO.MapEditor = {};
       newObject.x = parseInt($('#map-object-x').val(), 10);
       newObject.y = parseInt($('#map-object-y').val(), 10);
 
-      //#ToDo: Validate type and sprite
+      namespace.validateMapObjectType(newObject.type);
+      namespace.validateMapObjectSprite(newObject.properties.sprite);
 
       layer.objects.push(newObject);
       namespace.onMapChange();
 
       namespace.setupObjectList();
     }, function(){
-      // STUDIO.ObjectManager.fillFilteredObjects('objectType', 'MapObject');
-      // STUDIO.fillSprites('objectSprite');
-
       $('#map-object-name').val(namespace.getNameForNewObject());
       $('#map-object-x').attr('max', mapData.width * mapData.tilewidth);
       $('#map-object-y').attr('max', mapData.height * mapData.tileheight);
+
+      $('#map-object-type').val('MapObject');
+      $('#map-object-type-btn').html('MapObject');
+
+      $('#map-object-x').val(x);
+      $('#map-object-y').val(y);
+
       $('#map-object-sprite-btn').on('click', function(){
         STUDIO.Picker.pickSprite(function(spriteName){
           $('#map-object-sprite').val(spriteName);
-          if (!!spriteName) {
+          if (!!spriteName && spriteName.trim() !== '') {
             $('#map-object-sprite-btn').html(spriteName);
           } else {
             $('#map-object-sprite-btn').html(t("Choose a Sprite"));
           }
         });
       });
+      
       $('#map-object-type-btn').on('click', function(){
         STUDIO.Picker.pickType('MapObject', function(typeName){
           $('#map-object-type').val(typeName);
-          $('#map-object-type-btn').html(typeName);
+          if (!!typeName && typeName.trim() !== '') {
+            $('#map-object-type-btn').html(typeName);
+          } else {
+            $('#map-object-type-btn').html(t("Choose a Type"));
+          }
         });
       });
-
-      $('#map-object-x').val(x);
-      $('#map-object-y').val(y);
     });
   };
 
@@ -783,9 +1032,12 @@ STUDIO.MapEditor = {};
   };
 
   namespace.setupTileset = function(imagePath, tileWidth, tileHeight, columns, rows, allowHalf) {
+    namespace._currentObject = undefined;
+    namespace._currentObjectType = undefined;
+
     $('.map-editor-tileset').html('');
     $('#tileset-toolbar').removeClass('hidden');
-    $('#object-toolbar').addClass('hidden');
+    $('#object-list-toolbar').addClass('hidden');
 
     var img = new Image();
     img.onload = function() {
@@ -1902,6 +2154,24 @@ STUDIO.MapEditor = {};
     layer.data[index] = tileId;
   };
 
+  namespace.addPropertyBackupToHistory = function(object, property, oldValue, newValue) {
+    namespace._history.push({
+      type : 'property-changed',
+      object : object,
+      property : property,
+      oldValue : oldValue,
+      newValue : newValue
+    });
+  };
+
+  namespace.addObjectBackupToHistory = function(object, layer) {
+    namespace._history.push({
+      type : 'object-deleted',
+      object : object,
+      layer : layer
+    })
+  };
+
   namespace.addChangeToHistory = function(change) {
     if (!!namespace._drawingTile) {
       namespace._drawingTile.changes.push(change);
@@ -1960,12 +2230,44 @@ STUDIO.MapEditor = {};
     }
   };
 
+  namespace.undoChangeProperty = function(action) {
+    namespace.setObjectPropertyValue(action.object, action.property, action.oldValue, false);
+
+    var mapData = namespace._currentMapData;
+    if (!mapData) return;
+
+    var layer = mapData.layers[namespace._currentLayerIndex];
+    if (!layer) return;
+    if (layer.type !== "objectgroup") return;
+
+    if (layer.objects.indexOf(action.object) >= 0) {
+      namespace.showObjectProperties(action.object);
+    } else {
+      namespace.setupObjectList();
+    }
+  };
+
+  namespace.undoDeleteObject = function(action) {
+    action.layer.objects.push(action.object);
+
+    var mapData = namespace._currentMapData;
+    if (namespace._currentLayerIndex == mapData.layers.indexOf(action.layer)) {
+      namespace.setupObjectList();
+    }
+  };
+
   namespace.undo = function() {
     if (!namespace._history.length) return;
 
     var lastAction = namespace._history.pop();
 
     switch(lastAction.type) {
+      case 'property-changed' :
+        namespace.undoChangeProperty(lastAction);
+        break;
+      case 'object-deleted' :
+        namespace.undoDeleteObject(lastAction);
+        break;
       case 'rectangle' :
         namespace.undoRectangle(lastAction);
         break;

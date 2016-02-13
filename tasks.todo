@@ -1,9 +1,9 @@
  ✔ Make popup windows more condensed @done (16-02-12 22:50)
 
 Add options to highlight the current layer:
-   ☐ A way to change opacity of all layers
+   ☐ A way to change opacity of all other layers
    ☐ A way to change opacity of layers over the current one
-   ☐ A way to hide all layers
+   ☐ A way to hide all other layers
    ☐ A way to hide layers over the current one
 
 Change the way Object Events work today:
@@ -13,6 +13,7 @@ Create the "Picker" class and screens:
    ✔ A Picker screen will let the user select an object of a specific type (the type of the picker) @done (16-02-13 14:19)
    ✔ Create a Sprite Picker @done (16-02-13 14:19)
    ☐ Create a Tileset Picker
+   ☐ Create a Position Picker
    ☐ Create a Scene Picker
    ☐ Create a Skin Picker
    ☐ Create an Object Picker
@@ -20,20 +21,24 @@ Create the "Picker" class and screens:
    ☐ Use the Picker on screens where the user has to choose one of those things
 
 Map Object Management:
-  ☐ Create a screen to modify map events
+  ✘ Create a screen to modify map events @cancelled (16-02-13 19:18)
   ☐ Display objects on the map
   ☐ Allow objects to be moved around the map with the mouse
-  ☐ When the user clicks on an object on the list that appears over the tilesets, the list is replaced by a list of properties of that object.
-  ☐ Each property will have a small button that if clicked, will show a popup where the player can change the value of that property
+  ✔ When the user clicks on an object on the list that appears over the tilesets, the list is replaced by a list of properties of that object. @done (16-02-13 19:18)
+  ✔ Each property will have a small button that if clicked, will show a popup where the player can change the value of that property @done (16-02-13 19:18)
   ☐ If the property is of type "event", the user will be able to add/modify a list of commands
-  ☐ If the property is of type "sprite", the user will be able to pick a sprite using the sprite picker (same thing for any other pickable object)
+  ✔ If the property is of type "sprite", the user will be able to pick a sprite using the sprite picker  @done (16-02-13 20:18)
+  ☐ If the property is of type "tileset", the user will be able to pick a tileset using the tileset picker
+  ☐ If the property is of type "skin", the user will be able to pick a skin using the skin picker
+  ☐ If the property is of type "map", the user will be able to pick a map using the map picker
+  ☐ If the property is of type "position", the user will be able to pick a position using the position picker
   ☐ If the property is of type "object", the user will be able to pick another object from the same map or from the list of global objects
   ☐ If the property is of type "object type", the user will be able to select an object type
    ☐ Other than "object type", it should be possible to create properties of types like "map object type", "creature type", "window type" and so on.
-  ☐ If the property is a number or string, the user will be able to input the value they want to use
+  ✔ If the property is a number or string, the user will be able to input the value they want to use @done (16-02-13 20:18)
   ☐ If the property is of type "list"... I still don't know how I'll handle this.
-  ☐ Add a new button to the object toolbar: "List Map Objects"
-   ☐ This button will restore the list of map objects (the one that is shown by default when accessing an object layer)
+  ✔ Add a new button to the object toolbar: "List Map Objects" @done (16-02-13 19:18)
+   ✔ This button will restore the list of map objects (the one that is shown by default when accessing an object layer) @done (16-02-13 19:18)
   ☐ Add an option to block an object property (if a property is blocked, it can't be modified by child objects)
   ☐ Add the "clone" blocked event to the MapObject property.
   ☐ Add the "Call event" command

@@ -119,10 +119,53 @@ STUDIO.Picker = {};
     }, 400);
   };
 
+  Picker.openSimplePicker = function(pickerType, title, onPick, currentValue, label, onLoad) {
+    Picker.onPick = onPick;
+
+    Picker.requestPicker(pickerType, function(result, xhr){
+      var div = $('<div id="picker-div"></div>');
+      div.html(xhr.responseText);
+      $(document.body).append(div);
+      div = $('#picker-div');
+
+      STUDIO.fixLinks();
+      STUDIO.applyTranslation();
+
+      if (currentValue !== undefined && currentValue !== null) {
+        $('#picker-value').val(currentValue);
+      }
+
+      if (label !== undefined) {
+        $('#picker-label').html(label);
+      }
+
+      STUDIO.openDialog(div, title, [
+        {
+          text : t("Confirm"),
+          click : function(){
+            var value = $('#picker-value').val();
+            $(this).dialog("close");
+            onPick(value);
+          }
+        },
+        {
+          text : t("Close"),
+          click : function(){
+            $(this).dialog("close");
+          }
+        }
+      ], 600);
+
+      if (!!onLoad) {
+        onLoad();
+      }
+    });
+  };
+
   Picker.openPicker = function(pickerType, title, onPick, columns, data, keyColumn, onLoad) {
     Picker.onPick = onPick;
 
-    Picker.requestPicker('picker', function(result, xhr){
+    Picker.requestPicker(pickerType, function(result, xhr){
       var div = $('<div id="picker-div"></div>');
       div.html(xhr.responseText);
       $(document.body).append(div);
@@ -161,7 +204,7 @@ STUDIO.Picker = {};
             $(this).dialog("close");
           }
         }
-      ], 600);      
+      ], 600);
 
       if (!!onLoad) {
         onLoad();
@@ -228,6 +271,17 @@ STUDIO.Picker = {};
     Picker.openPicker('picker', t("Object Picker"), onPick, columns, data, keyColumn, function(){
       // On Load
     });
+  };
 
+  Picker.pickString = function(currentValue, label, onPick) {
+    Picker.openSimplePicker('string', t("Type a String"), onPick, currentValue, label, function(){
+      // On Load
+    });
+  };
+
+  Picker.pickNumber = function(currentValue, label, onPick) {
+    Picker.openSimplePicker('number', t("Type a Number"), onPick, currentValue, label, function(){
+      // On Load
+    });
   };
 })(STUDIO.Picker);

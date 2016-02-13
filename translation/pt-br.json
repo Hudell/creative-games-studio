@@ -364,5 +364,11 @@
   "Parent Object Type is Invalid:" : "O objeto é baseado em um tipo de objeto inválido:",
   "The informed property name is already being used in one of the parent objects." : "O nome de propriedade informado já está sendo usado por um dos tipos de objeto nos quais esse objeto é baseado.",
   "Remove Property" : "Remover Propriedade",
-  "This property doesn't belong to this object type." : "Esta propriedade não pertence a este tipo de objeto."
+  "This property doesn't belong to this object type." : "Esta propriedade não pertence a este tipo de objeto.",
+  "Invalid Object Type" : "Tipo de Objeto Inválido",
+  "Selected Object Type is not a Map Object" : "O tipo de objeto selecionado não é um objeto de mapa (MapObject)",
+  "List Objects" : "Listar Objetos",
+  "The informed property name can't be used." : "O nome de propriedade informado não pode ser usado.",
+  "Type a String" : "Digite o texto",
+  "Type a Number" : "Digite o número"
 }
