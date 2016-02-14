@@ -35,6 +35,9 @@ SelectionLayerTexture.prototype.refreshSelection = function() {
   if (y <= 0) return;
   if (x >= width) return;
   if (y >= height) return;
+
+  // var layer = mapData.layers[STUDIO.MapEditor._currentLayerIndex];
+  // if (!!layer && layer.type == 'objectgroup') return;
     
   var tileset = mapData.tilesets[STUDIO.MapEditor._currentTilesetIndex];
   if (!tileset) return;

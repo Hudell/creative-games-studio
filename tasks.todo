@@ -23,7 +23,8 @@ Create the "Picker" class and screens:
 
 Map Object Management:
   ✘ Create a screen to modify map events @cancelled (16-02-13 19:18)
-  ☐ Display objects on the map
+  ✔ Display objects on the map @done (16-02-14 00:15)
+  ☐ Allow objects to be selected with the mouse
   ☐ Allow objects to be moved around the map with the mouse
   ✔ When the user clicks on an object on the list that appears over the tilesets, the list is replaced by a list of properties of that object. @done (16-02-13 19:18)
   ✔ Each property will have a small button that if clicked, will show a popup where the player can change the value of that property @done (16-02-13 19:18)

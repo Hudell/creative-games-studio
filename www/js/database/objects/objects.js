@@ -365,21 +365,22 @@ STUDIO.ObjectManager = {};
       name : 'MapObject',
       inherits : 'Object',
       properties : {
-        'name' : {
-          type : 'string'
-        },
-        'x' : {
-          type : 'number'
-        },
-        'y' : {
-          type : 'number'
-        },
-        'sprite' : {
-          type : 'sprite'
-        },
-        'On Block Player' : {
-          type : 'event'
-        }
+        'name' : { type : 'string' },
+        'x' : { type : 'number' },
+        'y' : { type : 'number' },
+        'width' : { type : 'number' },
+        'height' : { type : 'number' },
+        'autosize' : { type : 'boolean' },
+        'ghost' : { type : 'boolean' },
+        'sprite' : { type : 'sprite' },
+        'xOffset' : { type : 'number' },
+        'yOffset' : { type : 'number' },
+        'On Activated' : { type : 'event' },
+        'On Block Player' : { type : 'event' },
+        'On Player Touch' : { type : 'event' },
+        'On Mouse Click' : { type : 'event' },
+        'On Screen Touch' : { type : 'event' },
+        'On Map Loaded' : { type : 'event' }
       }
     }, list);
   };
@@ -532,6 +533,32 @@ STUDIO.ObjectManager = {};
     }
 
     return STUDIO.gameData.objects[objectName];
+  };
+
+  namespace.findAllProperties = function(objectData) {
+    var list = {};
+    var newObject = objectData;
+    while (!!newObject) {
+      var properties = newObject.properties || [];
+
+      for (var propertyName in properties) {
+        var owner = namespace.findPropertyOwner(newObject, propertyName);
+
+        if (list[propertyName] !== undefined) {
+          continue;
+        }
+
+        list[propertyName] = namespace.findPropertyData(objectData, propertyName);
+      }
+
+      if (newObject.inherits === '') {
+        break;
+      }
+
+      newObject = namespace.findObjectData(newObject.inherits);
+    }
+
+    return list;
   };
 
   namespace.findPropertyData = function(objectData, propertyName) {

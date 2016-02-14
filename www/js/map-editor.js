@@ -216,6 +216,7 @@ STUDIO.MapEditor = {};
     }
 
     namespace.updateTilesetZoom();
+    STUDIO.saveSettings();
   };
 
   namespace.decreaseTilesetZoom = function() {
@@ -224,6 +225,7 @@ STUDIO.MapEditor = {};
     }
 
     namespace.updateTilesetZoom();
+    STUDIO.saveSettings();
   };
 
   namespace.changeTool = function(toolName, iconClass) {
@@ -285,6 +287,7 @@ STUDIO.MapEditor = {};
     }
 
     namespace.updateMapZoom();
+    STUDIO.saveSettings();
   };
 
   namespace.zoomOut = function() {
@@ -293,6 +296,7 @@ STUDIO.MapEditor = {};
     }
 
     namespace.updateMapZoom();
+    STUDIO.saveSettings();
   };
 
   namespace.loadLayerList = function() {
@@ -352,6 +356,7 @@ STUDIO.MapEditor = {};
     }
 
     namespace.refreshTilesetWindow();
+    namespace.killObjectLayers();
   };
 
   namespace.loadTilesetList = function() {
@@ -518,6 +523,8 @@ STUDIO.MapEditor = {};
     var mapData = namespace._currentMapData;
     var tileWidth = mapData.tilewidth;
     var tileHeight = mapData.tileheight;
+    var userWidth = mapData.tilewidth;
+    var userHeight = mapData.tileheight;
     var tileWidthWithSpacing = mapData.tilewidth;
     var tileHeightWithSpacing = mapData.tileheight;
     var realWidth = mapData.tilewidth;
@@ -538,6 +545,8 @@ STUDIO.MapEditor = {};
       halfSpacing /= 2;
       realWidthWithSpacing += halfSpacing;
       realHeightWithSpacing += halfSpacing;
+      userWidth *= 2;
+      userHeight *= 2;
       switch(namespace._currentTool) {
         case 'pencil' :
           tileWidthWithSpacing += halfSpacing;
@@ -577,7 +586,9 @@ STUDIO.MapEditor = {};
       realWidth : realWidth,
       realHeight : realHeight,
       realWidthWithSpacing : realWidthWithSpacing,
-      realHeightWithSpacing : realHeightWithSpacing
+      realHeightWithSpacing : realHeightWithSpacing,
+      userWidth : userWidth,
+      userHeight : userHeight
     };
   };
 
@@ -690,34 +701,41 @@ STUDIO.MapEditor = {};
     var list = el.find('.property-list');
 
     list.append('<li><a href="#" class="property-link" data-property-name="ID">ID<span class="right">' + objectData.id + '</span></a></li>');
-    list.append('<li><a href="#" class="property-link" data-property-name="name">Name<span class="right">' + objectData.name + '</span></a></li>');
+    list.append('<li><a href="#" class="property-link" data-property-name="type">' + t("Type") + '<span class="right">' + objectData.type + '</span></a></li>');
+    list.append('<li><a href="#" class="property-link" data-property-name="name">' + t("Name") + '<span class="right">' + objectData.name + '</span></a></li>');
 
-    for (var propName in objectTypeData.properties) {
+    var properties = STUDIO.ObjectManager.findAllProperties(objectTypeData);
+
+    for (var propName in properties) {
       //The name was already displayed, so ignore it now.
       if (propName.toLowerCase() == 'name') continue;
 
-      var prop = objectTypeData.properties[propName];
+      var prop = properties[propName];
       var type = prop.type;
 
       var value = '';
       if (objectData[propName] !== undefined) {
         value = objectData[propName];
-      } else {
+      } else if (objectData.properties[propName] !== undefined) {
         value = objectData.properties[propName];
+      } else {
+        value = prop.value;
       }
 
-      if (value === undefined) {
-        value = '';
+      var strValue = value;
+
+      if (strValue === undefined) {
+        strValue = '';
       }
-      if (value === null) {
-        value = 'null';
+      if (strValue === null) {
+        strValue = 'null';
       }
 
-      if (typeof(value) !== "string") {
-        if (!!value.toString) {
-          value = value.toString();
+      if (typeof(strValue) !== "string") {
+        if (!!strValue.toString) {
+          strValue = strValue.toString();
         } else {
-          value = '';
+          strValue = '';
         }
       }
 
@@ -726,51 +744,116 @@ STUDIO.MapEditor = {};
       switch (type) {
         case 'sprite' :
           var spriteIcon = '<i class="menu-option fa fa-image fa-fw"></i>';
-          if (value.trim() == '') {
+          if (strValue.trim() == '') {
             valueSpan = '<span class="right">' + spriteIcon + '</span>';
           } else {
-            valueSpan = '<span class="right">' + spriteIcon + ' ' + value + '</span>';
+            valueSpan = '<span class="right">' + spriteIcon + ' ' + strValue + '</span>';
           }
           break;
         case 'event' :
           valueSpan = '<i class="menu-option fa fa-list-alt fa-fw right"></i>';
           break;
+        case 'boolean' :
+          if (!!value) {
+            valueSpan = '<i class="menu-option fa fa-check-square-o fa-fw right"></i>';
+          } else {
+            valueSpan = '<i class="menu-option fa fa-square-o fa-fw right"></i>';
+          }
+
+          break;
         default :
-          valueSpan = '<span class="right">' + value + '</span>';
+          valueSpan = '<span class="right">' + strValue + '</span>';
           break;
       }
 
-      list.append('<li><a href="#" class="property-link" data-property-name="' + propName + '">' + propName + valueSpan + '</span></a></li>');
+      var translatedName = t(propName);
+
+      list.append('<li><a href="#" class="property-link" data-property-name="' + propName + '">' + translatedName + valueSpan + '</span></a></li>');
     }
 
     $('.property-link').off('click');
     $('.property-link').on('click', function(event){
       event.preventDefault();
       var propName = event.currentTarget.dataset.propertyName;
-      var propData = objectTypeData.properties[propName];
+      var propData = STUDIO.ObjectManager.findPropertyData(objectTypeData, propName);
 
       if (propName == "ID") return;
+      if (propName == "type") return;
 
       namespace.openPropertyPopup(propName, propData);
     });
   };
 
+  namespace.getObjectSpriteSize = function(objectData) {
+    var mapData = namespace._currentMapData;
+    var fakeSize = namespace.getFakeTileSize();
+
+    var size = {
+      width : fakeSize.userWidth,
+      height : fakeSize.userHeight
+    };
+
+    if (!!objectData.properties.sprite) {
+      var spriteData = STUDIO.gameData.sprites[objectData.properties.sprite];
+
+      if (!!spriteData) {
+        if (spriteData.type == 'rpgmaker') {
+          size.width = parseFloat(spriteData.width) / 12;
+          size.height = parseFloat(spriteData.height) / 8;
+        } else {
+          size.width = parseFloat(spriteData.width);
+          size.height = parseFloat(spriteData.height);
+        }
+      }
+    }
+
+    return size;
+  };
+
   namespace.setObjectPropertyValue = function(objectData, propName, propValue, addToBackup) {
     var oldValue;
 
+    objectData.properties = objectData.properties || {};
     if (STUDIO.ObjectManager.isDefaultTiledObjectProperty(propName)) {
       oldValue = objectData[propName];
       objectData[propName] = propValue;
     } else {
-      objectData.properties = objectData.properties || {};
       oldValue = objectData.properties[propName];
       objectData.properties[propName] = propValue;
     }
 
-    if (addToBackup) {
+    if (!!objectData.properties['autosize']) {
+      var size = namespace.getObjectSpriteSize(objectData);
+
+      if (addToBackup && objectData.width !== size.width) {
+        namespace.addPropertyBackupToHistory(objectData, 'width', objectData.width, size.width);
+      }
+      objectData.width = size.width;
+      
+      if (addToBackup && objectData.height !== size.height) {
+        namespace.addPropertyBackupToHistory(objectData, 'height', objectData.height, size.height);
+      }
+      objectData.height = size.height;
+    }
+
+    if (addToBackup && oldValue !== propValue) {
       namespace.addPropertyBackupToHistory(objectData, propName, oldValue, propValue);
     }
     namespace.onMapChange();
+  };
+
+  namespace.propertyRequiresRefresh = function(propName) {
+    if (STUDIO.ObjectManager.isDefaultTiledObjectProperty(propName)) {
+      return true;
+    }
+
+    var keyProps = ['sprite', 'xOffset', 'yOffset', 'autosize'];
+
+    if (keyProps.indexOf(propName) >= 0) {
+      return true;
+    }
+
+    return false;
   };
 
   namespace.setPropertyValue = function(propName, propValue, addToBackup) {
@@ -779,20 +862,28 @@ STUDIO.MapEditor = {};
     var objectData = namespace._currentObject;
     namespace.setObjectPropertyValue(objectData, propName, propValue, addToBackup);
 
+    if (namespace.propertyRequiresRefresh(propName)) {
+      var layerData = namespace._currentMapData.layers[namespace._currentLayerIndex];
+      namespace._layerCache[layerData.name] = false;
+      namespace._needsRefresh = true;
+    }
+
     //Refresh the property list
     namespace.showObjectProperties(objectData);
   };
 
-  namespace.getPropertyValue = function(propName, defaultValue) {
-    var objectData = namespace._currentObject;
-
+  namespace.getObjectPropertyValue = function(objectData, propName, defaultValue) {
     if (STUDIO.ObjectManager.isDefaultTiledObjectProperty(propName)) {
       return objectData[propName] || defaultValue;
     } else {
       objectData.properties = objectData.properties || {};
-
       return objectData.properties[propName] || defaultValue;
     }
+  };
+
+  namespace.getPropertyValue = function(propName, defaultValue) {
+    var objectData = namespace._currentObject;
+    return namespace.getObjectPropertyValue(objectData, propName, defaultValue);
   };
 
   namespace.changeSpriteProperty = function(propName, propData) {
@@ -818,6 +909,12 @@ STUDIO.MapEditor = {};
     });
   };
 
+  namespace.changeBooleanProperty = function(propName, propData) {
+    var currentValue = namespace.getPropertyValue(propName, false);
+
+    namespace.setPropertyValue(propName, !currentValue);
+  };
+
   namespace.changeEventProperty = function(propName, propData) {
     var value = namespace.getPropertyValue(propName, []);
 
@@ -833,6 +930,9 @@ STUDIO.MapEditor = {};
         break;
       case 'number' :
         namespace.changeNumberProperty(propName, propData);
+        break;
+      case 'boolean' :
+        namespace.changeBooleanProperty(propName, propData);
         break;
       case 'sprite' :
         namespace.changeSpriteProperty(propName, propData);
@@ -950,6 +1050,9 @@ STUDIO.MapEditor = {};
       }
     }
 
+    namespace._layerCache[layer.name] = false;
+    namespace._needsRefresh = true;
+
     namespace.onMapChange();
     namespace.setupObjectList();
   };
@@ -977,45 +1080,28 @@ STUDIO.MapEditor = {};
         visible : true,
         type : "",
         name : "",
-        x : 0,
-        y : 0
+        x : x,
+        y : y
       };
 
       newObject.name = $('#map-object-name').val();
       newObject.type = $('#map-object-type').val();
-      newObject.properties.sprite = $('#map-object-sprite').val();
-      newObject.x = parseInt($('#map-object-x').val(), 10);
-      newObject.y = parseInt($('#map-object-y').val(), 10);
 
       namespace.validateMapObjectType(newObject.type);
       namespace.validateMapObjectSprite(newObject.properties.sprite);
 
       layer.objects.push(newObject);
       namespace.onMapChange();
+      namespace._layerCache[layer.name] = false;
+      namespace._needsRefresh = true;
 
-      namespace.setupObjectList();
+      namespace.showObjectProperties(newObject);
     }, function(){
       $('#map-object-name').val(namespace.getNameForNewObject());
-      $('#map-object-x').attr('max', mapData.width * mapData.tilewidth);
-      $('#map-object-y').attr('max', mapData.height * mapData.tileheight);
 
       $('#map-object-type').val('MapObject');
       $('#map-object-type-btn').html('MapObject');
 
-      $('#map-object-x').val(x);
-      $('#map-object-y').val(y);
-
-      $('#map-object-sprite-btn').on('click', function(){
-        STUDIO.Picker.pickSprite(function(spriteName){
-          $('#map-object-sprite').val(spriteName);
-          if (!!spriteName && spriteName.trim() !== '') {
-            $('#map-object-sprite-btn').html(spriteName);
-          } else {
-            $('#map-object-sprite-btn').html(t("Choose a Sprite"));
-          }
-        });
-      });
-      
       $('#map-object-type-btn').on('click', function(){
         STUDIO.Picker.pickType('MapObject', function(typeName){
           $('#map-object-type').val(typeName);
@@ -1758,7 +1844,6 @@ STUDIO.MapEditor = {};
   };
 
   namespace.refreshLayers = function() {
-    namespace.createLayers(namespace._renderer.width, namespace._renderer.height);
     namespace.loadLayerList();
 
     while (namespace._currentTilesetIndex >= namespace._currentMapData.layers.length - 1) {
@@ -1770,7 +1855,9 @@ STUDIO.MapEditor = {};
     }
 
     namespace.registerOpenTileset(namespace._currentTilesetIndex);
-    namespace.changeLayerIndex(namespace._currentTilesetIndex);
+    namespace.changeLayerIndex(namespace._currentLayerIndex);
+
+    namespace.createLayers(namespace._renderer.width, namespace._renderer.height);
   };
 
   namespace.createNewLayer = function() {
@@ -1844,8 +1931,12 @@ STUDIO.MapEditor = {};
 
       namespace._renderer.view.addEventListener('webglcontextlost', function(evt){
         evt.preventDefault();
+        namespace._lostContext = true;
+        console.log("WebGL Context lost");
+        STUDIO.openWindow('context-lost');
       }, false);
       namespace._renderer.view.addEventListener('webglcontextrestored', function(evt){
+        namespace._lostContext = false;
         namespace.openMapEditor(namespace._currentMapName);
       });
 
@@ -2006,37 +2097,171 @@ STUDIO.MapEditor = {};
     layerTexture.render(container);
   };
 
-  namespace.createLayer = function(layerData, width, height, alpha) {
+  namespace.createTileLayer = function(layerTexture, layerData, alpha) {
+    var index = -1;
+
+    for (var y = 0; y < layerData.height; y++) {
+      for (var x = 0; x < layerData.width; x++) {
+        index++;
+
+        var tileId = layerData.data[index];
+        if (tileId === 0) continue;
+
+        var tileTexture = namespace.getTileTexture(tileId);
+        if (tileTexture.baseTexture.isLoading) {
+          tileTexture.baseTexture.addListener('loaded', function(){
+            namespace.addTileSprite(this.layerTexture, this.texture, this.x, this.y, this.tileId, alpha);
+          }.bind({
+            x : x,
+            y : y,
+            tileId : tileId,
+            texture : tileTexture,
+            layerTexture : layerTexture
+          }));
+        } else {
+          namespace.addTileSprite(layerTexture, tileTexture, x, y, tileId, alpha);
+        }
+      }
+    }
+  };
+
+  namespace.renderEmptyObject = function(layerTexture, object, renderName, color, alpha, length) {
+    var graphics = new PIXI.Graphics();
+
+    color = color || 0x0000AA;
+    alpha = alpha || 1;
+    length = length || 2;
+
+    var x = object.x;
+    var y = object.y;
+    var width = object.width || namespace._currentMapData.tilewidth;
+    var height = object.height || namespace._currentMapData.tileheight;
+
+    graphics.beginFill(color, alpha);
+    graphics.drawRect(x, y, width, length);
+    graphics.drawRect(x, y + height - length, width, length);
+    graphics.drawRect(x + width - length, y, length, height);
+    graphics.drawRect(x, y, length, height);
+    graphics.endFill();
+    layerTexture.render(graphics);
+
+    if (!!renderName) {
+      var text = new PIXI.Text(object.name, {
+        dropShadow : true,
+        dropShadowColor : 'white'
+      });
+      text.x = x + 2;
+      text.y = y + 2;
+
+      var container = new PIXI.Container();
+      container.addChild(text);
+      
+      layerTexture.render(container);
+    }
+  };
+
+  namespace.applyRpgMakerSpriteFrame = function(sprite, spriteData) {
+    var spriteWidth = spriteData.imageWidth / 4;
+    var spriteHeight = spriteData.imageHeight / 2;
+    var index = spriteData.index;
+    var spriteY = 0;
+    var spriteX = index * spriteWidth;
+    if (spriteX > spriteData.imageWidth) {
+      spriteX -= spriteData.imageWidth;
+      spriteY = spriteData.imageHeight;
+    }
+
+    var frame = {
+      x : spriteX + (spriteWidth / 3),
+      y : spriteY,
+      width : spriteWidth / 3,
+      height : spriteHeight / 4
+    };
+
+    sprite.frame = frame;
+  };
+
+  namespace.applySpriteFrame = function(sprite, spriteData) {
+    switch(spriteData.type) {
+      case 'image' :
+        return;
+      case 'rpgmaker' :
+        namespace.applyRpgMakerSpriteFrame(sprite, spriteData);
+        break;
+    }
+  };
+
+  namespace.renderObject = function(layerTexture, object) {
+    if (!object.properties || !object.properties.sprite) {
+      namespace.renderEmptyObject(layerTexture, object, true);
+      return;
+    }
+
+    //Render an empty object without the name to indicate the hitbox
+    namespace.renderEmptyObject(layerTexture, object, false, 0xFF0000);
+
+    try {
+      var spriteData = STUDIO.gameData.sprites[object.properties.sprite];
+      var imagePath = path.join(STUDIO.settings.folder, spriteData.image);
+      var sprite = PIXI.Sprite.fromImage(imagePath);
+
+      var offsetX = namespace.getObjectPropertyValue(object, 'xOffset', 0);
+      var offsetY = namespace.getObjectPropertyValue(object, 'yOffset', 0);
+
+      sprite.x = object.x + offsetX;
+      sprite.y = object.y + offsetY;
+      // sprite.width = object.width;
+      // sprite.height = object.height;
+
+      var container = new PIXI.Container();
+      container.addChild(sprite);
+
+      if (sprite._texture.baseTexture.isLoading) {
+        sprite._texture.baseTexture.addListener('loaded', function(){
+          namespace.applySpriteFrame(sprite, spriteData);
+          layerTexture.render(container);
+        });
+      } else {
+        namespace.applySpriteFrame(sprite, spriteData);
+        layerTexture.render(container);
+      }
+    }
+    catch(e) {
+      console.log('Failed to render sprite', e);
+      namespace.renderEmptyObject(layerTexture, object, true);
+    }
+  };
+
+  namespace.createObjectLayer = function(layerTexture, layerData, alpha) {
+    layerTexture.clear();
+    layerTexture.render(new PIXI.Container());
+
+    for (var i = 0; i < layerData.objects.length; i++) {
+      namespace.renderObject(layerTexture, layerData.objects[i]);
+    }
+  };
+
+  namespace.createLayer = function(layerData, width, height, index) {
+    var alpha = 1;
+
+    if (layerData.type == 'objectgroup') {
+      //Only display the current object layer
+      if (index != namespace._currentLayerIndex) {
+        return;
+      }      
+    }
+
     var layerTexture = namespace._layerCache[layerData.name];
     if (!layerTexture) {
       layerTexture = new PIXI.RenderTexture(namespace._renderer, width, height);
 
-      if (layerData.type == 'tilelayer') {
-        var index = -1;
-
-        for (var y = 0; y < layerData.height; y++) {
-          for (var x = 0; x < layerData.width; x++) {
-            index++;
-
-            var tileId = layerData.data[index];
-            if (tileId === 0) continue;
-
-            var tileTexture = namespace.getTileTexture(tileId);
-            if (tileTexture.baseTexture.isLoading) {
-              tileTexture.baseTexture.addListener('loaded', function(){
-                namespace.addTileSprite(this.layerTexture, this.texture, this.x, this.y, this.tileId, alpha);
-              }.bind({
-                x : x,
-                y : y,
-                tileId : tileId,
-                texture : tileTexture,
-                layerTexture : layerTexture
-              }));
-            } else {
-              namespace.addTileSprite(layerTexture, tileTexture, x, y, tileId, alpha);
-            }
-          }
-        }
+      switch(layerData.type) {
+        case 'tilelayer' :
+          namespace.createTileLayer(layerTexture, layerData, alpha);
+          break;
+        case 'objectgroup' :
+          namespace.createObjectLayer(layerTexture, layerData, alpha);
+          break;
       }
     }
 
@@ -2113,6 +2338,20 @@ STUDIO.MapEditor = {};
     namespace._gridLayerTexture = false;
     namespace._selectionLayerTexture = false;
     namespace._currentTileIds = [];
+    namespace._needsRefresh = true;
+  };
+
+  namespace.killObjectLayers = function() {
+    var mapData = namespace._currentMapData;
+    var layers = mapData.layers;
+
+    for (var i = 0; i < layers.length; i++) {
+      if (layers[i].type == 'objectgroup') {
+        namespace._layerCache[layers[i].name] = false;
+      }
+    }
+
+    namespace._needsRefresh = true;
   };
 
   namespace.createLayers = function(width, height) {
@@ -2126,8 +2365,7 @@ STUDIO.MapEditor = {};
 
     for (var i = 0; i < layers.length; i++) {
       var layerData = layers[i];
-
-      namespace.createLayer(layerData, width, height);
+      namespace.createLayer(layerData, width, height, i);
     }
 
     namespace.createGridLayer(width, height);
@@ -2256,6 +2494,9 @@ STUDIO.MapEditor = {};
     } else {
       namespace.setupObjectList();
     }
+
+    namespace._layerCache[layer.name] = false;
+    namespace._needsRefresh = true;
   };
 
   namespace.undoDeleteObject = function(action) {
@@ -2265,6 +2506,9 @@ STUDIO.MapEditor = {};
     if (namespace._currentLayerIndex == mapData.layers.indexOf(action.layer)) {
       namespace.setupObjectList();
     }
+
+    namespace._layerCache[action.layer.name] = false;
+    namespace._needsRefresh = true;
   };
 
   namespace.undo = function() {
@@ -2290,7 +2534,8 @@ STUDIO.MapEditor = {};
         break;
     }
 
-    namespace._needsRefresh = true;    
+    namespace._needsRefresh = true;
+    namespace.onMapChange();
   };
 
   namespace.changeTile = function(x, y) {
@@ -2366,6 +2611,7 @@ STUDIO.MapEditor = {};
 
     namespace._layerCache[layer.name] = false;
     namespace._needsRefresh = true;
+    namespace.onMapChange();
   };
 
   namespace.changeRectangle = function(x, y, x2, y2) {
@@ -2542,8 +2788,6 @@ STUDIO.MapEditor = {};
     }
 
     if (namespace._needsRefresh) {
-      namespace.onMapChange()
-
       namespace.createLayers(namespace._renderer.width, namespace._renderer.height);
       namespace._needsRefresh = false;
       namespace._needsSelectionRefresh = false;

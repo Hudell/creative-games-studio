@@ -119,7 +119,7 @@ STUDIO.Picker = {};
     }, 400);
   };
 
-  Picker.openSimplePicker = function(pickerType, title, onPick, currentValue, label, onLoad) {
+  Picker.openSimplePicker = function(pickerType, title, onPick, onLoad) {
     Picker.onPick = onPick;
 
     Picker.requestPicker(pickerType, function(result, xhr){
@@ -131,12 +131,8 @@ STUDIO.Picker = {};
       STUDIO.fixLinks();
       STUDIO.applyTranslation();
 
-      if (currentValue !== undefined && currentValue !== null) {
-        $('#picker-value').val(currentValue);
-      }
-
-      if (label !== undefined) {
-        $('#picker-label').html(label);
+      if (!!onLoad) {
+        onLoad();
       }
 
       STUDIO.openDialog(div, title, [
@@ -156,9 +152,6 @@ STUDIO.Picker = {};
         }
       ], 600);
 
-      if (!!onLoad) {
-        onLoad();
-      }
     });
   };
 
@@ -254,8 +247,7 @@ STUDIO.Picker = {};
     var keyColumn = 0;
 
     columns.push({ name : t("Name"), type : "string"});
-    columns.push({ name : t("Type"), type : "string"});
-    columns.push({ name : t("Properties"), type : "number"});
+    columns.push({ name : t("Based On"), type : "string"});
 
     for (var key in types) {
       var typeData = types[key];
@@ -263,7 +255,6 @@ STUDIO.Picker = {};
 
       newType.push(key);
       newType.push(typeData.inherits);
-      newType.push(typeData.properties.length);
 
       data.push(newType);
     }
@@ -274,14 +265,25 @@ STUDIO.Picker = {};
   };
 
   Picker.pickString = function(currentValue, label, onPick) {
-    Picker.openSimplePicker('string', t("Type a String"), onPick, currentValue, label, function(){
-      // On Load
+    Picker.openSimplePicker('string', t("Type a String"), onPick, function(){
+      $('#picker-value').val(currentValue);
+      $('#picker-label').html(label);
+    });
+  };
+
+  Picker.pickBoolean = function(currentValue, label, onPick) {
+    Picker.openSimplePicker('boolean', t("Enable / Disable"), function(){
+      onPick($('#picker-value')[0].checked);
+    }, function(){
+      $('#picker-value')[0].checked = currentValue;
+      $('#picker-label').html(label);
     });
   };
 
   Picker.pickNumber = function(currentValue, label, onPick) {
-    Picker.openSimplePicker('number', t("Type a Number"), onPick, currentValue, label, function(){
-      // On Load
+    Picker.openSimplePicker('number', t("Type a Number"), onPick, function(){
+      $('#picker-value').val(currentValue);
+      $('#picker-label').html(label);
     });
   };
 

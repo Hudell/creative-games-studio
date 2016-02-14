@@ -77,7 +77,7 @@
     STUDIO.MapEditor.addLayerToMap(mapData, t("Ground"), 'tilelayer');
     STUDIO.MapEditor.addLayerToMap(mapData, t("Ground Overlay"), 'tilelayer');
     STUDIO.MapEditor.addLayerToMap(mapData, t("Walls"), 'tilelayer');
-    STUDIO.MapEditor.addLayerToMap(mapData, t("Player"), 'objectgroup');
+    STUDIO.MapEditor.addLayerToMap(mapData, t("Main"), 'objectgroup');
     STUDIO.MapEditor.addLayerToMap(mapData, t("Overlay"), 'tilelayer');
 
     STUDIO.changeMap(mapName, mapData);
