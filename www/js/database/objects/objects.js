@@ -376,7 +376,6 @@ STUDIO.ObjectManager = {};
         'xOffset' : { type : 'number' },
         'yOffset' : { type : 'number' },
         'On Activated' : { type : 'event' },
-        'On Block Player' : { type : 'event' },
         'On Player Touch' : { type : 'event' },
         'On Mouse Click' : { type : 'event' },
         'On Screen Touch' : { type : 'event' },

@@ -2761,12 +2761,29 @@ STUDIO.MapEditor = {};
     }
   };
 
-  namespace.updateMap = function(){
-    if (!namespace._renderer) return;
-    if (!namespace._stage) return;
+  namespace.selectObjectAt = function(layer, x, y) {
+    var objects = layer.objects;
 
-    namespace._renderer.render(namespace._stage);
+    for (var i = 0; i < objects.length; i++) {
+      var object = objects[i];
+      var objX = object.x;
+      var objY = object.y;
 
+      if (objX > x) continue;
+      if (objY > y) continue;
+
+      var width = object.width;
+      var height = object.height;
+
+      if (objX + width < x) continue;
+      if (objY + height < y) continue;
+
+      namespace.showObjectProperties(object);
+      return;
+    }
+  };
+
+  namespace.updateTileLayer = function() {
     var pos = namespace.getMousePos();
 
     if (namespace.isLeftMouseClicked()) {
@@ -2784,6 +2801,36 @@ STUDIO.MapEditor = {};
       if (!!namespace._clickedPos) {
         namespace.changeRectangle(namespace._clickedPos.x, namespace._clickedPos.y, pos.x, pos.y);
         namespace._clickedPos = false;
+      }
+    }
+  };
+
+  namespace.updateObjectLayer = function(layer) {
+    var pos = namespace.getMousePos();
+
+    if (namespace.isLeftMouseClicked()) {
+      namespace._clickedPos = true;
+    } else if (namespace._clickedPos === true) {
+      namespace.selectObjectAt(layer, pos.x, pos.y);
+      namespace._clickedPos = false;
+    }
+  };
+
+  namespace.updateMap = function(){
+    if (!namespace._renderer) return;
+    if (!namespace._stage) return;
+
+    namespace._renderer.render(namespace._stage);
+
+    var layer = namespace._currentMapData.layers[namespace._currentLayerIndex];
+    if (!!layer) {
+      switch (layer.type) {
+        case 'tilelayer' :
+          namespace.updateTileLayer();
+          break;
+        case 'objectgroup' :
+          namespace.updateObjectLayer(layer);
+          break;
       }
     }
 
