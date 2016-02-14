@@ -1080,8 +1080,7 @@ STUDIO.MapEditor = {};
       }
     }
 
-    namespace._layerCache[layer.name] = false;
-    namespace._needsRefresh = true;
+    namespace.killLayerCache(layer.name);
 
     namespace.onMapChange();
     namespace.setupObjectList();
@@ -1122,8 +1121,7 @@ STUDIO.MapEditor = {};
 
       layer.objects.push(newObject);
       namespace.onMapChange();
-      namespace._layerCache[layer.name] = false;
-      namespace._needsRefresh = true;
+      namespace.killLayerCache(layer.name);
 
       namespace.showObjectProperties(newObject);
     }, function(){
@@ -1558,8 +1556,7 @@ STUDIO.MapEditor = {};
     if (!layer) return;
     if (layer.type != 'objectgroup') return;
 
-    namespace._layerCache[layer.name] = false;
-    namespace._needsRefresh = true;
+    namespace.killLayerCache(layer.name);
   };
 
   namespace.removeCurrentTileset = function() {
@@ -1608,7 +1605,7 @@ STUDIO.MapEditor = {};
       if (!layer) return;
       if (layer.type !== 'tilelayer') continue;
 
-      namespace._layerCache[layer.name] = false;
+      namespace.killLayerCache(layer.name);
 
       for (var i = 0; i < layer.data.length; i++) {
         if (layer.data[i] >= minTileId) {
@@ -1627,9 +1624,57 @@ STUDIO.MapEditor = {};
     STUDIO.changeMap(namespace._currentMapName, mapData);
     namespace.loadTilesetList();
 
-    namespace._tileCache = {};
+    namespace.killAllTilesCache();
     namespace._needsRefresh = true;
     namespace._needsTilesetRefresh = true;
+  };
+
+  namespace.saveLayerCache = function(layerName, layerTexture) {
+    if (namespace._layerCache[layerName] == layerTexture) {
+      return;
+    }
+
+    if (!!namespace._layerCache[layerName]) {
+      namespace._layerCache[layerName].destroy();
+    }
+
+    namespace._layerCache[layerName] = layerTexture;
+  };
+
+  namespace.killLayerCache = function(layerName) {
+    var obj = namespace._layerCache[layerName];
+    if (!!obj) {
+      obj.destroy();
+    }
+    namespace._layerCache[layerName] = false;
+    namespace._needsRefresh = true;
+  };
+
+  namespace.killAllLayersCache = function() {
+    for (var key in namespace._layerCache) {
+      namespace.killLayerCache(key);
+    };
+
+    namespace._layerCache = {};
+  };
+
+  namespace.killTileCache = function(tileId) {
+    var obj = namespace._tileCache[tileId];
+
+    if (!!obj) {
+      obj.destroy(true);
+    }
+
+    namespace._tileCache[tileId] = false;
+    namespace._needsRefresh = true;
+  };
+
+  namespace.killAllTilesCache = function() {
+    for (var key in namespace._tileCache) {
+      namespace.killTileCache(key);
+    }
+
+    namespace._tileCache = {};
   };
 
   namespace.hasAnyTileset = function() {
@@ -2368,9 +2413,10 @@ STUDIO.MapEditor = {};
           namespace.createObjectLayer(layerTexture, layerData, alpha);
           break;
       }
-    }
 
-    namespace._layerCache[layerData.name] = layerTexture;
+      namespace.saveLayerCache(layerData.name, layerTexture);
+    }
+    
     if (layerData.visible) {
       var sprite = namespace._layerSpriteCache[layerData.name];
       if (!sprite) {
@@ -2451,15 +2497,15 @@ STUDIO.MapEditor = {};
   };
 
   namespace.clearCaches = function() {
-    namespace._layerCache = {};
     namespace._layerSpriteCache = {};
-    namespace._tileCache = {};
     namespace._tileSpriteCache = {};
     namespace._objectCache = {};
     namespace._gridLayerTexture = false;
     namespace._selectionLayerTexture = false;
     namespace._currentTileIds = [];
     namespace._imageSpriteCache = {};
+    namespace.killAllLayersCache();
+    namespace.killAllTilesCache();
     namespace._needsRefresh = true;
   };
 
