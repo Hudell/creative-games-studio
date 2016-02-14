@@ -91,6 +91,7 @@ STUDIO.MapEditor = {};
       namespace.openFirstTileset();
       namespace.attachEvents();
       namespace.refreshoffgridPlacementIcon();
+      namespace.refreshObjectNamesIcon();
       namespace.refreshGridIcon();
       namespace.refreshObjectsAnywhereIcon();
 
@@ -189,6 +190,11 @@ STUDIO.MapEditor = {};
     $('#mapeditor-options-objects-anywhere').on('click', function(event){
       event.preventDefault();
       namespace.toggleObjectsAnywhere();
+    });
+
+    $('#mapeditor-options-show-object-names').on('click', function(event){
+      event.preventDefault();
+      namespace.toggleObjectNames();
     });
 
     $('#map-editor-object-remove').on('click', function(event){
@@ -885,9 +891,7 @@ STUDIO.MapEditor = {};
     namespace.setObjectPropertyValue(objectData, propName, propValue, addToBackup);
 
     if (namespace.propertyRequiresRefresh(propName)) {
-      var layerData = namespace._currentMapData.layers[namespace._currentLayerIndex];
-      namespace._layerCache[layerData.name] = false;
-      namespace._needsRefresh = true;
+      namespace.refreshObjectLayer();
     }
 
     //Refresh the property list
@@ -1486,6 +1490,13 @@ STUDIO.MapEditor = {};
     this.refreshGrid();
   };
 
+  namespace.toggleObjectNames = function() {
+    STUDIO.settings.showObjectNames = !STUDIO.settings.showObjectNames;
+    namespace.refreshObjectNamesIcon();
+
+    namespace.refreshObjectLayer();
+  };
+
   namespace.toggleGrid = function() {
     STUDIO.settings.showGrid = !STUDIO.settings.showGrid;
     namespace.refreshGridIcon();
@@ -1505,6 +1516,11 @@ STUDIO.MapEditor = {};
       el.removeClass('fa-check-square-o');
       el.addClass('fa-square-o');
     }
+  };
+
+  namespace.refreshObjectNamesIcon = function() {
+    var el = $('#mapeditor-options-show-object-names').find('i');
+    namespace.refreshCheckIcon(el, !!STUDIO.settings.showObjectNames);
   };
 
   namespace.refreshoffgridPlacementIcon = function() {
@@ -1533,6 +1549,17 @@ STUDIO.MapEditor = {};
     STUDIO.confirm(t("The current tileset will be removed from this map"), function(){
       namespace.removeCurrentTileset();
     }, t("Delete Confirmation"));
+  };
+
+  namespace.refreshObjectLayer = function() {
+    var mapData = namespace._currentMapData;
+    var layer = mapData.layers[namespace._currentLayerIndex];
+
+    if (!layer) return;
+    if (layer.type != 'objectgroup') return;
+
+    namespace._layerCache[layer.name] = false;
+    namespace._needsRefresh = true;
   };
 
   namespace.removeCurrentTileset = function() {
@@ -2216,7 +2243,7 @@ STUDIO.MapEditor = {};
     graphics.endFill();
     layerTexture.render(graphics);
 
-    if (!!renderName) {
+    if (!!renderName && !!STUDIO.settings.showObjectNames) {
       var text = new PIXI.Text(object.name, {
         dropShadow : true,
         dropShadowColor : 'white'

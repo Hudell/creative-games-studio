@@ -31,6 +31,10 @@ var STUDIO = {};
     if (STUDIO.settings.placeObjectsAnywhere !== true && STUDIO.settings.placeObjectsAnywhere !== false) {
       STUDIO.settings.placeObjectsAnywhere = false;
     }
+
+    if (STUDIO.settings.showObjectNames !== true && STUDIO.settings.showObjectNames !== false) {
+      STUDIO.settings.showObjectNames = true;
+    }
   };
 
   STUDIO.ensureValidSettings();

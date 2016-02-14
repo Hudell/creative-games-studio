@@ -389,5 +389,6 @@
   "On Screen Touch" : "Ao Tocar na Tela",
   "On Map Loaded" : "Ao Carregar o Mapa",
   "On Activated" : "Ao Ativar",
-  "autosize" : "Tamanho Automático"
+  "autosize" : "Tamanho Automático",
+  "Show Object Names" : "Exibir Nomes de Objetos"
 }
