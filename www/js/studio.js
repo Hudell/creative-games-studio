@@ -12,6 +12,7 @@ var STUDIO = {};
   STUDIO.modifiedMaps = {};
   STUDIO.modified = false;
   STUDIO.translation = null;
+  STUDIO._pageCache = {};
 
   STUDIO.ensureValidSettings = function() {
     STUDIO.settings.folder = STUDIO.settings.folder || "";
@@ -66,6 +67,12 @@ var STUDIO = {};
   };
 
   STUDIO.requestPage = function(pageName, onSuccess, onError) {
+    // if (!!STUDIO._pageCache[pageName]) {
+    //   var cache = STUDIO._pageCache[pageName];
+    //   onSuccess.call(this, cache.result, cache.xhr);
+    //   return;
+    // }
+
     var mimeType = "text/html";
     var filePath = path.join('pages', pageName);
 
@@ -76,6 +83,11 @@ var STUDIO = {};
     }
     xhr.onload = function(result){
       if (xhr.status < 400) {
+        // STUDIO._pageCache[pageName] = {
+        //   result : result,
+        //   xhr : xhr
+        // };
+
         onSuccess.call(this, result, xhr);
       } else {
         if (!!onError) {

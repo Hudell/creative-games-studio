@@ -54,4 +54,40 @@ Add a new option on the database: "Map Objects":
   ☐ This screen will let the user create new objects without attaching them to any map. Those objects will work just like a regular map object, but the user can teleport them to any map they want at anytime.
   ☐ Maybe I should also list all objects from all maps to allow users to modify them faster
 
+Tileset Collision:
+  ☐ Create a flag on the tile layers where the user can check if that layer should trigger tileset collision
+  ☐ Create a screen where the user can configure the collision of each tile of a tileset
 
+
+Keyboard Shortcuts:
+  ☐ Ctrl+S = Save
+  ☐ Del = Delete current object if there's any selected
+  ☐ Ctrl+D = Open Database
+  ☐ Ctrl+M = Map Picker
+  ☐ Ctrl+O = Open Project
+  ☐ Ctrl+W = Close Project
+  ☐ Ctrl+N = New Object (if on an object layer)
+  ☐ Ctrl+L = Layer Picker
+  ☐ Ctrl+T = Tileset Picker
+  ☐ Ctrl+1 = Go to Tile Layer 1
+  ☐ Ctrl+2 = Go to Tile Layer 2
+  ☐ Ctrl+3 = Go to Tile Layer 3
+  ☐ Ctrl+4 = Go to Tile Layer 4
+  ☐ Ctrl+5 = Go to Tile Layer 5
+  ☐ Ctrl+6 = Go to Tile Layer 6
+  ☐ Ctrl+7 = Go to Tile Layer 7
+  ☐ Ctrl+8 = Go to Tile Layer 8
+  ☐ Ctrl+9 = Go to Tile Layer 9
+  ☐ Ctrl+NumPad 1 = Go to Object Layer 1
+  ☐ Ctrl+NumPad 2 = Go to Object Layer 2
+  ☐ Ctrl+NumPad 3 = Go to Object Layer 3
+  ☐ Ctrl+NumPad 4 = Go to Object Layer 4
+  ☐ Ctrl+NumPad 5 = Go to Object Layer 5
+  ☐ Ctrl+NumPad 6 = Go to Object Layer 6
+  ☐ Ctrl+NumPad 7 = Go to Object Layer 7
+  ☐ Ctrl+NumPad 8 = Go to Object Layer 8
+  ☐ Ctrl+NumPad 9 = Go to Object Layer 9
+  ☐ Ctrl+ - = Decrease Map Zoom
+  ☐ Ctrl+ + = Increase Map Zoom
+  ☐ Ctrl+ Shift + - = Decrease Tileset Zoom
+  ☐ Ctrl+ Shift + + = Increase Tileset Zoom

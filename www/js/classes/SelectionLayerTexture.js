@@ -36,8 +36,12 @@ SelectionLayerTexture.prototype.refreshSelection = function() {
   if (x >= width) return;
   if (y >= height) return;
 
-  // var layer = mapData.layers[STUDIO.MapEditor._currentLayerIndex];
-  // if (!!layer && layer.type == 'objectgroup') return;
+  var layer = mapData.layers[STUDIO.MapEditor._currentLayerIndex];
+  if (!!layer && layer.type == 'objectgroup') {
+    if (!!STUDIO.MapEditor._draggingObject) {
+      // STUDIO.MapEditor.renderEmptyObject(this, STUDIO.MapEditor._currentObject, true, 0x0000AA, 1, 2, x, y);
+    }
+  }
     
   var tileset = mapData.tilesets[STUDIO.MapEditor._currentTilesetIndex];
   if (!tileset) return;
