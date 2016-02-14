@@ -825,8 +825,8 @@ STUDIO.MapEditor = {};
 
       if (!!spriteData) {
         if (spriteData.type == 'rpgmaker') {
-          size.width = parseFloat(spriteData.width) / 12;
-          size.height = parseFloat(spriteData.height) / 8;
+          size.width = parseFloat(spriteData.imageWidth) / 12;
+          size.height = parseFloat(spriteData.imageHeight) / 8;
         } else {
           size.width = parseFloat(spriteData.width);
           size.height = parseFloat(spriteData.height);
@@ -2320,7 +2320,7 @@ STUDIO.MapEditor = {};
       height : spriteHeight / 4
     };
 
-    sprite.frame = frame;
+    sprite.texture.frame = frame;
   };
 
   namespace.applySpriteFrame = function(sprite, spriteData) {
