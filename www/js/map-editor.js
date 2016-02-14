@@ -19,7 +19,6 @@ STUDIO.MapEditor = {};
   namespace._currentMapData = null;
   namespace._tileCache = {};
   namespace._tileSpriteCache = {};
-  namespace._objectCache = {};
   namespace._layerCache = {};
   namespace._layerSpriteCache = {};
   namespace._currentTileIds = [];
@@ -2497,16 +2496,31 @@ STUDIO.MapEditor = {};
   };
 
   namespace.clearCaches = function() {
-    namespace._layerSpriteCache = {};
-    namespace._tileSpriteCache = {};
-    namespace._objectCache = {};
-    namespace._gridLayerTexture = false;
-    namespace._selectionLayerTexture = false;
+    // namespace._layerSpriteCache = {};
+    // namespace._tileSpriteCache = {};
     namespace._currentTileIds = [];
-    namespace._imageSpriteCache = {};
+    
+    namespace.killSelectionLayerTexture();
+    namespace.killGridLayerTexture();
     namespace.killAllLayersCache();
     namespace.killAllTilesCache();
     namespace._needsRefresh = true;
+  };
+
+  namespace.killSelectionLayerTexture = function() {
+    if (!!namespace._selectionLayerTexture) {
+      namespace._selectionLayerTexture.destroy();
+    }
+
+    namespace._selectionLayerTexture = false;
+  };
+
+  namespace.killGridLayerTexture = function() {
+    if (!!namespace._gridLayerTexture) {
+      namespace._gridLayerTexture.destroy();
+    }
+
+    namespace._gridLayerTexture = false;
   };
 
   namespace.killObjectLayers = function() {
