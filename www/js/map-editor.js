@@ -2529,11 +2529,9 @@ STUDIO.MapEditor = {};
 
     for (var i = 0; i < layers.length; i++) {
       if (layers[i].type == 'objectgroup') {
-        namespace._layerCache[layers[i].name] = false;
+        namespace.killLayerCache(layers[i].name);
       }
     }
-
-    namespace._needsRefresh = true;
   };
 
   namespace.createLayers = function(width, height) {
@@ -2644,7 +2642,7 @@ STUDIO.MapEditor = {};
 
   namespace.undoChange = function(change) {
     change.layer.data[change.index] = change.oldTileId;
-    namespace._layerCache[change.layer.name] = false;
+    namespace.killLayerCache(change.layer.name);
   };
 
   namespace.undoTile = function(tile) {
@@ -2675,8 +2673,7 @@ STUDIO.MapEditor = {};
       namespace.setupObjectList();
     }
 
-    namespace._layerCache[layer.name] = false;
-    namespace._needsRefresh = true;
+    namespace.killLayerCache(layer.name);
   };
 
   namespace.undoDeleteObject = function(action) {
@@ -2687,8 +2684,7 @@ STUDIO.MapEditor = {};
       namespace.setupObjectList();
     }
 
-    namespace._layerCache[action.layer.name] = false;
-    namespace._needsRefresh = true;
+    namespace.killLayerCache(action.layer.name);
   };
 
   namespace.undo = function() {
@@ -2789,8 +2785,7 @@ STUDIO.MapEditor = {};
     }
     namespace.stopDrawingTile();
 
-    namespace._layerCache[layer.name] = false;
-    namespace._needsRefresh = true;
+    namespace.killLayerCache(layer.name);
     namespace.onMapChange();
   };
 
@@ -3009,9 +3004,8 @@ STUDIO.MapEditor = {};
           y : pos.y
         }
       } else if (!namespace._draggingObject) {
-        namespace._draggingObject = true;
-        namespace._layerCache[layer.name] = false;
-        namespace._needsRefresh = true;
+        // namespace._draggingObject = true;
+        // namespace.killLayerCache(layer.name);
       }
     } else if (!!namespace._clickedPos) {
       if (pos.x !== namespace._clickedPos.x || pos.y !== namespace._clickedPos.y) {
