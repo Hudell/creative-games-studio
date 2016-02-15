@@ -2980,8 +2980,6 @@ STUDIO.MapEditor = {};
   };
 
   namespace.moveSelectedObject = function(diffX, diffY) {
-    return;
-
     var objectData = namespace._currentObject;
 
     var oldX = namespace.getPropertyValue('x', 0);
@@ -3025,10 +3023,11 @@ STUDIO.MapEditor = {};
           y : pos.y
         }
       } else if (!namespace._draggingObject) {
-        // namespace._draggingObject = true;
-        // namespace.killLayerCache(layer.name);
+        namespace._draggingObject = true;
+        namespace.killLayerCache(layer.name);
       }
-    } else if (!!namespace._clickedPos) {
+    } else if (!!namespace._clickedPos && !!namespace._draggingObject) {
+      console.log(namespace._clickedPos);
       if (pos.x !== namespace._clickedPos.x || pos.y !== namespace._clickedPos.y) {
         var diffX = pos.x - namespace._clickedPos.x;
         var diffY = pos.y - namespace._clickedPos.y;
