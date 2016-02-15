@@ -372,6 +372,7 @@ STUDIO.MapEditor = {};
   };
 
   namespace.changeLayerIndex = function(index) {
+    var oldIndex = namespace._currentLayerIndex;
     namespace._currentLayerIndex = index;
 
     var layersStr = t("Layers");
@@ -383,8 +384,10 @@ STUDIO.MapEditor = {};
       $('#map-editor-layer-name').html(layersStr);
     }
 
-    namespace.refreshTilesetWindow();
-    namespace.killObjectLayers();
+    if (index !== oldIndex) {
+      namespace.refreshTilesetWindow();
+      namespace.killObjectLayers();
+    }
   };
 
   namespace.loadTilesetList = function() {
@@ -1156,20 +1159,21 @@ STUDIO.MapEditor = {};
   };
 
   namespace.destroyTilesetRenderer = function() {
+    $('.map-editor-tileset').html('');
+
     if (!!namespace._tilesetRenderer) {
       namespace._tilesetRenderer.destroy();
-      namespace._tilesetRenderer = null;
+      delete namespace._tilesetRenderer;
     }
-    $('.map-editor-tileset').html('');
   };
 
   namespace.setupTilesetImage = function(img, imagePath, tileWidth, tileHeight, columns, rows, allowHalf) {
-    var imageWidth = img.width;
-    var imageHeight = img.height;
+    var zoomedWidth = img.width;
+    var zoomedHeight = img.height;
     var zoomLevel = STUDIO.settings.tilesetZoomLevel;
 
-    imageWidth *= zoomLevel;
-    imageHeight *= zoomLevel;
+    zoomedWidth *= zoomLevel;
+    zoomedHeight *= zoomLevel;
 
     $('.map-editor-tileset').css('height', $('#editor-wrapper').css('height'));
     var tilesetEditor = $('.map-editor-tileset');
@@ -1181,12 +1185,11 @@ STUDIO.MapEditor = {};
       namespace._tilesetRenderer = namespace.createRenderer(img.width, img.height);
       tilesetEditor[0].appendChild(namespace._tilesetRenderer.view);
 
-      namespace._tilesetRenderer.view.style.width = imageWidth + 'px';
-      namespace._tilesetRenderer.view.style.height = imageHeight + 'px';
+      namespace._tilesetRenderer.view.style.width = zoomedWidth + 'px';
+      namespace._tilesetRenderer.view.style.height = zoomedHeight + 'px';
       var canvas = $(namespace._tilesetRenderer.view);
 
       canvas.on('webglcontextlost', function(evt){
-        evt.preventDefault();
         namespace._lostContext = true;
         
         console.log("WebGL Context lost");
@@ -1216,7 +1219,7 @@ STUDIO.MapEditor = {};
         posX /= STUDIO.settings.tilesetZoomLevel;
         posY /= STUDIO.settings.tilesetZoomLevel;
 
-        console.log(posX, posY);
+        // console.log(posX, posY);
         var size = namespace.getFakeTileSize();
 
         var tileWidth = size.widthWithSpacing;
@@ -1304,6 +1307,7 @@ STUDIO.MapEditor = {};
     var img = new Image();
     img.onload = function() {
       namespace.setupTilesetImage(img, imagePath, tileWidth, tileHeight, columns, rows, allowHalf);
+      delete img;
     };
 
     img.src = imagePath;
@@ -1645,7 +1649,9 @@ STUDIO.MapEditor = {};
     if (!!obj) {
       obj.destroy();
     }
-    namespace._layerCache[layerName] = false;
+    // namespace._layerCache[layerName] = false;
+    delete namespace._layerCache[layerName];
+
     namespace._needsRefresh = true;
   };
 
@@ -1664,7 +1670,8 @@ STUDIO.MapEditor = {};
       obj.destroy(true);
     }
 
-    namespace._tileCache[tileId] = false;
+    delete namespace._tileCache[tileId];
+    // namespace._tileCache[tileId] = false;
     namespace._needsRefresh = true;
   };
 
@@ -2498,12 +2505,25 @@ STUDIO.MapEditor = {};
   namespace.clearCaches = function() {
     // namespace._layerSpriteCache = {};
     // namespace._tileSpriteCache = {};
-    namespace._currentTileIds = [];
+    
+    namespace._currentTileIds.length = 0;
     
     namespace.killSelectionLayerTexture();
     namespace.killGridLayerTexture();
     namespace.killAllLayersCache();
     namespace.killAllTilesCache();
+
+    //This caused the transparent layer to not show up 
+    
+    // for (var textureUrl in PIXI.utils.BaseTextureCache) {
+    //   PIXI.utils.BaseTextureCache[textureUrl].destroy();
+    //   delete PIXI.utils.BaseTextureCache[textureUrl];
+    // }
+    // for (textureUrl in PIXI.utils.TextureCache) {
+    //   PIXI.utils.TextureCache[textureUrl].destroy();
+    //   delete PIXI.utils.TextureCache[textureUrl];
+    // }
+
     namespace._needsRefresh = true;
   };
 
@@ -2554,7 +2574,8 @@ STUDIO.MapEditor = {};
   };
 
   namespace.requestAnimationFrame = function() {
-    window.requestAnimationFrame(namespace.update.bind(namespace));
+    setTimeout(namespace.update.bind(namespace), 70);
+    // window.requestAnimationFrame(namespace.update.bind(namespace));
   };
 
   namespace.drawTile = function(column, row, tileId, layer, tileset) {
