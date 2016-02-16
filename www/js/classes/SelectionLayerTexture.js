@@ -38,8 +38,24 @@ SelectionLayerTexture.prototype.refreshSelection = function() {
 
   var layer = mapData.layers[STUDIO.MapEditor._currentLayerIndex];
   if (!!layer && layer.type == 'objectgroup') {
-    if (!!STUDIO.MapEditor._draggingObject) {
-      // STUDIO.MapEditor.renderEmptyObject(this, STUDIO.MapEditor._currentObject, true, 0x0000AA, 1, 2, x, y);
+    if (!!STUDIO.MapEditor._draggingObject && !!STUDIO.MapEditor._clickedPos && !!STUDIO.MapEditor._currentObject) {
+
+      var oldPos = STUDIO.MapEditor._clickedPos;
+      var diffX = x - oldPos.x;
+      var diffY = y - oldPos.y;
+
+      console.log('show object on updated position', diffX, diffY);
+      
+      var newX = Math.round(STUDIO.MapEditor._currentObject.x + diffX);
+      var newY = Math.round(STUDIO.MapEditor._currentObject.y + diffY);
+
+      var fakeSize = STUDIO.MapEditor.getFakeTileSize();
+      newX = Math.floor(newX / (fakeSize.userWidth)) * fakeSize.userWidth;
+      newY = Math.floor(newY / (fakeSize.userHeight)) * fakeSize.userHeight;
+
+      STUDIO.MapEditor.renderEmptyObject(this, STUDIO.MapEditor._currentObject, false, 0x0000AA, 1, 2, newX, newY);
+      this.hasAnySprite = true;
+      return;
     }
   }
     
@@ -47,7 +63,7 @@ SelectionLayerTexture.prototype.refreshSelection = function() {
   if (!tileset) return;
 
   if (STUDIO.MapEditor._currentDrawType === 'rectangle' && !!STUDIO.MapEditor._clickedPos) {
-    this.addRectangleToLayer(STUDIO.MapEditor._clickedPos.x, STUDIO.MapEditor._clickedPos.y, pos.x, pos.y);
+    this.addRectangleToLayer(STUDIO.MapEditor._clickedPos.x, STUDIO.MapEditor._clickedPos.y, x, y);
   } else {
     this.addTile(x, y);
   }

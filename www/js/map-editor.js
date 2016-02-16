@@ -606,7 +606,11 @@ STUDIO.MapEditor = {};
       realHeightWithSpacing += spacing;
     }
 
-    return {
+    if (!!namespace._fakeSize) {
+      delete namespace._fakeSize;
+    }
+
+    namespace._fakeSize = {
       width : tileWidth,
       height : tileHeight,
       allowHalf  : allowHalf,
@@ -621,6 +625,8 @@ STUDIO.MapEditor = {};
       userWidth : userWidth,
       userHeight : userHeight
     };
+
+    return namespace._fakeSize;
   };
 
   namespace.refreshGrid = function(){
@@ -1489,6 +1495,7 @@ STUDIO.MapEditor = {};
     STUDIO.settings.offgridPlacement = !STUDIO.settings.offgridPlacement;
     namespace.refreshoffgridPlacementIcon();
     this.refreshGrid();
+    STUDIO.saveSettings();
   };
 
   namespace.toggleObjectNames = function() {
@@ -1496,17 +1503,20 @@ STUDIO.MapEditor = {};
     namespace.refreshObjectNamesIcon();
 
     namespace.refreshObjectLayer();
+    STUDIO.saveSettings();
   };
 
   namespace.toggleGrid = function() {
     STUDIO.settings.showGrid = !STUDIO.settings.showGrid;
     namespace.refreshGridIcon();
     namespace.refreshGrid();
+    STUDIO.saveSettings();
   };
 
   namespace.toggleObjectsAnywhere = function() {
     STUDIO.settings.placeObjectsAnywhere = !STUDIO.settings.placeObjectsAnywhere;
     namespace.refreshObjectsAnywhereIcon();
+    STUDIO.saveSettings();
   };
 
   namespace.refreshCheckIcon = function(el, checked) {
@@ -2045,10 +2055,14 @@ STUDIO.MapEditor = {};
       namespace._renderer.view.addEventListener('dblclick', function(event){
         event.preventDefault();
 
+        namespace._draggingObject = false;
+        delete namespace._clickedPos;
+
         var layer = mapData.layers[namespace._currentLayerIndex];
         if (!layer) return;
         if (layer.type !== 'objectgroup') return;
 
+        namespace.killLayerCache(layer.name);
         var pos = namespace.getMousePos();
         namespace.createNewMapObject(pos.x, pos.y);
       });
@@ -2281,8 +2295,13 @@ STUDIO.MapEditor = {};
     alpha = alpha || 1;
     length = length || 2;
 
-    x = x || object.x;
-    y = y || object.y;
+    if (x === undefined) {
+      x = object.x;
+    }
+    if (y === undefined) {
+      y = object.y;
+    }
+
     var width = object.width || namespace._currentMapData.tilewidth;
     var height = object.height || namespace._currentMapData.tileheight;
 
@@ -2981,12 +3000,23 @@ STUDIO.MapEditor = {};
 
   namespace.moveSelectedObject = function(diffX, diffY) {
     var objectData = namespace._currentObject;
+    if (!objectData) return;
 
     var oldX = namespace.getPropertyValue('x', 0);
     var oldY = namespace.getPropertyValue('y', 0);
 
-    namespace.setPropertyValue('x', oldX + diffX);
-    namespace.setPropertyValue('y', oldY + diffY);
+    var newX = Math.round(oldX + diffX);
+    var newY = Math.round(oldY + diffY);
+
+    if (!STUDIO.settings.placeObjectsAnywhere) {
+      var fakeSize = namespace.getFakeTileSize();
+
+      newX = Math.floor(newX / (fakeSize.userWidth)) * fakeSize.userWidth;
+      newY = Math.floor(newY / (fakeSize.userHeight)) * fakeSize.userHeight;
+    }
+
+    namespace.setPropertyValue('x', newX);
+    namespace.setPropertyValue('y', newY);
   };
 
   namespace.updateTileLayer = function() {
@@ -3015,19 +3045,22 @@ STUDIO.MapEditor = {};
     var pos = namespace.getMousePos();
 
     if (namespace.isLeftMouseClicked()) {
-      if (!namespace._clickedPos) {
+      if (!namespace._clickedPos && !namespace._draggingObject) {
+        namespace._currentObject = null;
+        namespace._currentObjectType = null;
+
         namespace.selectObjectAt(layer, pos.x, pos.y);
-        namespace._draggingObject = false;
-        namespace._clickedPos = {
-          x : pos.x,
-          y : pos.y
+
+        if (!!namespace._currentObject) {
+          namespace._clickedPos = {
+            x : pos.x,
+            y : pos.y
+          };
+          namespace._draggingObject = true;
         }
-      } else if (!namespace._draggingObject) {
-        namespace._draggingObject = true;
         namespace.killLayerCache(layer.name);
       }
     } else if (!!namespace._clickedPos && !!namespace._draggingObject) {
-      console.log(namespace._clickedPos);
       if (pos.x !== namespace._clickedPos.x || pos.y !== namespace._clickedPos.y) {
         var diffX = pos.x - namespace._clickedPos.x;
         var diffY = pos.y - namespace._clickedPos.y;
@@ -3036,9 +3069,11 @@ STUDIO.MapEditor = {};
       }
 
       namespace._draggingObject = false;
-      namespace._clickedPos = false;
+      delete namespace._clickedPos;
+      namespace.killLayerCache(layer.name);
     } else {
       namespace._draggingObject = false;
+      namespace._clickedPos = false;
     }
   };
 
