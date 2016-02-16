@@ -2055,14 +2055,22 @@ STUDIO.MapEditor = {};
       namespace._renderer.view.addEventListener('dblclick', function(event){
         event.preventDefault();
 
-        namespace._draggingObject = false;
-        delete namespace._clickedPos;
+        var killLayer = false;
+
+        if (!!namespace._draggingObject || !!namespace._clickedPos) {
+          namespace._draggingObject = false;
+          delete namespace._clickedPos;
+          killLayer = true;
+        }
 
         var layer = mapData.layers[namespace._currentLayerIndex];
         if (!layer) return;
         if (layer.type !== 'objectgroup') return;
 
-        namespace.killLayerCache(layer.name);
+        if (killLayer) {
+          namespace.killLayerCache(layer.name);
+        }
+        
         var pos = namespace.getMousePos();
         namespace.createNewMapObject(pos.x, pos.y);
       });
