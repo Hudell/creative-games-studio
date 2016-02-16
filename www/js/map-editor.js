@@ -2070,7 +2070,7 @@ STUDIO.MapEditor = {};
         if (killLayer) {
           namespace.killLayerCache(layer.name);
         }
-        
+
         var pos = namespace.getMousePos();
         namespace.createNewMapObject(pos.x, pos.y);
       });
@@ -2984,7 +2984,7 @@ STUDIO.MapEditor = {};
     }
   };
 
-  namespace.selectObjectAt = function(layer, x, y) {
+  namespace.getObjectAt = function(layer, x, y) {
     var objects = layer.objects;
 
     for (var i = 0; i < objects.length; i++) {
@@ -3001,9 +3001,21 @@ STUDIO.MapEditor = {};
       if (objX + width < x) continue;
       if (objY + height < y) continue;
 
-      namespace.showObjectProperties(object);
-      return;
+      return object;
     }
+
+    return false;
+  };
+
+  namespace.selectObjectAt = function(layer, x, y) {
+    var object = namespace.getObjectAt(layer, x, y);
+    if (!!object) {
+      namespace.selectObject(object);
+    }
+  };
+
+  namespace.selectObject = function(object) {
+    namespace.showObjectProperties(object);
   };
 
   namespace.moveSelectedObject = function(diffX, diffY) {
@@ -3054,18 +3066,16 @@ STUDIO.MapEditor = {};
 
     if (namespace.isLeftMouseClicked()) {
       if (!namespace._clickedPos && !namespace._draggingObject) {
-        namespace._currentObject = null;
-        namespace._currentObjectType = null;
-
-        namespace.selectObjectAt(layer, pos.x, pos.y);
-
-        if (!!namespace._currentObject) {
+        var object = namespace.getObjectAt(layer, pos.x, pos.y);
+        if (!!object) {
+          namespace.selectObject(object);
           namespace._clickedPos = {
             x : pos.x,
             y : pos.y
           };
           namespace._draggingObject = true;
         }
+
         namespace.killLayerCache(layer.name);
       }
     } else if (!!namespace._clickedPos && !!namespace._draggingObject) {

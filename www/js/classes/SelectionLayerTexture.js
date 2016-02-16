@@ -38,13 +38,12 @@ SelectionLayerTexture.prototype.refreshSelection = function() {
 
   var layer = mapData.layers[STUDIO.MapEditor._currentLayerIndex];
   if (!!layer && layer.type == 'objectgroup') {
+    //If there's any object being dragged
     if (!!STUDIO.MapEditor._draggingObject && !!STUDIO.MapEditor._clickedPos && !!STUDIO.MapEditor._currentObject) {
 
       var oldPos = STUDIO.MapEditor._clickedPos;
       var diffX = x - oldPos.x;
       var diffY = y - oldPos.y;
-
-      console.log('show object on updated position', diffX, diffY);
       
       var newX = Math.round(STUDIO.MapEditor._currentObject.x + diffX);
       var newY = Math.round(STUDIO.MapEditor._currentObject.y + diffY);
@@ -53,9 +52,15 @@ SelectionLayerTexture.prototype.refreshSelection = function() {
       newX = Math.floor(newX / (fakeSize.userWidth)) * fakeSize.userWidth;
       newY = Math.floor(newY / (fakeSize.userHeight)) * fakeSize.userHeight;
 
-      STUDIO.MapEditor.renderEmptyObject(this, STUDIO.MapEditor._currentObject, false, 0x0000AA, 1, 2, newX, newY);
+      STUDIO.MapEditor.renderEmptyObject(this, STUDIO.MapEditor._currentObject, false, 0xFF00FF, 1, 3, newX, newY);
       this.hasAnySprite = true;
       return;
+    } else {
+      //If there's an object under the mouse, highlight it
+      var object = STUDIO.MapEditor.getObjectAt(layer, x, y);
+      if (!!object) {
+        STUDIO.MapEditor.renderEmptyObject(this, object, false, 0x00FF00, 1, 4);
+      }
     }
   }
     

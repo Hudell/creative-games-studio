@@ -26,7 +26,7 @@ Map Object Management:
   ✔ Display objects on the map @done (16-02-14 00:15)
   ✔ Allow objects to be selected with the mouse @done (16-02-14 01:50)
   ✔ Allow objects to be moved around the map with the mouse @done (16-02-16 00:07)
-  ☐ Highlight objects under mouse cursor
+  ✔ Highlight objects under mouse cursor @done (16-02-16 00:47)
   ✔ When the user clicks on an object on the list that appears over the tilesets, the list is replaced by a list of properties of that object. @done (16-02-13 19:18)
   ✔ Each property will have a small button that if clicked, will show a popup where the player can change the value of that property @done (16-02-13 19:18)
   ✔ If the property is of type "event", the user will be able to add/modify a list of commands @done (16-02-13 21:29)
