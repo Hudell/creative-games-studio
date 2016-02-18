@@ -68,6 +68,10 @@
 
   SpriteManager.loadSprite = function(character) {
     var data = this.getSpriteData(character.sprite);
+    if (!data) {
+      return null;
+    }
+
     var texture = this.loadSpriteTexture(character.sprite, data);
     var spriteObj = new PIXI.Sprite(texture);
 

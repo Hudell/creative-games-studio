@@ -7,7 +7,7 @@
   TcheMap.prototype.constructor = TcheMap;
 
   TcheMap.prototype.initialize = function(map) {
-    TCHE.MapSprite.prototype.initialize.call();
+    TCHE.MapSprite.prototype.initialize.call(this, map);
 
     this._layers = [];
     this.createLayers();

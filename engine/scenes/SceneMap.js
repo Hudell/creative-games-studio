@@ -1,13 +1,12 @@
 (function(){
-  function SceneMap() {
-    this.initialize();
+  function SceneMap(params) {
+    this.initialize(params);
   }
 
   SceneMap.prototype = Object.create(TCHE.Scene.prototype);
   SceneMap.prototype.constructor = SceneMap;
 
-
-  SceneMap.prototype.initialize = function() {
+  SceneMap.prototype.initialize = function(params) {
     TCHE.Scene.prototype.initialize.call(this);
 
     TCHE.globals.player.x = Number(TCHE.data.game.player.x || 0);

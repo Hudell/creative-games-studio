@@ -7,7 +7,7 @@
   MapSprite.prototype.constructor = MapSprite;
 
   MapSprite.prototype.initialize = function(map) {
-    TCHE.Sprite.initialize.call(this);
+    TCHE.Sprite.prototype.initialize.call(this);
     this._map = map;
   };
 

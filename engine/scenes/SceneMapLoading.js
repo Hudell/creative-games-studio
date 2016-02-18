@@ -1,12 +1,12 @@
 (function(){
-  function SceneMapLoading() {
-    this.initialize();
+  function SceneMapLoading(params) {
+    this.initialize(params);
   }
 
   SceneMapLoading.prototype = Object.create(TCHE.SceneLoading.prototype);
   SceneMapLoading.prototype.constructor = SceneMapLoading;
 
-  SceneMapLoading.prototype.initialize = function() {
+  SceneMapLoading.prototype.initialize = function(params) {
     TCHE.SceneLoading.prototype.initialize.call(this);
     this._mapName = params.mapName;
 

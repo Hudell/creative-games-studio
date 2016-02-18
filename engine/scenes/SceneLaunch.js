@@ -1,6 +1,6 @@
 (function(){
   function SceneLaunch() {
-
+    this.initialize();
   }
 
   SceneLaunch.prototype = Object.create(TCHE.SceneLoading.prototype);
