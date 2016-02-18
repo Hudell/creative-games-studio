@@ -390,5 +390,14 @@
   "On Map Loaded" : "Ao Carregar o Mapa",
   "On Activated" : "Ao Ativar",
   "autosize" : "Tamanho Automático",
-  "Show Object Names" : "Exibir Nomes de Objetos"
+  "Show Object Names" : "Exibir Nomes de Objetos",
+  "Template" : "Modelo",
+  "The selected template will change the type of layers that will be automatically created." : "O modelo selecionado definirá quais camadas serão criadas automaticamente.",
+  "Platforming" : "Plataforma",
+  "RPG" : "RPG",
+  "Parallax" : "Parallax",
+  "Background" : "Fundo",
+  "gravityEffects" : "Afetado por Gravidade",
+  "Enable Gravity" : "Habilitar Gravidade",
+  "Check this if this is a platforming map." : "Marque esta opção se este for um mapa de plataforma."
 }

@@ -584,8 +584,10 @@ var STUDIO = {};
     var filePath = path.join(STUDIO.settings.folder, 'maps', mapName);
 
     if (mapData === null) {
-      fs.unlinkSync(filePath);
-      STUDIO.removeRecentObject('map', mapName);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+        STUDIO.removeRecentObject('map', mapName);
+      }
     } else {
       STUDIO.saveJson(filePath, mapData);
       STUDIO.addRecentObject('map', mapName);

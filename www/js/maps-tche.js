@@ -78,11 +78,26 @@
       "tileheight" : Number(tileHeight)
     };
 
-    STUDIO.MapEditor.addLayerToMap(mapData, t("Ground"), 'tilelayer');
-    STUDIO.MapEditor.addLayerToMap(mapData, t("Ground Overlay"), 'tilelayer');
-    STUDIO.MapEditor.addLayerToMap(mapData, t("Walls"), 'tilelayer');
-    STUDIO.MapEditor.addLayerToMap(mapData, t("Main"), 'objectgroup');
-    STUDIO.MapEditor.addLayerToMap(mapData, t("Overlay"), 'tilelayer');
+    var template = $('#new-tche-map-template').val();
+
+    switch(template) {
+      case 'rpg' :
+        STUDIO.MapEditor.addLayerToMap(mapData, t("Ground"), 'tilelayer');
+        STUDIO.MapEditor.addLayerToMap(mapData, t("Ground Overlay"), 'tilelayer');
+        STUDIO.MapEditor.addLayerToMap(mapData, t("Walls"), 'tilelayer');
+        STUDIO.MapEditor.addLayerToMap(mapData, t("Main"), 'objectgroup');
+        STUDIO.MapEditor.addLayerToMap(mapData, t("Overlay"), 'tilelayer');
+        break;
+      case 'platforming' :
+        STUDIO.MapEditor.addLayerToMap(mapData, t("Background"), 'tilelayer');
+        STUDIO.MapEditor.addLayerToMap(mapData, t("Ground"), 'tilelayer');
+        STUDIO.MapEditor.addLayerToMap(mapData, t("Main"), 'objectgroup');
+        STUDIO.MapEditor.addLayerToMap(mapData, t("Overlay"), 'tilelayer');
+        break;
+      default :
+        STUDIO.MapEditor.addLayerToMap(mapData, t("Main"), 'objectgroup');
+        break;
+    }
 
     STUDIO.changeMap(mapName, mapData);
     STUDIO.openMapEditor(mapName);

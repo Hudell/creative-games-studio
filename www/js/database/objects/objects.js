@@ -375,6 +375,7 @@ STUDIO.ObjectManager = {};
         'sprite' : { type : 'sprite' },
         'xOffset' : { type : 'number' },
         'yOffset' : { type : 'number' },
+        'gravityEffects' : { type : 'boolean' },
         'On Activated' : { type : 'event' },
         'On Player Touch' : { type : 'event' },
         'On Mouse Click' : { type : 'event' },

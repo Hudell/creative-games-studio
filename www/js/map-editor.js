@@ -467,6 +467,7 @@ STUDIO.MapEditor = {};
     STUDIO.openPopupForm('map-settings', t("Map Settings"), function(){
       var newWidth = parseInt($('#map-settings-width').val(), 10);
       var newHeight = parseInt($('#map-settings-height').val(), 10);
+      var gravity = $('#map-settings-gravity')[0].checked;
 
       if (newWidth <= 0) {
         throw new Error(t("The width needs to be a positive number."));
@@ -478,6 +479,8 @@ STUDIO.MapEditor = {};
 
       mapData.width = newWidth;
       mapData.height = newHeight;
+      mapData.properties = mapData.properties || {};
+      mapData.properties.enableGravity = gravity;
 
       if (namespace.mapType() == 'tche') {
         mapData.width *= 2;
@@ -494,6 +497,7 @@ STUDIO.MapEditor = {};
 
       var oldWidth = mapData.width;
       var oldHeight = mapData.height;
+      var gravity = !!mapData.properties && !!mapData.properties.enableGravity;
 
       if (namespace.mapType() == 'tche') {
         oldWidth /= 2;
@@ -502,6 +506,7 @@ STUDIO.MapEditor = {};
 
       $('#map-settings-width').val(oldWidth);
       $('#map-settings-height').val(oldHeight);
+      $('#map-settings-gravity')[0].checked = gravity;
     });
   };
 

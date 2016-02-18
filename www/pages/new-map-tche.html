@@ -32,6 +32,18 @@
         <input class="form-control" type="number" placeholder="Tile Height" id="new-tche-map-tile-height" min="1">
       </div>
 
+      <div class="form-group">
+        <label class="translation-span">Template</label>
+        <select class="form-control" id="new-tche-map-template">
+            <option value="" class="translation-span">None</option>
+            <option value="rpg" class="translation-span">RPG</option>
+            <!-- <option value="parallax">Parallax</option> -->
+            <option value="platforming" class="translation-span">Platforming</option>
+        </select>
+        <p class="help-block"><span class="translation-span">The selected template will change the type of layers that will be automatically created.</span></p>
+        
+      </div>
+
       <button id="new-tche-map-save" type="button" class="btn btn-primary translation-span">OK</button>
       <button id="new-tche-map-cancel" type="button" class="btn btn-default translation-span">Go Back</button>
     </form>
