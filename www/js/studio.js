@@ -35,6 +35,10 @@ var STUDIO = {};
     if (STUDIO.settings.showObjectNames !== true && STUDIO.settings.showObjectNames !== false) {
       STUDIO.settings.showObjectNames = true;
     }
+
+    if (STUDIO.settings.showToolbarOnPlayTest !== true && STUDIO.settings.showToolbarOnPlayTest !== false) {
+      STUDIO.settings.showToolbarOnPlayTest = false;
+    }
   };
 
   STUDIO.ensureValidSettings();
@@ -379,7 +383,8 @@ var STUDIO = {};
   STUDIO.copyEngineFiles = function() {
     var projectFolder = STUDIO.settings.folder;
 
-    STUDIO.copyFolderSync(path.join('emptyGame', 'tche'), path.join(projectFolder, 'tche'));
+    STUDIO.buildLibsFile(path.join(projectFolder, 'tche', 'libs.js'));
+    STUDIO.buildDebugFile(projectFolder);
   };
 
   STUDIO.reloadProject = function() {
@@ -426,10 +431,10 @@ var STUDIO = {};
   };
 
   STUDIO.playProject = function() {
-    var newWin = gui.Window.open('file://' + STUDIO.settings.folder + '/index.html?debug', {
+    var newWin = gui.Window.open('file://' + STUDIO.settings.folder + '/debug.html', {
       position : 'center',
       title : STUDIO.gameData.name,
-      toolbar : false
+      toolbar : STUDIO.settings.showToolbarOnPlayTest
     });
 
     try {
@@ -731,6 +736,162 @@ var STUDIO = {};
     }
   };
 
+  STUDIO.buildJSFile = function(filesToLoad, destinationPath) {
+    var fullContent = '';
+
+    for (var key in filesToLoad) {
+      var fileData = filesToLoad[key].split('/');
+      var filePath = 'engine';
+      for (var i = 0; i < fileData.length; i++) {
+        filePath = path.join(filePath, fileData[i]);
+      }
+
+      var content = fs.readFileSync(filePath, {encoding : 'utf8'});
+
+      fullContent += "\n\n" + '// ' + key + "\n";
+      fullContent += content;
+    }
+
+    fs.writeFileSync(destinationPath, fullContent, {encoding : 'utf8'});
+  };
+
+  STUDIO.buildLibsFile = function(destinationPath) {
+    var files = {
+      'FPS Meter' : 'libs/fpsmeter.min.js',
+      'PIXI' : 'libs/pixi.min.js',
+      'SoundJs' : 'libs/soundjs-0.6.2.min.js'
+    };
+
+    STUDIO.buildJSFile(files, destinationPath);
+  };
+
+  STUDIO.buildTcheFile = function(destinationPath) {
+    var files = STUDIO.gameData.tcheScripts;
+    
+    STUDIO.buildJSFile(files, destinationPath);
+  };
+
+  STUDIO.buildDebugFile = function(destinationFolder) {
+    var html = '<!doctype html><html lang="en"><head><meta charset="utf-8"></head><body style="margin: 0; overflow: hidden">';
+    var files = STUDIO.gameData.tcheScripts;
+    
+    function copyFile(filePath) {
+      STUDIO.copyFileSync(path.join('engine', filePath), path.join(destinationFolder, 'engine', filePath));
+      html += '<script src="engine/' + filePath + '"></script>';
+    }
+
+    copyFile('libs/fpsmeter.js');
+    copyFile('libs/pixi.js');
+    copyFile('libs/soundjs-0.6.2.combined.js');
+
+    for (var key in files) {
+      copyFile(files[key]);
+    }
+
+    html += '<script src="main.js"></script></body></html>';
+
+    fs.writeFileSync(path.join(destinationFolder, 'debug.html'), html, {encoding : 'utf8'});
+  };
+
+  STUDIO.registerAllEngineScripts = function() {
+    STUDIO.gameData.tcheScripts = {};
+
+    //Pollyfills
+    STUDIO.registerEngineScript('Array.find', 'pollyfills/Array.find.js');
+
+    //Trigger
+    STUDIO.registerEngineScript('Trigger', 'libs/Trigger.js');
+
+    //Tche
+    STUDIO.registerEngineScript('Tche', 'Tche.js');
+    //Helpers
+    STUDIO.registerEngineScript('Ajax', 'helpers/Ajax.js');
+    STUDIO.registerEngineScript('Clone', 'helpers/Clone.js');
+    STUDIO.registerEngineScript('Object', 'helpers/Object.js');
+    STUDIO.registerEngineScript('Params', 'helpers/Params.js');
+    STUDIO.registerEngineScript('Resolution', 'helpers/Resolution.js');
+    STUDIO.registerEngineScript('Validation', 'helpers/Validation.js');
+    //Classes
+    STUDIO.registerEngineScript('Character', 'classes/Character.js');
+    STUDIO.registerEngineScript('CodeInterpreter', 'classes/CodeInterpreter.js');
+    STUDIO.registerEngineScript('MapType', 'classes/MapType.js');
+    STUDIO.registerEngineScript('ObjectType', 'classes/ObjectType.js');
+    STUDIO.registerEngineScript('SkinType', 'classes/SkinType.js');
+    STUDIO.registerEngineScript('Sprite', 'classes/Sprite.js');
+    STUDIO.registerEngineScript('SpriteType', 'classes/SpriteType.js');
+    STUDIO.registerEngineScript('WindowContent', 'classes/WindowContent.js');
+
+    // Sprite Types
+    STUDIO.registerEngineScript('Sprite Type - Image', 'spriteTypes/image.js');
+    STUDIO.registerEngineScript('Sprite Type - RpgMaker', 'spriteTypes/rpgmaker.js');
+
+    //Map Types
+    STUDIO.registerEngineScript('Map Type - Tche', 'mapTypes/tche.js');
+    STUDIO.registerEngineScript('Map Type - Tiled', 'mapTypes/tiled.js');
+
+    //Skin Types
+    STUDIO.registerEngineScript('Skin Type - RpgMaker', 'skinTypes/rpgmaker.js');
+
+    //Object Types
+    STUDIO.registerEngineScript('Object Type - Object', 'objectTypes/object.js');
+    STUDIO.registerEngineScript('Object Type - Map Object', 'objectTypes/mapObject.js');
+    STUDIO.registerEngineScript('Object Type - Creature', 'objectTypes/creature.js');
+    STUDIO.registerEngineScript('Object Type - NPC', 'objectTypes/npc.js');
+    STUDIO.registerEngineScript('Object Type - Player', 'objectTypes/player.js');
+
+    //Sprites
+    STUDIO.registerEngineScript('Character Sprite', 'sprites/CharacterSprite.js');
+    STUDIO.registerEngineScript('Map Sprite', 'sprites/MapSprite.js');
+    STUDIO.registerEngineScript('Tche Layer Sprite', 'sprites/TcheLayerSprite.js');
+    STUDIO.registerEngineScript('Tche Object Layer Sprite', 'sprites/TcheObjectLayerSprite.js');
+    STUDIO.registerEngineScript('Window Sprite', 'sprites/WindowSprite.js');
+
+    // Map Sprites
+    STUDIO.registerEngineScript('Tche Map Sprite', 'sprites/maps/TcheMap.js');
+    STUDIO.registerEngineScript('Tiled Map Sprite', 'sprites/maps/TiledMap.js');
+
+    // Window Sprites
+    STUDIO.registerEngineScript('Choice Window Sprite', 'sprites/windows/ChoiceWindow.js');
+    
+    // Windows
+    STUDIO.registerEngineScript('Message Window', 'windows/WindowMessage.js');
+    STUDIO.registerEngineScript('Title Choices Window', 'windows/WindowTitleChoices.js');
+
+    // Managers
+    STUDIO.registerEngineScript('Code Manager', 'managers/CodeManager.js');
+    STUDIO.registerEngineScript('File Manager', 'managers/FileManager.js');
+    STUDIO.registerEngineScript('Input Manager', 'managers/InputManager.js');
+    STUDIO.registerEngineScript('Map Manager', 'managers/MapManager.js');
+    STUDIO.registerEngineScript('Message Manager', 'managers/MessageManager.js');
+    STUDIO.registerEngineScript('Object Type Manager', 'managers/ObjectTypeManager.js');
+    STUDIO.registerEngineScript('Resolution Manager', 'managers/ResolutionManager.js');
+    STUDIO.registerEngineScript('Scene Manager', 'managers/SceneManager.js');
+    STUDIO.registerEngineScript('Skin Manager', 'managers/SkinManager.js');
+    STUDIO.registerEngineScript('Sound Manager', 'managers/SoundManager.js');
+    STUDIO.registerEngineScript('Sprite Manager', 'managers/SpriteManager.js');
+    STUDIO.registerEngineScript('Tile Manager', 'managers/TileManager.js');
+
+    // Scenes
+    STUDIO.registerEngineScript('Scene', 'scenes/Scene.js');
+    STUDIO.registerEngineScript('Loading Scene', 'scenes/SceneLoading.js');
+    STUDIO.registerEngineScript('Launch Scene', 'scenes/SceneLaunch.js');
+    STUDIO.registerEngineScript('Map Loading Scene', 'scenes/SceneMapLoading.js');
+    STUDIO.registerEngineScript('Map Scene', 'scenes/SceneMap.js');
+    STUDIO.registerEngineScript('Window Scene', 'scenes/SceneWindow.js');
+    STUDIO.registerEngineScript('Title Scene', 'scenes/SceneTitle.js');
+
+    //Globals
+
+    STUDIO.registerEngineScript('Map', 'globals/Map.js');
+    STUDIO.registerEngineScript('Player', 'globals/Player.js');
+  };
+
+  STUDIO.registerEngineScript = function(scriptName, scriptPath) {
+    if (STUDIO.gameData.tcheScripts[scriptName] === undefined) {
+      STUDIO.gameData.tcheScripts[scriptName] = scriptPath;
+    }
+  };
+
   STUDIO.keyExists = function(object, key) {
     for (var objectKey in object) {
       if (objectKey.toLowerCase() == key.toLowerCase()) {
@@ -833,8 +994,18 @@ var STUDIO = {};
       STUDIO.gameData._lastMapName = '';
     }
 
+    if (!STUDIO.gameData.tcheScripts) {
+      STUDIO.gameData.tcheScripts = {};
+    }
+
+    if (!STUDIO.gameData.scripts) {
+      STUDIO.gameData.scripts = {};
+    };
+
     STUDIO.registerEngineScene('SceneMap');
     STUDIO.registerEngineScene('SceneTitle');
+
+    STUDIO.registerAllEngineScripts();
 
     if (!STUDIO.gameData.gameScenes) {
       STUDIO.gameData.gameScenes = [];

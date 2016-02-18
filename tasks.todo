@@ -1,4 +1,3 @@
- ✔ Make popup windows more condensed @done (16-02-12 22:50)
 
 Add options to highlight the current layer:
    ☐ A way to change opacity of all other layers
@@ -6,31 +5,19 @@ Add options to highlight the current layer:
    ☐ A way to hide all other layers
    ☐ A way to hide layers over the current one
 
-Change the way Object Events work today:
-   ✔ Replace the list of events for a list of properties @done (16-02-13 17:18)
+Reorganize old screens:
+   ☐ Improve sprite new/import screens
+   ☐ Improve skin new/import screens
 
 Create the "Picker" class and screens:
-   ✔ A Picker screen will let the user select an object of a specific type (the type of the picker) @done (16-02-13 14:19)
-   ✔ Create a Sprite Picker @done (16-02-13 14:19)
    ☐ Create a Tileset Picker
    ☐ Create a Position Picker (A picker that loads a map and let you pick a position on that map)
    ☐ Create a Scene Picker
    ☐ Create a Skin Picker
    ☐ Create an Object Picker
-   ✔ Create an Event Writer @done (16-02-13 21:29)
-   ✔ Create an Object Type Picker @done (16-02-13 17:17)
    ☐ Use the Picker on screens where the user has to choose one of those things
 
 Map Object Management:
-  ✘ Create a screen to modify map events @cancelled (16-02-13 19:18)
-  ✔ Display objects on the map @done (16-02-14 00:15)
-  ✔ Allow objects to be selected with the mouse @done (16-02-14 01:50)
-  ✔ Allow objects to be moved around the map with the mouse @done (16-02-16 00:07)
-  ✔ Highlight objects under mouse cursor @done (16-02-16 00:47)
-  ✔ When the user clicks on an object on the list that appears over the tilesets, the list is replaced by a list of properties of that object. @done (16-02-13 19:18)
-  ✔ Each property will have a small button that if clicked, will show a popup where the player can change the value of that property @done (16-02-13 19:18)
-  ✔ If the property is of type "event", the user will be able to add/modify a list of commands @done (16-02-13 21:29)
-  ✔ If the property is of type "sprite", the user will be able to pick a sprite using the sprite picker  @done (16-02-13 20:18)
   ☐ If the property is of type "tileset", the user will be able to pick a tileset using the tileset picker
   ☐ If the property is of type "skin", the user will be able to pick a skin using the skin picker
   ☐ If the property is of type "map", the user will be able to pick a map using the map picker
@@ -38,13 +25,10 @@ Map Object Management:
   ☐ If the property is of type "object", the user will be able to pick another object from the same map or from the list of global objects
   ☐ If the property is of type "object type", the user will be able to select an object type
    ☐ Other than "object type", it should be possible to create properties of types like "map object type", "creature type", "window type" and so on.
-  ✔ If the property is a number or string, the user will be able to input the value they want to use @done (16-02-13 20:18)
   ☐ If the property is of type "list"... 
     I still don't know how I'll handle this.
     Lists should specify what kind of item they expect
     Then I can create a screen with and add/remove button 
-  ✔ Add a new button to the object toolbar: "List Map Objects" @done (16-02-13 19:18)
-   ✔ This button will restore the list of map objects (the one that is shown by default when accessing an object layer) @done (16-02-13 19:18)
   ☐ Add an option to block an object property (if a property is blocked, it can't be modified by child objects)
   ☐ Add the "clone" blocked event to the MapObject property.
   ☐ Add the "Call event" command
@@ -59,6 +43,8 @@ Tileset Collision:
   ☐ Create a flag on the tile layers where the user can check if that layer should trigger tileset collision
   ☐ Create a screen where the user can configure the collision of each tile of a tileset
 
+New Features:
+ ☐ An option on the database to configure keys (The InputManager key aliases)
 
 Keyboard Shortcuts:
   ☐ Ctrl+S = Save
@@ -92,3 +78,39 @@ Keyboard Shortcuts:
   ☐ Ctrl+ + = Increase Map Zoom
   ☐ Ctrl+ Shift + - = Decrease Tileset Zoom
   ☐ Ctrl+ Shift + + = Increase Tileset Zoom
+  ☐ Ctrl+Shift+O = Go to next object layer
+  ☐ Ctrl+Shift+L = Go to next tile layer
+  ☐ Ctrl+Shift+I = Go to next image layer
+
+
+Tche Engine:
+ ☐ WindowContent would probably work better as a Graphic object insted of a RenderTexture
+ ☐ Move the game validation from the engine to the editor
+ ✔ Bring the engine source to the Editor (on a folder inside emptyGame) @done (16-02-17 15:01)
+ ✔ Convert the old engine source from ES6 to ES5 @done (16-02-17 15:01)
+ ☐ Generate a single tche.js file when the user save the game.
+
+Tche Components (Define different behaviours using component objects):
+ ☐ Create A component to manage the input
+ ☐ The component should be inheritable and there should be a screen where the user can swap a component for an inherited one.
+
+＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
+Archive:
+ ✔ Highlight objects under mouse cursor @done (16-02-16 00:47) @project(Map Object Management)
+ ✔ Allow objects to be moved around the map with the mouse @done (16-02-16 00:07) @project(Map Object Management)
+ ✔ Allow objects to be selected with the mouse @done (16-02-14 01:50) @project(Map Object Management)
+ ✔ Display objects on the map @done (16-02-14 00:15) @project(Map Object Management)
+ ✔ If the property is of type "event", the user will be able to add/modify a list of commands @done (16-02-13 21:29) @project(Map Object Management)
+ ✔ Create an Event Writer @done (16-02-13 21:29) @project(Create the "Picker" class and screens)
+ ✔ If the property is of type "sprite", the user will be able to pick a sprite using the sprite picker  @done (16-02-13 20:18) @project(Map Object Management)
+ ✔ If the property is a number or string, the user will be able to input the value they want to use @done (16-02-13 20:18) @project(Map Object Management)
+ ✘ Create a screen to modify map events @cancelled (16-02-13 19:18) @project(Map Object Management)
+ ✔ When the user clicks on an object on the list that appears over the tilesets, the list is replaced by a list of properties of that object. @done (16-02-13 19:18) @project(Map Object Management)
+ ✔ This button will restore the list of map objects (the one that is shown by default when accessing an object layer) @done (16-02-13 19:18) @project(Map Object Management)
+ ✔ Each property will have a small button that if clicked, will show a popup where the player can change the value of that property @done (16-02-13 19:18) @project(Map Object Management)
+ ✔ Add a new button to the object toolbar: "List Map Objects" @done (16-02-13 19:18) @project(Map Object Management)
+ ✔ Replace the list of events for a list of properties @done (16-02-13 17:18) @project(Change the way Object Events work today)
+ ✔ Create an Object Type Picker @done (16-02-13 17:17) @project(Create the "Picker" class and screens)
+ ✔ Create a Sprite Picker @done (16-02-13 14:19) @project(Create the "Picker" class and screens)
+ ✔ A Picker screen will let the user select an object of a specific type (the type of the picker) @done (16-02-13 14:19) @project(Create the "Picker" class and screens)
+ ✔ Make popup windows more condensed @done (16-02-12 22:50)
