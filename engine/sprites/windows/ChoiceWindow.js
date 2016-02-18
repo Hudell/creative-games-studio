@@ -59,7 +59,9 @@
   ChoiceWindow.prototype.getChoiceAlign = function() {
     return 'left';
   };
-  TCHE.reader(ChoiceWindow.prototype, 'choiceAlign', ChoiceWindow.prototype.getChoiceAlign);
+  TCHE.reader(ChoiceWindow.prototype, 'choiceAlign', function(){
+    return this.getChoiceAlign();
+  });
 
   ChoiceWindow.prototype.getItemWidth = function() {
     return this.width - (this.margin * 2);  
@@ -71,7 +73,7 @@
     return 'grey';
   };
 
-  TCHE.reader(ChoiceWindow.prototype, 'highlightColor', ChoiceWindow.getHighlightColor);
+  TCHE.reader(ChoiceWindow.prototype, 'highlightColor', ChoiceWindow.prototype.getHighlightColor);
 
   ChoiceWindow.prototype.draw = function() {
     this.drawChoices();

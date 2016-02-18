@@ -14,13 +14,13 @@
     return true;
   };
 
-  WindowTitleChoices.makeChoiceList = function() {
+  WindowTitleChoices.prototype.makeChoiceList = function() {
     this._choices = [];
     this.addChoice('startGame', 'Start Game');
     this.addChoice('quitGame', 'Quit Game');
   };
 
-  WindowTitleChoices.onChoice = function(index) {
+  WindowTitleChoices.prototype.onChoice = function(index) {
     switch(index) {
       case 0 :
         TCHE.globals.map.changeMap(TCHE.data.game.initialMap);
@@ -36,7 +36,7 @@
     return "center";
   };
 
-  WindowTitleChoices.draw = function() {
+  WindowTitleChoices.prototype.draw = function() {
     this.drawChoices();
   };
 

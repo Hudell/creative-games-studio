@@ -86,7 +86,7 @@
     if (!!data) {
       return this.getSkinType(data).getSkinCursorSize(data);
     } else {
-      return 0;
+      return {width : 0, height : 0};
     }
   };
   

@@ -26,7 +26,7 @@
     this.addChild(this._mapSprite);
   };
 
-  SceneMap.update = function() {
+  SceneMap.prototype.update = function() {
     TCHE.Scene.prototype.update.call(this);
 
     TCHE.globals.map.update();
@@ -35,7 +35,7 @@
     this._mapSprite.update();
   };   
 
-  SceneMap.processClick = function(pos) {
+  SceneMap.prototype.processClick = function(pos) {
     TCHE.globals.player.setDest(pos.x - TCHE.globals.map.offsetX, pos.y - TCHE.globals.map.offsetY);
   };
   

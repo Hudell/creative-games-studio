@@ -13,7 +13,7 @@
     TCHE.FileManager.loadMapFiles(params.mapName);
   };
 
-  SceneMapLoading.update = function() {
+  SceneMapLoading.prototype.update = function() {
     TCHE.SceneLoading.prototype.update.call(this);
 
     if (TCHE.FileManager.isLoaded()) {

@@ -3,11 +3,12 @@
     this.initialize();
   }
 
-  SceneTitle.prototype = Object.create(TCHE.SceneWindow.prototype);
+  var parent = TCHE.SceneWindow;
+  SceneTitle.prototype = Object.create(parent.prototype);
   SceneTitle.prototype.constructor = SceneTitle;
 
   SceneTitle.prototype.initialize = function() {
-    TCHE.SceneWindow.prototype.initialize.call(this);
+    parent.prototype.initialize.call(this);
 
     this._windowSprite = new TCHE.WindowTitleChoices();
     this._windowSprite.x = Math.floor(TCHE.renderer.width / 2) - Math.floor(this._windowSprite.width / 2);
@@ -17,7 +18,7 @@
   };
 
   SceneTitle.prototype.update = function() {
-    TCHE.SceneWindow.prototype.update.call(this);
+    parent.prototype.update.call(this);
     this._windowSprite.update();
   };
   
