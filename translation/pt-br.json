@@ -404,5 +404,7 @@
   "Component" : "Componente",
   "Choose a Component" : "Escolha um Componente",
   "Offset X" : "Margem X",
-  "Offset Y" : "Margem Y"
+  "Offset Y" : "Margem Y",
+  "Show Toolbar on Playtest" : "Exibir barra de ferramentas ao testar o jogo",
+  "The toolbar will show features to help test the game, but can also make the game run slower." : "A barra de ferramentas mostrará opções para ajudar a testar o jogo, mas também pode fazer com que ele fique mais lento durante os testes."
 }
