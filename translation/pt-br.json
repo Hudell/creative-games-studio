@@ -399,5 +399,10 @@
   "Background" : "Fundo",
   "gravityEffects" : "Afetado por Gravidade",
   "Enable Gravity" : "Habilitar Gravidade",
-  "Check this if this is a platforming map." : "Marque esta opção se este for um mapa de plataforma."
+  "Check this if this is a platforming map." : "Marque esta opção se este for um mapa de plataforma.",
+  "Invalid Player Component" : "Componente do Jogador Inválido",
+  "Component" : "Componente",
+  "Choose a Component" : "Escolha um Componente",
+  "Offset X" : "Margem X",
+  "Offset Y" : "Margem Y"
 }

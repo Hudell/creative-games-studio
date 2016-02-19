@@ -240,8 +240,8 @@ STUDIO.Picker = {};
     });
   };
 
-  Picker.pickType = function(baseType, onPick) {
-    var types = STUDIO.ObjectManager.getFilteredObjectList(baseType);
+  Picker.pickType = function(baseType, onPick, excludingTypes) {
+    var types = STUDIO.ObjectManager.getFilteredObjectList(baseType, excludingTypes);
     var columns = [];
     var data = [];
     var keyColumn = 0;
@@ -281,7 +281,9 @@ STUDIO.Picker = {};
   };
 
   Picker.pickNumber = function(currentValue, label, onPick) {
-    Picker.openSimplePicker('number', t("Type a Number"), onPick, function(){
+    Picker.openSimplePicker('number', t("Type a Number"), function(value){
+      onPick(parseFloat(value));
+    }, function(){
       $('#picker-value').val(currentValue);
       $('#picker-label').html(label);
     });

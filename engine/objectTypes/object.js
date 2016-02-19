@@ -1,6 +1,6 @@
 (function(){
   function ObjectObjectType() {
-
+    this.initialize();
   }
 
   ObjectObjectType.prototype = Object.create(TCHE.ObjectType.prototype);

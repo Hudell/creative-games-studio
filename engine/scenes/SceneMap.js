@@ -9,13 +9,33 @@
   SceneMap.prototype.initialize = function(params) {
     TCHE.Scene.prototype.initialize.call(this);
 
-    TCHE.globals.player.x = Number(TCHE.data.game.player.x || 0);
-    TCHE.globals.player.y = Number(TCHE.data.game.player.y || 0);
-    TCHE.globals.player.width = Number(TCHE.data.game.player.width || 0);
-    TCHE.globals.player.height = Number(TCHE.data.game.player.height || 0);
-    TCHE.globals.player.xOffset = Number(TCHE.data.game.player.xOffset || 0);
-    TCHE.globals.player.yOffset = Number(TCHE.data.game.player.yOffset || 0);
-    TCHE.globals.player.sprite = TCHE.data.game.player.sprite;
+    var type = TCHE.data.game.player.type;
+    var typeData = new (TCHE.objectTypes[type])();
+    var properties = ['x', 'y', 'width', 'height', 'sprite'];
+
+    if (!!typeData) {
+      TCHE.globals.player.objectType = typeData;
+      properties = typeData.extractProperties(TCHE.data.game.player);
+    }
+
+    var obj = TCHE.data.game.player;
+    var objCharacter = TCHE.globals.player;
+
+    for (var key in properties) {
+      var value;
+      if (obj.hasOwnProperty(key)) {
+        value = obj[key];
+      } else {
+        value = (obj.properties || {})[key];
+      }
+
+      var propData = typeData.properties[key];
+      if (!!propData && propData.type == 'number') {
+        value = parseFloat(value) || 0;
+      }
+
+      objCharacter[key] = value;
+    }    
 
     TCHE.globals.map.loadMap(params.mapName);
 

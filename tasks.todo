@@ -29,9 +29,11 @@ Map Object Management:
     I still don't know how I'll handle this.
     Lists should specify what kind of item they expect
     Then I can create a screen with and add/remove button 
-  ☐ Add an option to block an object property (if a property is blocked, it can't be modified by child objects)
+  ✔ Add an option to block an object property (if a property is blocked, it can't be modified by child objects) @done (16-02-19 16:39) -- changed to hidden
   ☐ Add the "clone" blocked event to the MapObject property.
   ☐ Add the "Call event" command
+  ✔ Lock the events from the player class @done (16-02-19 16:24)
+  ✔ Show the player object on the map editor @done (16-02-19 16:39)
  
 
 Add a new option on the database: "Map Objects":

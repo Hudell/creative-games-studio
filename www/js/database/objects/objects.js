@@ -329,6 +329,23 @@ STUDIO.ObjectManager = {};
   };
 
   namespace.objectExtendsThis = function(objectName, thisName, objectList) {
+    //If the method received an object instead of a string, pick the name from the object
+    if (typeof(objectName) === 'object') {
+      if (!!objectName.name) {
+        objectName = objectName.name;
+      } else {
+        return false;
+      }
+    }
+    
+    if (typeof(thisName) !== 'object') {
+      if (!!thisName.name) {
+        thisName = thisName.name;
+      } else {
+        return false;
+      }
+    }
+
     if (objectName == thisName) {
       return true;
     }
@@ -390,6 +407,9 @@ STUDIO.ObjectManager = {};
       name : 'Player',
       inherits : 'MapObject',
       properties : {
+        // Hides those two events because they don't make sense for the player object
+        'On Activated' : { type : 'event', hidden : true },
+        'On Player Touch' : { type : 'event', hidden : true }
       }
     }, list);
   };
@@ -414,13 +434,25 @@ STUDIO.ObjectManager = {};
     return list;
   };
 
-  namespace.getFilteredObjectList = function(baseObjectName) {
+  namespace.getFilteredObjectList = function(baseObjectName, excludingTypes) {
     var objectList = namespace.getListOfObjects();
+    excludingTypes = excludingTypes || [];
     var newList = {};
 
     for (var key in objectList) {
       if (namespace.objectExtendsThis(key, baseObjectName, objectList)) {
-        newList[key] = objectList[key];
+        var canAdd = true;
+
+        for (var i = 0; i < excludingTypes.length; i++) {
+          if (namespace.objectExtendsThis(key, excludingTypes[i], objectList)) {
+            canAdd = false;
+            break;
+          }
+        }
+
+        if (canAdd) {
+          newList[key] = objectList[key];
+        }
       }
     }
 
@@ -463,9 +495,20 @@ STUDIO.ObjectManager = {};
     return keywords.indexOf(propName.toLowerCase()) >= 0;
   };
 
-  namespace.addObjectPropertiesToScreen = function(objectData, showObjectName) {
+  namespace.addObjectPropertiesToScreen = function(objectData, showObjectName, hiddenProperties) {
     var properties = objectData.properties || [];
+    hiddenProperties = hiddenProperties || [];
+
     for (var propertyName in properties) {
+      if (hiddenProperties.indexOf(propertyName) >= 0) continue;
+
+      var data = namespace.findPropertyData(objectData, propertyName);
+      if (!data) continue;
+      if (!!data.hidden) {
+        hiddenProperties.push(propertyName);
+        continue;
+      }
+
       var owner = namespace.findPropertyOwner(objectData, propertyName);
       var displayName = propertyName;
 
@@ -492,7 +535,7 @@ STUDIO.ObjectManager = {};
       var parentData = namespace.findObjectData(objectData.inherits);
 
       if (!!parentData) {
-        namespace.addObjectPropertiesToScreen(parentData, true);
+        namespace.addObjectPropertiesToScreen(parentData, true, hiddenProperties);
       }
     }
   };

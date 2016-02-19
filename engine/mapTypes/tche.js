@@ -64,10 +64,10 @@
     }
 
     var result;
-    var type = new (TCHE.objectTypes[type])();
+    var typeData = new (TCHE.objectTypes[type])();
 
-    result = type.extractProperties(obj);
-    result.type = type;
+    result = typeData.extractProperties(obj);
+    result.type = typeData;
     
     return result;
   };

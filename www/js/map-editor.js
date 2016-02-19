@@ -741,9 +741,14 @@ STUDIO.MapEditor = {};
 
     var list = el.find('.property-list');
 
-    list.append('<li><a href="#" class="property-link" data-property-name="ID">ID<span class="right">' + objectData.id + '</span></a></li>');
-    list.append('<li><a href="#" class="property-link" data-property-name="type">' + t("Type") + '<span class="right">' + objectData.type + '</span></a></li>');
-    list.append('<li><a href="#" class="property-link" data-property-name="name">' + t("Name") + '<span class="right">' + objectData.name + '</span></a></li>');
+    if (objectData == STUDIO.gameData.player) {
+      list.append('<li><a href="#" class="property-link" data-property-name="type">' + t("Type") + '<span class="right">' + objectData.type + '</span></a></li>');
+      list.append('<li><a href="#" class="property-link" data-property-name="name">' + t("Name") + '<span class="right">' + t("Player") + '</span></a></li>');
+    } else {
+      list.append('<li><a href="#" class="property-link" data-property-name="ID">ID<span class="right">' + objectData.id + '</span></a></li>');
+      list.append('<li><a href="#" class="property-link" data-property-name="type">' + t("Type") + '<span class="right">' + objectData.type + '</span></a></li>');
+      list.append('<li><a href="#" class="property-link" data-property-name="name">' + t("Name") + '<span class="right">' + objectData.name + '</span></a></li>');
+    }
 
     var properties = STUDIO.ObjectManager.findAllProperties(objectTypeData);
 
@@ -754,10 +759,12 @@ STUDIO.MapEditor = {};
       var prop = properties[propName];
       var type = prop.type;
 
+      if (!!prop.hidden) continue;
+
       var value = '';
       if (objectData[propName] !== undefined) {
         value = objectData[propName];
-      } else if (objectData.properties[propName] !== undefined) {
+      } else if (objectData.properties !== undefined && objectData.properties[propName] !== undefined) {
         value = objectData.properties[propName];
       } else {
         value = prop.value;
@@ -1151,7 +1158,7 @@ STUDIO.MapEditor = {};
           } else {
             $('#map-object-type-btn').html(t("Choose a Type"));
           }
-        });
+        }, ['Player']);
       });
     });
   };
@@ -2304,19 +2311,19 @@ STUDIO.MapEditor = {};
   namespace.renderEmptyObject = function(layerTexture, object, renderName, color, alpha, length, x, y) {
     var graphics = new PIXI.Graphics();
 
-    color = color || 0x0000AA;
+    color = color || 0xFF0000;
     alpha = alpha || 1;
     length = length || 2;
 
     if (x === undefined) {
-      x = object.x;
+      x = Number(object.x);
     }
     if (y === undefined) {
-      y = object.y;
+      y = Number(object.y);
     }
 
-    var width = object.width || namespace._currentMapData.tilewidth;
-    var height = object.height || namespace._currentMapData.tileheight;
+    var width = Number(object.width || namespace._currentMapData.tilewidth);
+    var height = Number(object.height || namespace._currentMapData.tileheight);
 
     graphics.beginFill(color, alpha);
     graphics.drawRect(x, y, width, length);
@@ -2386,7 +2393,7 @@ STUDIO.MapEditor = {};
     }
 
     //Render an empty object without the name to indicate the hitbox
-    namespace.renderEmptyObject(layerTexture, object, false, 0xFF0000);
+    namespace.renderEmptyObject(layerTexture, object, false);
 
     try {
       var spriteData = STUDIO.gameData.sprites[object.properties.sprite];
@@ -2396,10 +2403,8 @@ STUDIO.MapEditor = {};
       var offsetX = namespace.getObjectPropertyValue(object, 'xOffset', 0);
       var offsetY = namespace.getObjectPropertyValue(object, 'yOffset', 0);
 
-      sprite.x = object.x + offsetX;
-      sprite.y = object.y + offsetY;
-      // sprite.width = object.width;
-      // sprite.height = object.height;
+      sprite.x = Number(object.x) + Number(offsetX);
+      sprite.y = Number(object.y) + Number(offsetY);
 
       var container = new PIXI.Container();
       container.addChild(sprite);
@@ -2426,6 +2431,10 @@ STUDIO.MapEditor = {};
 
     for (var i = 0; i < layerData.objects.length; i++) {
       namespace.renderObject(layerTexture, layerData.objects[i]);
+    }
+
+    if (namespace._currentMapName == STUDIO.gameData.initialMap) {
+      namespace.renderObject(layerTexture, STUDIO.gameData.player);
     }
   };
 
@@ -2989,24 +2998,35 @@ STUDIO.MapEditor = {};
     }
   };
 
+  namespace.isObjectAt = function(object, x, y) {
+    var objX = Number(object.x);
+    var objY = Number(object.y);
+
+    if (objX > x) return false;
+    if (objY > y) return false;
+
+    var width = Number(object.width);
+    var height = Number(object.height);
+
+    if (objX + width < x) return false;
+    if (objY + height < y) return false;
+
+    return true;
+  };
+
   namespace.getObjectAt = function(layer, x, y) {
+    if (namespace.isObjectAt(STUDIO.gameData.player, x, y)) {
+      return STUDIO.gameData.player;
+    }
+
     var objects = layer.objects;
 
     for (var i = 0; i < objects.length; i++) {
       var object = objects[i];
-      var objX = object.x;
-      var objY = object.y;
 
-      if (objX > x) continue;
-      if (objY > y) continue;
-
-      var width = object.width;
-      var height = object.height;
-
-      if (objX + width < x) continue;
-      if (objY + height < y) continue;
-
-      return object;
+      if (namespace.isObjectAt(object, x, y)) {
+        return object;
+      }
     }
 
     return false;

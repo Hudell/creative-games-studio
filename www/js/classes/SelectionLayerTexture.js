@@ -52,14 +52,14 @@ SelectionLayerTexture.prototype.refreshSelection = function() {
       newX = Math.floor(newX / (fakeSize.userWidth)) * fakeSize.userWidth;
       newY = Math.floor(newY / (fakeSize.userHeight)) * fakeSize.userHeight;
 
-      STUDIO.MapEditor.renderEmptyObject(this, STUDIO.MapEditor._currentObject, false, 0xFF00FF, 1, 3, newX, newY);
+      STUDIO.MapEditor.renderEmptyObject(this, STUDIO.MapEditor._currentObject, false, 0x00FF00, 1, 4, newX, newY);
       this.hasAnySprite = true;
       return;
     } else {
       //If there's an object under the mouse, highlight it
       var object = STUDIO.MapEditor.getObjectAt(layer, x, y);
       if (!!object) {
-        STUDIO.MapEditor.renderEmptyObject(this, object, false, 0x00FF00, 1, 4);
+        STUDIO.MapEditor.renderEmptyObject(this, object, false, 0x0000FF, 1, 4);
       }
     }
   }

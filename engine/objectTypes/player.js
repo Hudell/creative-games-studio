@@ -1,6 +1,6 @@
 (function(){
   function PlayerObjectType() {
-
+    this.initialize();
   }
 
   PlayerObjectType.prototype = Object.create(TCHE.objectTypes.MapObject.prototype);

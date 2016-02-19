@@ -15,7 +15,23 @@
     STUDIO.DatabaseManager.openDatabaseWindow();
   };
 
+  STUDIO.validatePlayerType = function() {
+    var type = $('#settings-player-component').val();
+
+    var data = STUDIO.ObjectManager.findObjectData(type);
+    if (!data) {
+      throw new Error(t("Invalid Player Component"));
+    }
+
+    if (data.name !== 'Player' && !STUDIO.ObjectManager.objectExtendsThis(data, 'Player')) {
+      throw new Error(t("Invalid Player Component"));
+    }
+  };
+
   STUDIO.savePlayerSettings = function(){
+    STUDIO.validatePlayerType();
+
+    STUDIO.gameData.player.type = $('#settings-player-component').val();
     STUDIO.gameData.player.sprite = $('#settings-player-sprite').val();
     STUDIO.gameData.player.x = $('#settings-player-x').val();
     STUDIO.gameData.player.y = $('#settings-player-y').val();
@@ -40,6 +56,15 @@
   };
 
   STUDIO.loadPlayerSettings = function(){
+    $('#settings-player-component').val(STUDIO.gameData.player.type);
+    if (!!STUDIO.gameData.player.type) {
+      $('#settings-player-component-btn').html(STUDIO.gameData.player.type);
+    } else {
+      $('#settings-player-component-btn').html(t("Choose a Component"));
+    }
+    //Makes sure the loaded value is not translated.
+    $('#settings-player-component-btn').removeClass('translation-span');
+
     $('#settings-player-sprite').val(STUDIO.gameData.player.sprite);
     $('#settings-player-x').val(STUDIO.gameData.player.x);
     $('#settings-player-y').val(STUDIO.gameData.player.y);

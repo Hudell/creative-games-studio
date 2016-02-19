@@ -768,14 +768,14 @@ var STUDIO = {};
   };
 
   STUDIO.buildTcheFile = function(destinationPath) {
-    var files = STUDIO.gameData.tcheScripts;
+    var files = STUDIO.tcheScripts;
     
     STUDIO.buildJSFile(files, destinationPath);
   };
 
   STUDIO.buildDebugFile = function(destinationFolder) {
     var html = '<!doctype html><html lang="en"><head><meta charset="utf-8"></head><body style="margin: 0; overflow: hidden">';
-    var files = STUDIO.gameData.tcheScripts;
+    var files = STUDIO.tcheScripts;
     
     function copyFile(filePath) {
       STUDIO.copyFileSync(path.join('engine', filePath), path.join(destinationFolder, 'engine', filePath));
@@ -796,7 +796,7 @@ var STUDIO = {};
   };
 
   STUDIO.registerAllEngineScripts = function() {
-    STUDIO.gameData.tcheScripts = {};
+    STUDIO.tcheScripts = {};
 
     //Pollyfills
     STUDIO.registerEngineScript('Array.find', 'pollyfills/Array.find.js');
@@ -881,14 +881,13 @@ var STUDIO = {};
     STUDIO.registerEngineScript('Title Scene', 'scenes/SceneTitle.js');
 
     //Globals
-
     STUDIO.registerEngineScript('Map', 'globals/Map.js');
     STUDIO.registerEngineScript('Player', 'globals/Player.js');
   };
 
   STUDIO.registerEngineScript = function(scriptName, scriptPath) {
-    if (STUDIO.gameData.tcheScripts[scriptName] === undefined) {
-      STUDIO.gameData.tcheScripts[scriptName] = scriptPath;
+    if (STUDIO.tcheScripts[scriptName] === undefined) {
+      STUDIO.tcheScripts[scriptName] = scriptPath;
     }
   };
 
@@ -921,6 +920,10 @@ var STUDIO = {};
     if (!STUDIO.gameData.player) {
       STUDIO.gameData.player = {};
     }
+    if (!STUDIO.gameData.player.type) {
+      STUDIO.gameData.player.type = 'Player';
+    }
+
     if (!STUDIO.gameData.sounds) {
       STUDIO.gameData.sounds = {};
     }
@@ -994,18 +997,12 @@ var STUDIO = {};
       STUDIO.gameData._lastMapName = '';
     }
 
-    if (!STUDIO.gameData.tcheScripts) {
-      STUDIO.gameData.tcheScripts = {};
-    }
-
     if (!STUDIO.gameData.scripts) {
       STUDIO.gameData.scripts = {};
     };
 
     STUDIO.registerEngineScene('SceneMap');
     STUDIO.registerEngineScene('SceneTitle');
-
-    STUDIO.registerAllEngineScripts();
 
     if (!STUDIO.gameData.gameScenes) {
       STUDIO.gameData.gameScenes = [];
@@ -1155,6 +1152,8 @@ var STUDIO = {};
     STUDIO.DatabaseManager.attachEvents();
 
     STUDIO.loadSettings();
+    STUDIO.registerAllEngineScripts();
+
     if (!!STUDIO.settings.folder) {
       STUDIO.loadProject(STUDIO.settings.folder);
     } else {
