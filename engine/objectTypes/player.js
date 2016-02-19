@@ -3,7 +3,7 @@
 
   }
 
-  PlayerObjectType.prototype = Object.create(TCHE.objectTypes.Creature.prototype);
+  PlayerObjectType.prototype = Object.create(TCHE.objectTypes.MapObject.prototype);
   PlayerObjectType.prototype.constructor = PlayerObjectType;
 
   PlayerObjectType.prototype.getName = function() {

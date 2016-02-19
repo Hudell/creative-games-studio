@@ -13,8 +13,8 @@
     TCHE.globals.player.y = Number(TCHE.data.game.player.y || 0);
     TCHE.globals.player.width = Number(TCHE.data.game.player.width || 0);
     TCHE.globals.player.height = Number(TCHE.data.game.player.height || 0);
-    TCHE.globals.player.offsetX = Number(TCHE.data.game.player.offsetX || 0);
-    TCHE.globals.player.offsetY = Number(TCHE.data.game.player.offsetY || 0);
+    TCHE.globals.player.xOffset = Number(TCHE.data.game.player.xOffset || 0);
+    TCHE.globals.player.yOffset = Number(TCHE.data.game.player.yOffset || 0);
     TCHE.globals.player.sprite = TCHE.data.game.player.sprite;
 
     TCHE.globals.map.loadMap(params.mapName);

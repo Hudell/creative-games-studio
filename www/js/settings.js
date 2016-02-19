@@ -19,8 +19,8 @@
     STUDIO.gameData.player.sprite = $('#settings-player-sprite').val();
     STUDIO.gameData.player.x = $('#settings-player-x').val();
     STUDIO.gameData.player.y = $('#settings-player-y').val();
-    STUDIO.gameData.player.offsetX = $('#settings-player-hitbox-x').val();
-    STUDIO.gameData.player.offsetY = $('#settings-player-hitbox-y').val();
+    STUDIO.gameData.player.xOffset = $('#settings-player-hitbox-x').val();
+    STUDIO.gameData.player.yOffset = $('#settings-player-hitbox-y').val();
     STUDIO.gameData.player.width = $('#settings-player-hitbox-width').val();
     STUDIO.gameData.player.height = $('#settings-player-hitbox-height').val();
 
@@ -43,8 +43,8 @@
     $('#settings-player-sprite').val(STUDIO.gameData.player.sprite);
     $('#settings-player-x').val(STUDIO.gameData.player.x);
     $('#settings-player-y').val(STUDIO.gameData.player.y);
-    $('#settings-player-hitbox-x').val(STUDIO.gameData.player.offsetX);
-    $('#settings-player-hitbox-y').val(STUDIO.gameData.player.offsetY);
+    $('#settings-player-hitbox-x').val(STUDIO.gameData.player.xOffset);
+    $('#settings-player-hitbox-y').val(STUDIO.gameData.player.yOffset);
     $('#settings-player-hitbox-width').val(STUDIO.gameData.player.width);
     $('#settings-player-hitbox-height').val(STUDIO.gameData.player.height);
   };

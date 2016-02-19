@@ -1,7 +1,11 @@
 (function(){
   function ObjectType() {
-    this._properties = {};
+    this.initialize();
   }
+
+  ObjectType.prototype.initialize = function() {
+    this._properties = {};
+  };
 
   ObjectType.prototype.getName = function(){
     return '';

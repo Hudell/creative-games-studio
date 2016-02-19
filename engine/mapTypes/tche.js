@@ -57,19 +57,19 @@
   };
 
   TcheMapType.getImportantObjectData = function(mapData, obj) {
-    return {
-      x : Math.round(obj.x),
-      y : Math.round(obj.y),
-      width : Math.round(obj.width),
-      height : Math.round(obj.height),
-      sprite : obj.properties.sprite || '',
-      class : obj.properties.class || undefined,
-      objectType : obj.properties.objectType || '',
-      offsetX : Number(obj.properties.offsetX) || 0,
-      offsetY : Number(obj.properties.offsetY) || 0,
-      ghost : !!obj.properties.ghost && obj.properties.ghost != "false" && obj.properties.ghost !== "0",
-      layerName : obj.layerName
-    };
+    var type = obj.type;
+
+    if (!TCHE.objectTypes[type]) {
+      return false;
+    }
+
+    var result;
+    var type = new (TCHE.objectTypes[type])();
+
+    result = type.extractProperties(obj);
+    result.type = type;
+    
+    return result;
   };
 
   TCHE.mapTypes.tche = TcheMapType;

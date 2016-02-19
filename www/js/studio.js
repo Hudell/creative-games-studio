@@ -837,8 +837,6 @@ var STUDIO = {};
     //Object Types
     STUDIO.registerEngineScript('Object Type - Object', 'objectTypes/object.js');
     STUDIO.registerEngineScript('Object Type - Map Object', 'objectTypes/mapObject.js');
-    STUDIO.registerEngineScript('Object Type - Creature', 'objectTypes/creature.js');
-    STUDIO.registerEngineScript('Object Type - NPC', 'objectTypes/npc.js');
     STUDIO.registerEngineScript('Object Type - Player', 'objectTypes/player.js');
 
     //Sprites

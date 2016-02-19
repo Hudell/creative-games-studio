@@ -7,6 +7,7 @@
   Player.prototype.constructor = Player;
 
   Player.prototype.initialize = function() {
+    TCHE.Character.prototype.initialize.call(this);
   };
 
   Player.prototype.update = function() {
@@ -26,8 +27,8 @@
   };
 
   Player.prototype.teleport = function(mapName, x, y) {
-    TCHE.data.game.player.x = x;
-    TCHE.data.game.player.y = y;
+    TCHE.data.game.player.x = x - TCHE.data.game.player.xOffset;
+    TCHE.data.game.player.y = y - TCHE.data.game.player.yOffset;
 
     this.clearDestination();
     TCHE.globals.map.changeMap(mapName);

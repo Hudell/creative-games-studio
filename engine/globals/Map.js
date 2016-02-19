@@ -73,8 +73,8 @@
     var middleY = Math.floor(TCHE.renderer.height / 2);
     var mapMiddleX = Math.floor(this.width / 2);
     var mapMiddleY = Math.floor(this.height / 2);
-    var playerX = TCHE.globals.player.x;
-    var playerY = TCHE.globals.player.y;
+    var playerX = TCHE.globals.player.hitboxLeftX;
+    var playerY = TCHE.globals.player.hitboxTopY;
 
     if (diffX < 0) {
       this._offsetX = Math.abs(Math.floor(diffX / 2));
@@ -137,17 +137,25 @@
     shouldCreateCollisionMap = true;
   };
 
-  Map.prototype.addCharacterToCollisionMap = function(character) {
-    for (var x = character.x; x < character.rightX; x++) {
-      for (var y = character.y; y < character.bottomY; y++) {
-        if (this._collisionMap.length < x || !this._collisionMap[x]) {
-          this._collisionMap[x] = {};
+  Map.prototype.updateObjects = function() {
+    this._objects.forEach(function(object){
+      object.update();
+    });
+  };
+
+  Map.prototype.addCharacterToCollisionMap = function(character, map) {
+    map = map || this._collisionMap;
+
+    for (var x = character.hitboxLeftX; x < character.hitboxRightX; x++) {
+      for (var y = character.hitboxTopY; y < character.hitboxBottomY; y++) {
+        if (map.length < x || !map[x]) {
+          map[x] = {};
         }
-        if (this._collisionMap[x].length < y || !this._collisionMap[x][y]) {
-          this._collisionMap[x][y] = [];
+        if (map[x].length < y || !map[x][y]) {
+          map[x][y] = [];
         }
 
-        this._collisionMap[x][y].push(character);
+        map[x][y].push(character);
       }
     }
   };
@@ -177,6 +185,7 @@
       shouldCreateCollisionMap = true;
     }
 
+    this.updateObjects();
     this.updateOffset();
   };
 
@@ -189,24 +198,28 @@
     return true;
   };
 
-  Map.prototype.validateCollision = function(x, y) {
-    if (x > this.collisionMap.length) return false;
-    if (!this.collisionMap[x]) return false;
-    if (y > this.collisionMap[x].length) return false;
-    if (!this.collisionMap[x][y]) return false;
+  Map.prototype.validateCollision = function(x, y, map) {
+    map = map || this.collisionMap;
+
+    if (x > map.length) return false;
+    if (!map[x]) return false;
+    if (y > map[x].length) return false;
+    if (!map[x][y]) return false;
     return true;
   };
 
-  Map.prototype.isCollided = function(x, y, character, triggerEvents) {
+  Map.prototype.isCollided = function(x, y, character, triggerEvents, map) {
+    map = map || this.collisionMap;
+
     if (triggerEvents === undefined) {
       triggerEvents = false;
     }
 
-    if (this.validateCollision(x, y) !== true) {
+    if (this.validateCollision(x, y, map) !== true) {
       return false;
     }
 
-    var blockingCharacter = this.collisionMap[x][y].find(function(item){
+    var blockingCharacter = map[x][y].find(function(item){
       return item != character && !item.ghost;
     });
 
@@ -234,15 +247,36 @@
     return blockingCharacters;
   };
 
-  Map.prototype.canMoveLeft = function(character, triggerEvents) {
+  Map.prototype.canMoveLeftAt = function(character, triggerEvents, map, xPos, yPos) {
     if (triggerEvents === undefined) {
       triggerEvents = false;
     }
-    for (var y = character.y; y < character.bottomY; y++) {
-      if (!this.isValid(character.x - character.stepSize, y)) return false;
+    for (var y = yPos; y < (yPos + character.height); y++) {
+      if (!this.isValid(xPos - character.stepSize, y)) return false;
 
       for (var i = character.stepSize; i > 0; i--) {
-        if (this.isCollided(character.x - i, y, character, triggerEvents)) {
+        if (this.isCollided(xPos - i, y, character, triggerEvents, map)) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  };
+
+  Map.prototype.canMoveLeft = function(character, triggerEvents) {
+    return this.canMoveLeftAt(character, triggerEvents, this.collisionMap, character.x, character.y);
+  };
+
+  Map.prototype.canMoveRightAt = function(character, triggerEvents, map, xPos, yPos) {
+    if (triggerEvents === undefined) {
+      triggerEvents = false;
+    }
+    for (var y = yPos; y < (yPos + character.height); y++) {
+      if (!this.isValid(xPos + character.width + character.stepSize, y)) return false;
+
+      for (var i = character.stepSize; i > 0; i--) {
+        if (this.isCollided(xPos + character.width + i, y, character, triggerEvents, map)) {
           return false;
         }
       }
@@ -252,14 +286,18 @@
   };
 
   Map.prototype.canMoveRight = function(character, triggerEvents) {
+    return this.canMoveRightAt(character, triggerEvents, this.collisionMap, character.x, character.y);
+  };
+
+  Map.prototype.canMoveUpAt = function(character, triggerEvents, map, xPos, yPos) {
     if (triggerEvents === undefined) {
       triggerEvents = false;
     }
-    for (var y = character.y; y < character.bottomY; y++) {
-      if (!this.isValid(character.rightX + character.stepSize, y)) return false;
+    for (var x = xPos; x < (xPos + character.width); x++) {
+      if (!this.isValid(x, yPos - character.stepSize)) return false;
 
       for (var i = character.stepSize; i > 0; i--) {
-        if (this.isCollided(character.rightX + i, y, character, triggerEvents)) {
+        if (this.isCollided(x, yPos - i, character, triggerEvents, map)) {
           return false;
         }
       }
@@ -269,14 +307,18 @@
   };
 
   Map.prototype.canMoveUp = function(character, triggerEvents) {
+    return this.canMoveUpAt(character, triggerEvents, this.collisionMap, character.x, character.y);
+  };
+
+  Map.prototype.canMoveDownAt = function(character, triggerEvents, map, xPos, yPos) {
     if (triggerEvents === undefined) {
       triggerEvents = false;
     }
-    for (var x = character.x; x < character.rightX; x++) {
-      if (!this.isValid(x, character.y - character.stepSize)) return false;
+    for (var x = xPos; x < (xPos + character.width); x++) {
+      if (!this.isValid(x, yPos + character.height + character.stepSize)) return false;
 
       for (var i = character.stepSize; i > 0; i--) {
-        if (this.isCollided(x, character.y - i, character, triggerEvents)) {
+        if (this.isCollided(x, yPos + character.height + i, character, triggerEvents, map)) {
           return false;
         }
       }
@@ -286,20 +328,7 @@
   };
 
   Map.prototype.canMoveDown = function(character, triggerEvents) {
-    if (triggerEvents === undefined) {
-      triggerEvents = false;
-    }
-    for (var x = character.x; x < character.rightX; x++) {
-      if (!this.isValid(x, character.bottomY + character.stepSize)) return false;
-
-      for (var i = character.stepSize; i > 0; i--) {
-        if (this.isCollided(x, character.bottomY + i, character, triggerEvents)) {
-          return false;
-        }
-      }
-    }
-
-    return true;
+    return this.canMoveDownAt(character, triggerEvents, this.collisionMap, character.x, character.y);
   };
 
   Map.prototype.reasonNotToMoveUp = function(character) {

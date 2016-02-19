@@ -1,5 +1,9 @@
 (function(){
   function Character() {
+    this.initialize();
+  }
+
+  Character.prototype.initialize = function() {
     this._x = null;
     this._y = null;
     this._xDest = null;
@@ -21,7 +25,9 @@
     this._xOffset = 0;
     this._yOffset = 0;
     this._ghost = false;
-  }
+    this._gravityEffects = false;
+    this._gravityStrength = 20;
+  };
 
   Character.prototype.setX = function(value) {
     this._x = Math.round(value);
@@ -55,6 +61,8 @@
   TCHE.accessor(Character.prototype, 'xOffset');
   TCHE.accessor(Character.prototype, 'yOffset');
   TCHE.accessor(Character.prototype, 'ghost');
+  TCHE.accessor(Character.prototype, 'gravityEffects');
+  TCHE.accessor(Character.prototype, 'gravityStrength');
 
   Character.prototype.setSprite = function(value) {
     this._sprite = value;
@@ -90,11 +98,36 @@
   };
   TCHE.reader(Character.prototype, 'bottomY', Character.prototype.getBottomY);
 
+  Character.prototype.getHitboxLeftX = function(){
+    return this.x + this.xOffset;
+  };
+  Character.prototype.getHitboxRightX = function(){
+    return this.rightX + this.xOffset;
+  };
+  Character.prototype.getHitboxTopY = function(){
+    return this.y + this.yOffset;
+  };
+  Character.prototype.getHitboxBottomY = function(){
+    return this.bottomY + this.yOffset;
+  };
+
+  TCHE.reader(Character.prototype, 'hitboxLeftX', Character.prototype.getHitboxLeftX);
+  TCHE.reader(Character.prototype, 'hitboxRightX', Character.prototype.getHitboxRightX);
+  TCHE.reader(Character.prototype, 'hitboxTopY', Character.prototype.getHitboxTopY);
+  TCHE.reader(Character.prototype, 'hitboxBottomY', Character.prototype.getHitboxBottomY);
+
   Character.prototype.getStepSize = function(){
     return 4;
   };
 
   TCHE.reader(Character.prototype, 'stepSize', Character.prototype.getStepSize);
+
+
+  Character.prototype.getCollisionMap = function() {
+    return TCHE.globals.map.collisionMap;
+  };
+
+  TCHE.reader(Character.prototype, 'collisionMap', Character.prototype.getCollisionMap);
 
   Character.prototype.getDirectionToDest = function(){
     var directions = [];
@@ -138,6 +171,7 @@
     this._frameInitialX = this.x;
     this._frameInitialY = this.y;
 
+    this.applyGravity();
     this.respondToMouseMovement();
     this.updateAnimation();
   };
@@ -292,6 +326,72 @@
     if (this._lastBlockedByCharacter !== character) {
       this._lastBlockedByCharacter = character;
       this.fire('blockedBy', character);
+    }
+  };
+
+  Character.prototype.getAvailableDistance = function(direction, max) {
+    var map = TCHE.globals.map;
+    
+    if (max === undefined) {
+      max = map.height;
+    }
+
+    if (!!this.ghost) {
+      return max;
+    }
+
+    var collisionMap = this.collisionMap;
+
+    var x = this.x;
+    var y = this.y;
+
+    var distance = 0;
+    var speedX = 0;
+    var speedY = 0;
+
+    var method;
+
+    switch(direction) {
+      case 'left' :
+        method = map.canMoveLeftAt;
+        speedX = -1;
+        break;
+      case 'right' :
+        method = map.canMoveRightAt;
+        speedX = 1;
+        break;
+      case 'up' :
+        method = map.canMoveUpAt;
+        speedY = -1;
+        break;
+      case 'down' :
+        method = map.canMoveDownAt;
+        speedY = 1;
+        break;
+      default :
+        return 0;
+    }
+
+    while (distance < max) {
+      if (method.call(map, this, false, collisionMap, x, y)) {
+        x += speedX;
+        y += speedY;
+        distance++;
+      } else {
+        break;
+      }
+    }
+
+    return distance;
+  };
+
+  Character.prototype.applyGravity = function() {
+    if (!this.gravityEffects) return;
+
+    var distance = this.getAvailableDistance('down', this.gravityStrength);
+
+    if (distance > 0) {
+      this.y += distance;
     }
   };
   

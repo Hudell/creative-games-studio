@@ -93,7 +93,9 @@
 
   SpriteManager.updateAnimationStep = function(character) {
     var data = this.getSpriteData(character.sprite);
-    this.getSpriteType(data).updateAnimationStep(character);
+    if (!!data) {
+      this.getSpriteType(data).updateAnimationStep(character);
+    }
   };
   
   TCHE.registerStaticClass('SpriteManager', SpriteManager);

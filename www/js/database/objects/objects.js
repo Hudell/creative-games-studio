@@ -371,11 +371,11 @@ STUDIO.ObjectManager = {};
         'width' : { type : 'number' },
         'height' : { type : 'number' },
         'autosize' : { type : 'boolean' },
+        'gravityEffects' : { type : 'boolean' },
         'ghost' : { type : 'boolean' },
         'sprite' : { type : 'sprite' },
         'xOffset' : { type : 'number' },
         'yOffset' : { type : 'number' },
-        'gravityEffects' : { type : 'boolean' },
         'On Activated' : { type : 'event' },
         'On Player Touch' : { type : 'event' },
         'On Mouse Click' : { type : 'event' },
@@ -385,27 +385,10 @@ STUDIO.ObjectManager = {};
     }, list);
   };
 
-  namespace.addBasicTcheCreatureToObjectList = function(list) {
-    namespace.addTcheObjectToObjectList({
-      name : 'Creature',
-      inherits : 'MapObject',
-      properties : {
-      }
-    }, list);
-  };
-
-  namespace.addBasicTcheNPCToObjectList = function(list) {
-    namespace.addTcheObjectToObjectList({
-      name : 'NPC',
-      inherits : 'Creature',
-      properties : {}
-    }, list);
-  };
-
   namespace.addBasicPlayerToObjectList = function(list) {
     namespace.addTcheObjectToObjectList({
       name : 'Player',
-      inherits : 'Creature',
+      inherits : 'MapObject',
       properties : {
       }
     }, list);
@@ -416,8 +399,6 @@ STUDIO.ObjectManager = {};
 
     namespace.addBasicTcheObjectToObjectList(list);
     namespace.addBasicTcheMapObjectToObjectList(list);
-    namespace.addBasicTcheCreatureToObjectList(list);
-    namespace.addBasicTcheNPCToObjectList(list);
     namespace.addBasicPlayerToObjectList(list);
 
     return list;
@@ -477,7 +458,7 @@ STUDIO.ObjectManager = {};
 
   //Check if propName is one of the default tiled object properties (the ones that don't go inside the properties list)
   namespace.isDefaultTiledObjectProperty = function(propName) {
-    var keywords = ["type", "name", "properties", "id", "x", "y", "width", "height", "rotation", "visible"];
+    var keywords = ["type", "name", "properties", "id", "x", "y", "width", "height", "rotation", "visible", "layerName"];
 
     return keywords.indexOf(propName.toLowerCase()) >= 0;
   };
