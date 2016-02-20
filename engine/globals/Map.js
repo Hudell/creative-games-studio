@@ -1,21 +1,35 @@
 (function(){
-  var collisionMapDirty = true;
-  var shouldCreateCollisionMap = true;
+  var areaTiles = 10;
 
   function Map() {
+    this.initialize();
+  }
+
+  Map.prototype.initialize = function() {
     this._mapData = {};
     this._objects = [];
-    this._collisionMap = [];
     this._mapName = null;
     this._offsetX = 0;
     this._offsetY = 0;
-  }
+
+    this._areas = [];
+    this._areaWidth = 0;
+    this._areaHeight = 0;
+    this._areaColumns = 0;
+    this._areaLines = 0;
+  };
 
   TCHE.reader(Map.prototype, 'mapName');
+  TCHE.reader(Map.prototype, 'areas');
+  TCHE.reader(Map.prototype, 'areaWidth');
+  TCHE.reader(Map.prototype, 'areaHeight');
+  TCHE.reader(Map.prototype, 'areaColumns');
+  TCHE.reader(Map.prototype, 'areaLines');
 
   Map.prototype.setMapData = function(value) {
     this._mapData = value;
     this._objects = [];
+    this.createAreas();
     this.createObjects();
   };
 
@@ -35,20 +49,6 @@
   TCHE.accessor(Map.prototype, 'offsetX');
   TCHE.accessor(Map.prototype, 'offsetY');
   TCHE.reader(Map.prototype, 'objects');
-
-  Map.prototype.getCollisionMap = function() {
-    if (shouldCreateCollisionMap) {
-      this.createCollisionMap();
-    }
-
-    return this._collisionMap;
-  };
-
-  TCHE.reader(Map.prototype, 'collisionMap', Map.prototype.getCollisionMap);
-
-  Map.prototype.requestCollisionMapRefresh = function() {
-    collisionMapDirty = true;
-  };
 
   Map.prototype.getImportantObjectData = function(mapData, obj) {
     var data = TCHE.MapManager.getImportantObjectData(mapData, obj);
@@ -109,6 +109,77 @@
     }
   };
 
+  Map.prototype.createAreas = function() {
+    var xAreas = Math.ceil(this._mapData.width / areaTiles);
+    var yAreas = Math.ceil(this._mapData.height / areaTiles);
+    var total = xAreas * yAreas;
+
+    this._areaColumns = xAreas;
+    this._areaLines = yAreas;
+    this._areas.length = total;
+    this._areaWidth = areaTiles * this._mapData.tilewidth;
+    this._areaHeight = areaTiles * this._mapData.tileheight;
+
+    for (var i = 0; i < total; i++) {
+      this._areas[i] = [];
+    }
+
+    TCHE.globals.player.updateAreas();
+  };
+
+  Map.prototype.removeObjectFromArea = function(object, areaId) {
+    if (!this._areas[areaId]) {
+      console.log('Invalid area: ', areaId);
+      return;
+    }
+
+    while (true) {
+      var index = this._areas[areaId].indexOf(object);
+      if (index >= 0) {
+        this._areas[areaId].splice(index, 1);
+      } else {
+        break;
+      }
+    }
+  };
+
+  Map.prototype.addObjectToArea = function(object, areaId) {
+    if (!this._areas[areaId]) {
+      console.log('Invalid area: ', areaId);
+      return;
+    }
+
+    if (this._areas[areaId].indexOf(object) < 0) {
+      this._areas[areaId].push(object);
+    }
+  };
+
+  Map.prototype.getOrganizedAreas = function() {
+    var organized = {};
+    var count = 0;
+    for (var i = 0; i < TCHE.globals.map.areaLines; i++) {
+      organized[i] = [];
+    }
+
+    for (var j = 0; j < TCHE.globals.map.areas.length; j++) {
+      var idx = Math.floor(j / TCHE.globals.map.areaColumns);
+      var newList = [];
+
+      for (var k = 0; k < TCHE.globals.map.areas[j].length; k++){
+        var name = TCHE.globals.map.areas[j][k].name;
+
+        if (name === undefined) {
+          name = TCHE.globals.map.areas[j][k].constructor.name;
+        }
+
+        newList.push(name);
+      }
+
+      organized[idx].push(newList.join(','));
+    }
+    return organized;
+  };
+
   Map.prototype.createObjects = function() {
     var objectList = [];
     var map = this;
@@ -132,9 +203,6 @@
 
       this._objects.push(objCharacter);
     }.bind(this));
-
-    collisionMapDirty = true;
-    shouldCreateCollisionMap = true;
   };
 
   Map.prototype.updateObjects = function() {
@@ -143,48 +211,11 @@
     });
   };
 
-  Map.prototype.addCharacterToCollisionMap = function(character, map) {
-    map = map || this._collisionMap;
-
-    for (var x = character.hitboxLeftX; x < character.hitboxRightX; x++) {
-      for (var y = character.hitboxTopY; y < character.hitboxBottomY; y++) {
-        if (map.length < x || !map[x]) {
-          map[x] = {};
-        }
-        if (map[x].length < y || !map[x][y]) {
-          map[x][y] = [];
-        }
-
-        map[x][y].push(character);
-      }
-    }
-  };
-
   Map.prototype.getMapObjects = function() {
     return TCHE.MapManager.getMapObjects(this._mapData);
   };
 
-  // Go over all objects to form a list of blocked pixels
-  Map.prototype.createCollisionMap = function() {
-    this._collisionMap = {};
-
-    for (var i = 0; i < this._objects.length; i++) {
-      var obj = this._objects[i];
-
-      this.addCharacterToCollisionMap(obj);
-    }
-
-    //The player is not added to the collision map, collisions with it should be tested directly
-    // this.addCharacterToCollisionMap(TCHE.globals.player);
-    collisionMapDirty = false;
-    shouldCreateCollisionMap = false;
-  };
-
   Map.prototype.update = function() {
-    if (collisionMapDirty) {
-      shouldCreateCollisionMap = true;
-    }
-
     this.updateObjects();
     this.updateOffset();
   };
@@ -198,237 +229,141 @@
     return true;
   };
 
-  Map.prototype.validateCollision = function(x, y, map) {
-    map = map || this.collisionMap;
+  Map.prototype.wouldObjectsCollideAt = function(character, object, x, y) {
+    if (character == object) return false;
+    if (object.hitboxRightX <= x) return false;
+    if (object.hitboxBottomY <= y) return false;
+    if (object.hitboxLeftX >= x + character.width) return false;
+    if (object.hitboxTopY >= y + character.height) return false;
 
-    if (x > map.length) return false;
-    if (!map[x]) return false;
-    if (y > map[x].length) return false;
-    if (!map[x][y]) return false;
     return true;
   };
 
-  Map.prototype.isCollided = function(x, y, character, triggerEvents, map) {
-    map = map || this.collisionMap;
-
-    if (triggerEvents === undefined) {
-      triggerEvents = false;
-    }
-
-    if (this.validateCollision(x, y, map) !== true) {
+  Map.prototype.validateCollisionOnArea = function(areaId, character, x, y) {
+    var objects = this._areas[areaId];
+    if (!objects) {
+      console.log('Invalid Area');
       return false;
     }
 
-    var blockingCharacter = map[x][y].find(function(item){
-      return item != character && !item.ghost;
-    });
-
-    if (blockingCharacter === undefined) {
-      return false;
+    for (var i = 0; i < objects.length; i++) {
+      if (this.wouldObjectsCollideAt(character, objects[i], x, y)) {
+        return true;
+      }
     }
 
-    if (triggerEvents) {
-      blockingCharacter.onBlockCharacter(character);
-      character.onBlockedBy(blockingCharacter);
-    }
-
-    return true;
+    return false;
   };
 
   Map.prototype.collidedObjects = function(x, y, character) {
-    if (this.validateCollision(x, y) !== true) {
-      return [];
-    }
+    // if (this.validateCollision(x, y) !== true) {
+    //   return [];
+    // }
 
-    var blockingCharacters = this.collisionMap[x][y].filter(function(item){
-      return item != character;
-    });
+    // var blockingCharacters = this.collisionMap[x][y].filter(function(item){
+    //   return item != character;
+    // });
 
     return blockingCharacters;
   };
 
-  Map.prototype.canMoveLeftAt = function(character, triggerEvents, map, xPos, yPos) {
-    if (triggerEvents === undefined) {
-      triggerEvents = false;
-    }
-    for (var y = yPos; y < (yPos + character.height); y++) {
+  Map.prototype.canMoveLeftAt = function(character, xPos, yPos) {
+    var y = yPos;
+    // for (var y = yPos; y < (yPos + character.height); y++) {
       if (!this.isValid(xPos - character.stepSize, y)) return false;
 
       for (var i = character.stepSize; i > 0; i--) {
-        if (this.isCollided(xPos - i, y, character, triggerEvents, map)) {
+        if (character.isCollidedAt(xPos, y)) {
           return false;
         }
       }
-    }
+    // }
 
     return true;
   };
 
-  Map.prototype.canMoveLeft = function(character, triggerEvents) {
-    return this.canMoveLeftAt(character, triggerEvents, this.collisionMap, character.x, character.y);
+  Map.prototype.canMoveLeft = function(character) {
+    return this.canMoveLeftAt(character, character.x, character.y);
   };
 
-  Map.prototype.canMoveRightAt = function(character, triggerEvents, map, xPos, yPos) {
-    if (triggerEvents === undefined) {
-      triggerEvents = false;
-    }
-    for (var y = yPos; y < (yPos + character.height); y++) {
+  Map.prototype.canMoveRightAt = function(character, xPos, yPos) {
+    var y = yPos;
+    // for (var y = yPos; y < (yPos + character.height); y++) {
       if (!this.isValid(xPos + character.width + character.stepSize, y)) return false;
 
       for (var i = character.stepSize; i > 0; i--) {
-        if (this.isCollided(xPos + character.width + i, y, character, triggerEvents, map)) {
+        if (character.isCollidedAt(xPos + character.width + i, y)) {
           return false;
         }
       }
-    }
+    // }
 
     return true;
   };
 
-  Map.prototype.canMoveRight = function(character, triggerEvents) {
-    return this.canMoveRightAt(character, triggerEvents, this.collisionMap, character.x, character.y);
+  Map.prototype.canMoveRight = function(character) {
+    return this.canMoveRightAt(character, character.x, character.y);
   };
 
-  Map.prototype.canMoveUpAt = function(character, triggerEvents, map, xPos, yPos) {
-    if (triggerEvents === undefined) {
-      triggerEvents = false;
-    }
-    for (var x = xPos; x < (xPos + character.width); x++) {
+  Map.prototype.canMoveUpAt = function(character, xPos, yPos) {
+    var x = xPos;
+    // for (var x = xPos; x < (xPos + character.width); x++) {
       if (!this.isValid(x, yPos - character.stepSize)) return false;
 
       for (var i = character.stepSize; i > 0; i--) {
-        if (this.isCollided(x, yPos - i, character, triggerEvents, map)) {
+        if (character.isCollidedAt(x, yPos - i)) {
           return false;
         }
+      }
+    // }
+
+    return true;
+  };
+
+  Map.prototype.canMoveUp = function(character) {
+    return this.canMoveUpAt(character, character.x, character.y);
+  };
+
+  Map.prototype.canMoveDownAt = function(character, xPos, yPos) {
+    var x = xPos;
+    if (!this.isValid(x, yPos + character.height + character.stepSize)) return false;
+
+    for (var i = character.stepSize; i > 0; i--) {
+      if (character.isCollidedAt(x, yPos + i)) {
+        return false;
       }
     }
 
     return true;
   };
 
-  Map.prototype.canMoveUp = function(character, triggerEvents) {
-    return this.canMoveUpAt(character, triggerEvents, this.collisionMap, character.x, character.y);
+  Map.prototype.canMoveDown = function(character) {
+    return this.canMoveDownAt(character, character.x, character.y);
   };
 
-  Map.prototype.canMoveDownAt = function(character, triggerEvents, map, xPos, yPos) {
-    if (triggerEvents === undefined) {
-      triggerEvents = false;
-    }
-    for (var x = xPos; x < (xPos + character.width); x++) {
-      if (!this.isValid(x, yPos + character.height + character.stepSize)) return false;
-
-      for (var i = character.stepSize; i > 0; i--) {
-        if (this.isCollided(x, yPos + character.height + i, character, triggerEvents, map)) {
-          return false;
-        }
-      }
-    }
-
-    return true;
-  };
-
-  Map.prototype.canMoveDown = function(character, triggerEvents) {
-    return this.canMoveDownAt(character, triggerEvents, this.collisionMap, character.x, character.y);
-  };
-
-  Map.prototype.reasonNotToMoveUp = function(character) {
-    for (var x = character.x; x < character.rightX; x++) {
-      if (!this.isValid(x, character.y - character.stepSize)) return [];
-
-      for (var i = character.stepSize; i > 0; i--) {
-        if (this.isCollided(x, character.y - i, character)) {
-          return this.collidedObjects(x, y, character);
-        }
-      }
-    }
-
-    return [];   
-  };
-
-  Map.prototype.reasonNotToMoveDown = function(character) {
-    for (var x = character.x; x < character.rightX; x++) {
-      if (!this.isValid(x, character.bottomY + character.stepSize)) return undefined;
-
-      for (var i = character.stepSize; i > 0; i--) {
-        if (this.isCollided(x, character.bottomY + i, character)) {
-          return this.collidedObjects(x, y, character);
-        }
-      }
-    }
-
-    return [];      
-  };
-
-  Map.prototype.reasonNotToMoveLeft = function(character) {
-    for (var y = character.y; y < character.bottomY; y++) {
-      if (!this.isValid(character.x - character.stepSize, y)) return undefined;
-
-      for (var i = character.stepSize; i > 0; i--) {
-        if (this.isCollided(character.x - i, y, character)) {
-          return this.collidedObjects(x, y, character);
-        }
-      }
-    }
-
-    return [];
-  };
-
-  Map.prototype.reasonNotToMoveRight = function(character) {
-    for (var y = character.y; y < character.bottomY; y++) {
-      if (!this.isValid(character.rightX + character.stepSize, y)) return undefined;
-
-      for (var i = character.stepSize; i > 0; i--) {
-        if (this.isCollided(character.rightX + i, y, character)) {
-          return this.collidedObjects(x, y, character);
-        }
-      }
-    }
-
-    return [];
-  };
-
-  Map.prototype.canMove = function(character, direction, triggerEvents) {
-    if (triggerEvents === undefined) {
-      triggerEvents = false;
-    }
+  Map.prototype.canMove = function(character, direction) {
 
     if (direction.indexOf('left') >= 0) {
-      if (!this.canMoveLeft(character, triggerEvents)) {
+      if (!this.canMoveLeft(character)) {
         return false;
       }
     } else if (direction.indexOf('right') >= 0) {
-      if (!this.canMoveRight(character, triggerEvents)) {
+      if (!this.canMoveRight(character)) {
         return false;
       }
     }
 
     if (direction.indexOf('up') >= 0) {
-      if (!this.canMoveUp(character, triggerEvents)) {
+      if (!this.canMoveUp(character)) {
         return false;
       }
     } else if (direction.indexOf('down') >= 0) {
-      if (!this.canMoveDown(character, triggerEvents)) {
+      if (!this.canMoveDown(character)) {
         return false;
       }
     }
 
     return true;
-  };
-
-  Map.prototype.reasonNotToMove = function(character, direction) {
-    if (direction.indexOf('left') >= 0) {
-      return this.reasonNotToMoveLeft(character);
-    } else if (direction.indexOf('right') >= 0) {
-      return this.reasonNotToMoveRight(character);
-    }
-
-    if (direction.indexOf('up') >= 0) {
-      return this.reasonNotToMoveUp(character);
-    } else if (direction.indexOf('down') >= 0) {
-      return this.reasonNotToMoveDown(character);
-    }
-
-    return [];
   };
 
   Map.prototype.loadMap = function(mapName) {

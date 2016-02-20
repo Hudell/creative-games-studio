@@ -26,27 +26,45 @@
     this._yOffset = 0;
     this._ghost = false;
     this._gravityEffects = false;
-    this._gravityStrength = 20;
+    this._gravityStrength = 0;
+    
+    this._leftArea = -1;
+    this._rightArea = -1;
+    this._topArea = -1;
+    this._bottomArea = -1;
+    
+    this._topLeftAreaId = -1;
+    this._bottomLeftAreaId = -1;
+    this._bottomRightAreaId = -1;
+    this._topRightAreaId = -1;
+
+    this._mapAreas = [];
   };
+
+  TCHE.reader(Character.prototype, 'mapAreas');
 
   Character.prototype.setX = function(value) {
     this._x = Math.round(value);
+    this.updateHorizontalAreas();
   };
   TCHE.accessor(Character.prototype, 'x', Character.prototype.setX);
 
   Character.prototype.setY = function(value) {
     this._y = Math.round(value);
+    this.updateVerticalAreas();
   };
   TCHE.accessor(Character.prototype, 'y', Character.prototype.setY);
 
   Character.prototype.setWidth = function(value) {
     this._width = Math.round(value);
+    this.updateHorizontalAreas();
   };
 
   TCHE.accessor(Character.prototype, 'width', Character.prototype.setWidth);
 
   Character.prototype.setHeight = function(value) {
     this._height = Math.round(value);
+    this.updateVerticalAreas();
   };
   TCHE.accessor(Character.prototype, 'height', Character.prototype.setHeight);
 
@@ -122,12 +140,136 @@
 
   TCHE.reader(Character.prototype, 'stepSize', Character.prototype.getStepSize);
 
-
-  Character.prototype.getCollisionMap = function() {
-    return TCHE.globals.map.collisionMap;
+  Character.prototype.updateAreas = function(){
+    this.updateVerticalAreas(false);
+    this.updateHorizontalAreas();
   };
 
-  TCHE.reader(Character.prototype, 'collisionMap', Character.prototype.getCollisionMap);
+  Character.prototype.updateVerticalAreas = function(updateMap){
+    if (updateMap === undefined) {
+      updateMap = true;
+    }
+
+    if (TCHE.globals.map.areaHeight === 0) {
+      return;
+    }    
+
+
+    this._topArea = Math.floor(this.hitboxTopY / TCHE.globals.map.areaHeight);
+    this._bottomArea = Math.floor( (this.hitboxBottomY - 1) / TCHE.globals.map.areaHeight);
+
+    if (!!updateMap) {
+      this.updateMapAreas();
+    }
+  };
+
+  Character.prototype.isCollidedAt = function(x, y) {
+    var columns = TCHE.globals.map.areaColumns;
+    if (columns === 0) {
+      return false;
+    }
+
+    console.log('isCollidedAt', x, y);
+
+    var realX = x + this.xOffset;
+    var realY = y + this.yOffset;
+
+    var topArea = Math.floor(realY / TCHE.globals.map.areaHeight);
+    var bottomArea = Math.floor((realY + this.height - 1) / TCHE.globals.map.areaHeight);
+    var leftArea = Math.floor(realX  / TCHE.globals.map.areaWidth);
+    var rightArea = Math.floor((realX  + this.width - 1) / TCHE.globals.map.areaWidth);
+
+    var topLeft = Math.max(topArea, 0) * columns + leftArea;
+    var bottomLeft = Math.max(bottomArea, 0) * columns + leftArea;
+    var topRight = Math.max(topArea, 0) * columns + rightArea;
+    var bottomRight = Math.max(bottomArea, 0) * columns + rightArea;
+
+    var numAreasX = topRight - topLeft;
+
+    for (var areaY = topLeft; areaY < bottomLeft; areaY += columns) {
+      for (var id = areaY; id <= areaY + numAreasX; id++) {
+        if (TCHE.globals.map.validateCollisionOnArea(id, this, realX, realY)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  };
+
+  Character.prototype.updateMapAreas = function() {
+    var columns = TCHE.globals.map.areaColumns;
+    if (columns === 0) {
+      return;
+    }
+
+    var newTopLeft = Math.max(this._topArea, 0) * columns + this._leftArea;
+    var newBottomLeft = Math.max(this._bottomArea, 0) * columns + this._leftArea;
+    var newTopRight = Math.max(this._topArea, 0) * columns + this._rightArea;
+    var newBottomRight = Math.max(this._bottomArea, 0) * columns + this._rightArea;
+
+    if (newTopLeft !== this._topLeftAreaId || newBottomLeft !== this._bottomLeftAreaId || newTopRight !== this._topRightAreaId || newBottomRight !== this._bottomRightAreaId) {
+      var areasToRemove = [];
+      var areasToAdd = [];
+      var y;
+      var id;
+      var numAreasX;
+
+      this._mapAreas.length = 0;
+
+      if (this._topLeftAreaId >= 0 && this._topRightAreaId >= 0) {
+        numAreasX = this._topRightAreaId - this._topLeftAreaId;
+
+        for (y = this._topLeftAreaId; y <= this._bottomLeftAreaId; y += columns) {
+          for (id = y; id <= y + numAreasX; id++) {
+            areasToRemove.push(id);
+          }
+        }
+      }
+
+      numAreasX = newTopRight - newTopLeft;
+
+      for (y = newTopLeft; y <= newBottomLeft; y += columns) {
+        for (id = y; id <= y + numAreasX; id++) {
+          var idx = areasToRemove.indexOf(id);
+          if (idx >= 0) {
+            areasToRemove[idx] = -1;
+          } else {
+            areasToAdd.push(id);
+          }
+
+          this._mapAreas.push(id);
+        }
+      }
+
+      var i;
+      for (i = 0; i < areasToRemove.length; i++) {
+        if (areasToRemove[i] >= 0) {
+          TCHE.globals.map.removeObjectFromArea(this, areasToRemove[i]);
+        }
+      }
+
+      for (i = 0; i < areasToAdd.length; i++) {
+        TCHE.globals.map.addObjectToArea(this, areasToAdd[i]);
+      }
+
+      this._topLeftAreaId = newTopLeft;
+      this._topRightAreaId = newTopRight;
+      this._bottomLeftAreaId = newBottomLeft;
+      this._bottomRightAreaId = newBottomRight;
+    }
+  };
+
+  Character.prototype.updateHorizontalAreas = function(){
+    if (TCHE.globals.map.areaWidth === 0) {
+      return;
+    }
+
+    this._leftArea = Math.floor(this.hitboxLeftX / TCHE.globals.map.areaWidth);
+    this._rightArea = Math.floor( (this.hitboxRightX - 1) / TCHE.globals.map.areaWidth);
+
+    this.updateMapAreas();
+  };
 
   Character.prototype.getDirectionToDest = function(){
     var directions = [];
@@ -206,19 +348,19 @@
   };
 
   Character.prototype.performLeftMovement = function(stepSize) {
-    this._x -= stepSize;
+    this.x -= stepSize;
   };
 
   Character.prototype.performRightMovement = function(stepSize) {
-    this._x += this.stepSize;
+    this.x += this.stepSize;
   };
 
   Character.prototype.performUpMovement = function(stepSize) {
-    this._y -= this.stepSize;
+    this.y -= this.stepSize;
   };
 
   Character.prototype.performDownMovement = function(stepSize) {
-    this._y += this.stepSize;
+    this.y += this.stepSize;
   };
 
   Character.prototype.performMovement = function(direction) {
@@ -243,7 +385,6 @@
     if (this.isMoving()) {
       this._lastBlockCharacter = null;
       this._lastBlockedByCharacter = null;
-      this.requestCollisionMapRefresh();
     }
 
     this.updateDirection(actualDirections);
@@ -293,10 +434,6 @@
     return anyDirection;
   };
 
-  Character.prototype.requestCollisionMapRefresh = function() {
-    TCHE.globals.map.requestCollisionMapRefresh();
-  };
-
   Character.prototype.isMoving = function() {
     if (this._frameInitialX !== this._x || this._frameInitialY !== this._y) return true;
     if (!!this._destX && !!this._destY && (this._x !== this._destX || this._y !== this._destY)) return true;
@@ -340,8 +477,6 @@
       return max;
     }
 
-    var collisionMap = this.collisionMap;
-
     var x = this.x;
     var y = this.y;
 
@@ -373,7 +508,7 @@
     }
 
     while (distance < max) {
-      if (method.call(map, this, false, collisionMap, x, y)) {
+      if (method.call(map, this, false, x, y)) {
         x += speedX;
         y += speedY;
         distance++;

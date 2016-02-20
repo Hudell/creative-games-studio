@@ -34,9 +34,5 @@
     TCHE.globals.map.changeMap(mapName);
   };
 
-  Player.prototype.requestCollisionMapRefresh = function() {
-    //Don't refresh the collision map for movements of the player.
-  };
-  
   TCHE.registerClass('Player', Player);
 })();

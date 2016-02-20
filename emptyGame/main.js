@@ -1,4 +1,5 @@
 TCHE.on("ready", function(){
+  TCHE.InputManager.addKeyAlias('F2', 'FPS');
 });
 
 TCHE.on("started", function(){

@@ -375,7 +375,6 @@ var STUDIO = {};
     $('.btn-save').click();
     STUDIO.saveGameData();
     STUDIO.saveMaps();
-    STUDIO.copyEngineFiles();
     STUDIO.markAsSaved();
     STUDIO.saveSettings();
   };
@@ -431,6 +430,8 @@ var STUDIO = {};
   };
 
   STUDIO.playProject = function() {
+    STUDIO.copyEngineFiles();
+    
     var newWin = gui.Window.open('file://' + STUDIO.settings.folder + '/debug.html', {
       position : 'center',
       title : STUDIO.gameData.name,
@@ -761,6 +762,7 @@ var STUDIO = {};
     var files = {
       'FPS Meter' : 'libs/fpsmeter.min.js',
       'PIXI' : 'libs/pixi.min.js',
+      'matter' : 'libs/matter.min.js',
       'SoundJs' : 'libs/soundjs-0.6.2.min.js'
     };
 
@@ -784,6 +786,7 @@ var STUDIO = {};
 
     copyFile('libs/fpsmeter.js');
     copyFile('libs/pixi.js');
+    copyFile('libs/matter.js');
     copyFile('libs/soundjs-0.6.2.combined.js');
 
     for (var key in files) {
@@ -1142,6 +1145,10 @@ var STUDIO = {};
     $('#play-btn').on('click', function(event) {
       event.preventDefault();
       STUDIO.playProjectButton();
+    });
+    $('#console-btn').on('click', function(event) {
+      event.preventDefault();
+      win.showDevTools();
     });
 
     $('#exit-btn').on('click', function(event) {

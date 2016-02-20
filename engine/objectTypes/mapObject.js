@@ -16,7 +16,9 @@
     this._properties.height = { type : 'number' };
     this._properties.autosize = { type : 'boolean' };
     this._properties.ghost = { type : 'boolean' };
+    this._properties.visible = { type : 'boolean' };
     this._properties.gravityEffects = { type : 'boolean' };
+    this._properties.gravityStrength = { type : 'number' };
     this._properties.sprite = { type : 'sprite' };
     this._properties.xOffset = { type : 'number' };
     this._properties.yOffset = { type : 'number' };

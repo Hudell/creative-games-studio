@@ -69,6 +69,8 @@ STUDIO.MapEditor = {};
     namespace.clearTilesetLocks();
     namespace.lockTileset();
 
+    namespace.applyObjectsDefaultValues(mapData);
+
     STUDIO.openWindow('map-editor', function(){
       var editorWidth = window.innerWidth - 524;
       var editorHeight = window.innerHeight - 104;
@@ -945,7 +947,7 @@ STUDIO.MapEditor = {};
   namespace.changeNumberProperty = function(propName, propData) {
     var currentValue = namespace.getPropertyValue(propName, 0);
 
-    STUDIO.Picker.pickNumber(currentValue, propName, function(numberValue){
+    STUDIO.Picker.pickNumber(currentValue, t(propName), function(numberValue){
       numberValue = parseFloat(numberValue);
       namespace.setPropertyValue(propName, numberValue);
     });
@@ -954,7 +956,7 @@ STUDIO.MapEditor = {};
   namespace.changeStringProperty = function(propName, propData) {
     var currentValue = namespace.getPropertyValue(propName, '');
 
-    STUDIO.Picker.pickString(currentValue, propName, function(stringValue){
+    STUDIO.Picker.pickString(currentValue, t(propName), function(stringValue){
       namespace.setPropertyValue(propName, stringValue);
     });
   };
@@ -1056,6 +1058,40 @@ STUDIO.MapEditor = {};
 
   };
 
+  namespace.applyObjectsDefaultValues = function(mapData) {
+    for (var i = 0; i < mapData.layers.length; i++) {
+      var layer = mapData.layers[i];
+
+      if (layer.type !== 'objectgroup') {
+        continue;
+      }
+
+      for (var j = 0; j < layer.objects.length; j++) {
+        var obj = layer.objects[j];
+
+        namespace.applyDefaultValues(obj);
+      }
+    }
+
+    namespace.applyDefaultValues(STUDIO.gameData.player);
+  };
+
+  namespace.applyDefaultValues = function(object) {
+    var objectData = STUDIO.ObjectManager.findObjectData(object.type);
+
+    if (!objectData) return;
+
+    for (var propName in objectData.properties) {
+      var data = objectData.properties[propName];
+
+      if (data.hasOwnProperty('default')) {
+        if (namespace.getObjectPropertyValue(object, propName, undefined) === undefined) {
+          namespace.setObjectPropertyValue(object, propName, data.default, false);
+        }
+      }
+    }
+  };
+
   namespace.validateMapObjectType = function(objectTypeName) {
     var objectData = STUDIO.ObjectManager.findObjectData(objectTypeName);
 
@@ -1138,6 +1174,8 @@ STUDIO.MapEditor = {};
 
       namespace.validateMapObjectType(newObject.type);
       namespace.validateMapObjectSprite(newObject.properties.sprite);
+
+      namespace.applyDefaultValues(newObject);
 
       layer.objects.push(newObject);
       namespace.onMapChange();
