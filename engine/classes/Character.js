@@ -116,24 +116,6 @@
   };
   TCHE.reader(Character.prototype, 'bottomY', Character.prototype.getBottomY);
 
-  Character.prototype.getHitboxLeftX = function(){
-    return this.x + this.xOffset;
-  };
-  Character.prototype.getHitboxRightX = function(){
-    return this.rightX + this.xOffset;
-  };
-  Character.prototype.getHitboxTopY = function(){
-    return this.y + this.yOffset;
-  };
-  Character.prototype.getHitboxBottomY = function(){
-    return this.bottomY + this.yOffset;
-  };
-
-  TCHE.reader(Character.prototype, 'hitboxLeftX', Character.prototype.getHitboxLeftX);
-  TCHE.reader(Character.prototype, 'hitboxRightX', Character.prototype.getHitboxRightX);
-  TCHE.reader(Character.prototype, 'hitboxTopY', Character.prototype.getHitboxTopY);
-  TCHE.reader(Character.prototype, 'hitboxBottomY', Character.prototype.getHitboxBottomY);
-
   Character.prototype.getStepSize = function(){
     return 4;
   };
@@ -154,13 +136,16 @@
       return;
     }    
 
-
-    this._topArea = Math.floor(this.hitboxTopY / TCHE.globals.map.areaHeight);
-    this._bottomArea = Math.floor( (this.hitboxBottomY - 1) / TCHE.globals.map.areaHeight);
+    this._topArea = Math.floor(this.y / TCHE.globals.map.areaHeight);
+    this._bottomArea = Math.floor( (this.bottomY - 1) / TCHE.globals.map.areaHeight);
 
     if (!!updateMap) {
       this.updateMapAreas();
     }
+  };
+
+  Character.prototype.isCollided = function() {
+    return this.isCollidedAt(this.x, this.y);
   };
 
   Character.prototype.isCollidedAt = function(x, y) {
@@ -169,10 +154,8 @@
       return false;
     }
 
-    console.log('isCollidedAt', x, y);
-
-    var realX = x + this.xOffset;
-    var realY = y + this.yOffset;
+    var realX = x;
+    var realY = y;
 
     var topArea = Math.floor(realY / TCHE.globals.map.areaHeight);
     var bottomArea = Math.floor((realY + this.height - 1) / TCHE.globals.map.areaHeight);
@@ -186,7 +169,7 @@
 
     var numAreasX = topRight - topLeft;
 
-    for (var areaY = topLeft; areaY < bottomLeft; areaY += columns) {
+    for (var areaY = topLeft; areaY <= bottomLeft; areaY += columns) {
       for (var id = areaY; id <= areaY + numAreasX; id++) {
         if (TCHE.globals.map.validateCollisionOnArea(id, this, realX, realY)) {
           return true;
@@ -265,8 +248,8 @@
       return;
     }
 
-    this._leftArea = Math.floor(this.hitboxLeftX / TCHE.globals.map.areaWidth);
-    this._rightArea = Math.floor( (this.hitboxRightX - 1) / TCHE.globals.map.areaWidth);
+    this._leftArea = Math.floor(this.x / TCHE.globals.map.areaWidth);
+    this._rightArea = Math.floor( (this.rightX - 1) / TCHE.globals.map.areaWidth);
 
     this.updateMapAreas();
   };
@@ -466,6 +449,39 @@
     }
   };
 
+  Character.prototype.getAvailableDistanceDown = function(max) {
+    var map = TCHE.globals.map;
+    
+    if (max === undefined) {
+      max = map.height;
+    }
+
+    if (!!this.ghost) {
+      return max;
+    }
+
+    var x = this.x;
+    var y = this.y;
+
+    var distance = 0;
+    var speedX = 0;
+    var speedY = 0;
+
+    var method;
+
+    while (distance < max) {
+      if (!map.isValid(x, y + this.height + distance)) return distance;
+
+      if (this.isCollidedAt(x, y + distance + 1)) {
+        return distance;
+      }
+
+      distance++;
+    }
+
+    return distance;
+  };
+
   Character.prototype.getAvailableDistance = function(direction, max) {
     var map = TCHE.globals.map;
     
@@ -508,7 +524,7 @@
     }
 
     while (distance < max) {
-      if (method.call(map, this, false, x, y)) {
+      if (method.call(map, this, x, y)) {
         x += speedX;
         y += speedY;
         distance++;
@@ -523,7 +539,7 @@
   Character.prototype.applyGravity = function() {
     if (!this.gravityEffects) return;
 
-    var distance = this.getAvailableDistance('down', this.gravityStrength);
+    var distance = this.getAvailableDistanceDown(this.gravityStrength);
 
     if (distance > 0) {
       this.y += distance;

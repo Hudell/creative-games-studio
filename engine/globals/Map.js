@@ -73,8 +73,8 @@
     var middleY = Math.floor(TCHE.renderer.height / 2);
     var mapMiddleX = Math.floor(this.width / 2);
     var mapMiddleY = Math.floor(this.height / 2);
-    var playerX = TCHE.globals.player.hitboxLeftX;
-    var playerY = TCHE.globals.player.hitboxTopY;
+    var playerX = TCHE.globals.player.x;
+    var playerY = TCHE.globals.player.y;
 
     if (diffX < 0) {
       this._offsetX = Math.abs(Math.floor(diffX / 2));
@@ -231,10 +231,17 @@
 
   Map.prototype.wouldObjectsCollideAt = function(character, object, x, y) {
     if (character == object) return false;
-    if (object.hitboxRightX <= x) return false;
-    if (object.hitboxBottomY <= y) return false;
-    if (object.hitboxLeftX >= x + character.width) return false;
-    if (object.hitboxTopY >= y + character.height) return false;
+    if (object.rightX <= x) return false;
+    if (object.bottomY <= y) return false;
+    if (object.x >= x + character.width) return false;
+    if (object.y >= y + character.height) return false;
+
+    //If the object is collided with the character at the character's current position too, then ignore this collision
+    if (object.rightX > character.x && object.bottomY > character.y) {
+      if (object.x < character.x + character.width && object.y < character.y + character.height) {
+        return false;
+      }
+    }
 
     return true;
   };
@@ -269,15 +276,13 @@
 
   Map.prototype.canMoveLeftAt = function(character, xPos, yPos) {
     var y = yPos;
-    // for (var y = yPos; y < (yPos + character.height); y++) {
-      if (!this.isValid(xPos - character.stepSize, y)) return false;
+    if (!this.isValid(xPos - character.stepSize, y)) return false;
 
-      for (var i = character.stepSize; i > 0; i--) {
-        if (character.isCollidedAt(xPos, y)) {
-          return false;
-        }
+    for (var i = character.stepSize; i > 0; i--) {
+      if (character.isCollidedAt(xPos - i, y)) {
+        return false;
       }
-    // }
+    }
 
     return true;
   };
@@ -288,15 +293,13 @@
 
   Map.prototype.canMoveRightAt = function(character, xPos, yPos) {
     var y = yPos;
-    // for (var y = yPos; y < (yPos + character.height); y++) {
-      if (!this.isValid(xPos + character.width + character.stepSize, y)) return false;
+    if (!this.isValid(xPos + character.width + character.stepSize, y)) return false;
 
-      for (var i = character.stepSize; i > 0; i--) {
-        if (character.isCollidedAt(xPos + character.width + i, y)) {
-          return false;
-        }
+    for (var i = character.stepSize; i > 0; i--) {
+      if (character.isCollidedAt(xPos + i, y)) {
+        return false;
       }
-    // }
+    }
 
     return true;
   };
@@ -307,15 +310,13 @@
 
   Map.prototype.canMoveUpAt = function(character, xPos, yPos) {
     var x = xPos;
-    // for (var x = xPos; x < (xPos + character.width); x++) {
-      if (!this.isValid(x, yPos - character.stepSize)) return false;
+    if (!this.isValid(x, yPos - character.stepSize)) return false;
 
-      for (var i = character.stepSize; i > 0; i--) {
-        if (character.isCollidedAt(x, yPos - i)) {
-          return false;
-        }
+    for (var i = character.stepSize; i > 0; i--) {
+      if (character.isCollidedAt(x, yPos - i)) {
+        return false;
       }
-    // }
+    }
 
     return true;
   };
