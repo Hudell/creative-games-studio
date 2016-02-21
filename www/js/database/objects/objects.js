@@ -328,8 +328,18 @@ STUDIO.ObjectManager = {};
     }
   };
 
-  namespace.objectExtendsThis = function(objectName, thisName, objectList) {
+  namespace.objectExtendsThis = function(objectName, thisNames, objectList) {
     //If the method received an object instead of a string, pick the name from the object
+    if (thisNames instanceof Array) {
+      for (var i = 0; i < thisNames.length; i++) {
+        if (namespace.objectExtendsThis(objectName, thisNames[i], objectList)) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
     if (typeof(objectName) === 'object') {
       if (!!objectName.name) {
         objectName = objectName.name;
@@ -338,15 +348,15 @@ STUDIO.ObjectManager = {};
       }
     }
     
-    if (typeof(thisName) !== 'object') {
-      if (!!thisName.name) {
-        thisName = thisName.name;
+    if (typeof(thisNames) === 'object') {
+      if (!!thisNames.name) {
+        thisNames = thisNames.name;
       } else {
         return false;
       }
     }
 
-    if (objectName == thisName) {
+    if (objectName == thisNames) {
       return true;
     }
 
@@ -361,10 +371,10 @@ STUDIO.ObjectManager = {};
       return false;
     }
 
-    if (object.inherits == thisName) {
+    if (object.inherits == thisNames) {
       return true;
     } else {
-      return namespace.objectExtendsThis(object.inherits, thisName);
+      return namespace.objectExtendsThis(object.inherits, thisNames);
     }
   };
 
@@ -436,13 +446,13 @@ STUDIO.ObjectManager = {};
     return list;
   };
 
-  namespace.getFilteredObjectList = function(baseObjectName, excludingTypes) {
+  namespace.getFilteredObjectList = function(baseObjectNames, excludingTypes) {
     var objectList = namespace.getListOfObjects();
     excludingTypes = excludingTypes || [];
     var newList = {};
 
     for (var key in objectList) {
-      if (namespace.objectExtendsThis(key, baseObjectName, objectList)) {
+      if (namespace.objectExtendsThis(key, baseObjectNames, objectList)) {
         var canAdd = true;
 
         for (var i = 0; i < excludingTypes.length; i++) {

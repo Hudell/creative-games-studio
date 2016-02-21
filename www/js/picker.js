@@ -240,8 +240,8 @@ STUDIO.Picker = {};
     });
   };
 
-  Picker.pickType = function(baseType, onPick, excludingTypes) {
-    var types = STUDIO.ObjectManager.getFilteredObjectList(baseType, excludingTypes);
+  Picker.pickType = function(baseTypes, onPick, excludingTypes) {
+    var types = STUDIO.ObjectManager.getFilteredObjectList(baseTypes, excludingTypes);
     var columns = [];
     var data = [];
     var keyColumn = 0;
