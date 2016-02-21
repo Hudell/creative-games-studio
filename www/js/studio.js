@@ -44,7 +44,7 @@ var STUDIO = {};
   STUDIO.ensureValidSettings();
 
   STUDIO.loadTranslation = function(fileName) {
-    var fileName = path.join('translation', fileName + '.json');
+    fileName = path.join('translation', fileName + '.json');
 
     try {
       if (fs.existsSync(fileName)) {
@@ -66,7 +66,7 @@ var STUDIO = {};
       englishTranslation = key;
     }
 
-    var key = key.trim();
+    key = key.trim();
 
     if (!STUDIO.translation) return englishTranslation;
     if (!STUDIO.translation[key]) return englishTranslation;
@@ -203,7 +203,6 @@ var STUDIO = {};
   STUDIO.loadJson = function(fileName) {
     if (!fs.existsSync(fileName)) {
       throw new Error(t("File not found: ") + fileName);
-      return;
     }
 
     var content = fs.readFileSync(fileName, {encoding : 'utf8'});
@@ -221,7 +220,7 @@ var STUDIO = {};
 
   STUDIO.clearTableRows = function(tableId) {
     $('#' + tableId).children('tbody').html('');
-  }
+  };
 
   STUDIO.addRowToTable = function(tableId, data, className, id) {
     var row = '<tr class="' + className + '-row clickable" data-element-id="' + id + '">';
@@ -762,7 +761,6 @@ var STUDIO = {};
     var files = {
       'FPS Meter' : 'libs/fpsmeter.min.js',
       'PIXI' : 'libs/pixi.min.js',
-      'matter' : 'libs/matter.min.js',
       'SoundJs' : 'libs/soundjs-0.6.2.min.js'
     };
 
@@ -786,7 +784,6 @@ var STUDIO = {};
 
     copyFile('libs/fpsmeter.js');
     copyFile('libs/pixi.js');
-    copyFile('libs/matter.js');
     copyFile('libs/soundjs-0.6.2.combined.js');
 
     for (var key in files) {
@@ -1002,7 +999,7 @@ var STUDIO = {};
 
     if (!STUDIO.gameData.scripts) {
       STUDIO.gameData.scripts = {};
-    };
+    }
 
     STUDIO.registerEngineScene('SceneMap');
     STUDIO.registerEngineScene('SceneTitle');
