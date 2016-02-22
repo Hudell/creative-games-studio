@@ -17,6 +17,9 @@ Create the "Picker" class and screens:
    ☐ Create an Object Picker
    ☐ Use the Picker on screens where the user has to choose one of those things
 
+Map Editor Improvements:
+   ☐ Don't draw the whole map, draw only what's currently visible
+
 Map Object Management:
   ☐ If the property is of type "tileset", the user will be able to pick a tileset using the tileset picker
   ☐ If the property is of type "skin", the user will be able to pick a skin using the skin picker
@@ -90,7 +93,7 @@ Tche Engine:
  ☐ Move the game validation from the engine to the editor
  ✔ Bring the engine source to the Editor (on a folder inside emptyGame) @done (16-02-17 15:01)
  ✔ Convert the old engine source from ES6 to ES5 @done (16-02-17 15:01)
- ☐ Generate a single tche.js file when the user save the game.
+ ✔ Generate a single tche.js file when the user save the game. @done (16-02-22 00:05)
 
 Tche Components (Define different behaviours using component objects):
  ☐ Create A component to manage the input
