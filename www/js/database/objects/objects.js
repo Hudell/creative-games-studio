@@ -414,6 +414,35 @@ STUDIO.ObjectManager = {};
     }, list);
   };
 
+  namespace.addBasicTcheBehaviorToObjectList = function(list) {
+    namespace.addTcheObjectToObjectList({
+      name : 'Behavior',
+      inherits : 'Object',
+      proerties : {
+      }
+    }, list);
+  };
+
+  namespace.addBasicTcheMapObjectBehaviorToObjectList = function(list){
+    namespace.addTcheObjectToObjectList({
+      name : 'MapObjectBehavior',
+      inherits : 'Behavior',
+      properties : {
+      }
+    }, list);
+  };
+
+  namespace.addBasicGravityBehaviorToObjectList = function(list){
+    namespace.addTcheObjectToObjectList({
+      name : 'Gravity',
+      inherits : 'MapObjectBehavior',
+      properties : {
+        'gravityEffects' : { type : 'boolean' },
+        'gravityStrength' : { type : 'number', default : 20}        
+      }
+    }, list);
+  };
+
   namespace.addBasicPlayerToObjectList = function(list) {
     namespace.addTcheObjectToObjectList({
       name : 'Player',
@@ -432,6 +461,9 @@ STUDIO.ObjectManager = {};
     namespace.addBasicTcheObjectToObjectList(list);
     namespace.addBasicTcheMapObjectToObjectList(list);
     namespace.addBasicPlayerToObjectList(list);
+    namespace.addBasicTcheBehaviorToObjectList(list);
+    namespace.addBasicTcheMapObjectBehaviorToObjectList(list);
+    namespace.addBasicGravityBehaviorToObjectList(list);
 
     return list;
   };
