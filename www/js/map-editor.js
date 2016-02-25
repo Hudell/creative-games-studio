@@ -772,53 +772,7 @@ STUDIO.MapEditor = {};
         value = prop.value;
       }
 
-      var strValue = value;
-
-      if (strValue === undefined) {
-        strValue = '';
-      }
-      if (strValue === null) {
-        strValue = 'null';
-      }
-
-      if (typeof(strValue) !== "string") {
-        if (!!strValue.toString) {
-          strValue = strValue.toString();
-        } else {
-          strValue = '';
-        }
-      }
-
-      var valueSpan = '';
-
-      switch (type) {
-        case 'sprite' :
-          var spriteIcon = '<i class="menu-option fa fa-image fa-fw"></i>';
-          if (strValue.trim() == '') {
-            valueSpan = '<span class="right">' + spriteIcon + '</span>';
-          } else {
-            valueSpan = '<span class="right">' + spriteIcon + ' ' + strValue + '</span>';
-          }
-          break;
-        case 'event' :
-          valueSpan = '<i class="menu-option fa fa-list-alt fa-fw right"></i>';
-          break;
-        case 'boolean' :
-          if (!!value) {
-            valueSpan = '<i class="menu-option fa fa-check-square-o fa-fw right"></i>';
-          } else {
-            valueSpan = '<i class="menu-option fa fa-square-o fa-fw right"></i>';
-          }
-
-          break;
-        default :
-          valueSpan = '<span class="right">' + strValue + '</span>';
-          break;
-      }
-
-      var translatedName = t(propName);
-
-      list.append('<li><a href="#" class="property-link" data-property-name="' + propName + '">' + translatedName + valueSpan + '</span></a></li>');
+      namespace.addPropertyToList(list, propName, value, type);
     }
 
     $('.property-link').off('click');
@@ -832,6 +786,59 @@ STUDIO.MapEditor = {};
 
       namespace.openPropertyPopup(propName, propData);
     });
+  };
+
+  namespace.addPropertyToList = function(list, propName, value, type) {
+    var strValue = value;
+
+    if (strValue === undefined) {
+      strValue = '';
+    }
+    if (strValue === null) {
+      strValue = 'null';
+    }
+
+    if (typeof(strValue) !== "string") {
+      if (!!strValue.toString) {
+        strValue = strValue.toString();
+      } else {
+        strValue = '';
+      }
+    }
+
+    var valueSpan = '';
+
+    switch (type) {
+      case 'sprite' :
+        var spriteIcon = '<i class="menu-option fa fa-image fa-fw"></i>';
+        if (strValue.trim() === '') {
+          valueSpan = '<span class="right">' + spriteIcon + '</span>';
+        } else {
+          valueSpan = '<span class="right">' + spriteIcon + ' ' + strValue + '</span>';
+        }
+        break;
+      case 'behaviors' :
+        valueSpan = '<i class="menu-option fa fa-list fa-fw right"></i>';
+        break;
+      case 'event' :
+        valueSpan = '<i class="menu-option fa fa-list-alt fa-fw right"></i>';
+        break;
+      case 'boolean' :
+        if (!!value) {
+          valueSpan = '<i class="menu-option fa fa-check-square-o fa-fw right"></i>';
+        } else {
+          valueSpan = '<i class="menu-option fa fa-square-o fa-fw right"></i>';
+        }
+
+        break;
+      default :
+        valueSpan = '<span class="right">' + strValue + '</span>';
+        break;
+    }
+
+    var translatedName = t(propName);
+
+    list.append('<li><a href="#" class="property-link" data-property-name="' + propName + '">' + translatedName + valueSpan + '</span></a></li>');
   };
 
   namespace.getObjectSpriteSize = function(objectData) {
@@ -967,6 +974,14 @@ STUDIO.MapEditor = {};
     namespace.setPropertyValue(propName, !currentValue);
   };
 
+  namespace.changeBehaviorsProperty = function(propName, propData) {
+    var value = namespace.getPropertyValue(propName, []);
+
+    STUDIO.Picker.pickBehaviors('MapObjectBehavior', function(behaviors){
+      namespace.setPropertyValue(propName, behaviors);
+    });
+  };
+
   namespace.changeEventProperty = function(propName, propData) {
     var value = namespace.getPropertyValue(propName, []);
 
@@ -991,6 +1006,9 @@ STUDIO.MapEditor = {};
         break;
       case 'event' :
         namespace.changeEventProperty(propName, propData);
+        break;
+      case 'behaviors' :
+        namespace.changeBehaviorsProperty(propName, propData);
         break;
     }
   };

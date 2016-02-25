@@ -240,7 +240,7 @@ STUDIO.Picker = {};
     });
   };
 
-  Picker.pickType = function(baseTypes, onPick, excludingTypes) {
+  Picker._pickType = function(baseTypes, onPick, excludingTypes, pickerName, title) {
     var types = STUDIO.ObjectManager.getFilteredObjectList(baseTypes, excludingTypes);
     var columns = [];
     var data = [];
@@ -259,9 +259,17 @@ STUDIO.Picker = {};
       data.push(newType);
     }
 
-    Picker.openPicker('picker', t("Object Picker"), onPick, columns, data, keyColumn, function(){
+    Picker.openPicker(pickerName, title, onPick, columns, data, keyColumn, function(){
       // On Load
     });
+  };
+
+  Picker.pickType = function(baseTypes, onPick, excludingTypes) {
+    Picker._pickType(baseTypes, onPick, excludingTypes, 'picker', t("Object Picker"));
+  };
+
+  Picker.pickBehaviors = function(baseTypes, onPick, excludingTypes) {
+    Picker._pickType(baseTypes, onPick, excludingTypes, 'behaviors', t("Behavior Picker"));
   };
 
   Picker.pickString = function(currentValue, label, onPick) {

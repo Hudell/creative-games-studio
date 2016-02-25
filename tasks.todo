@@ -95,7 +95,7 @@ Tche Engine:
  ✔ Convert the old engine source from ES6 to ES5 @done (16-02-17 15:01)
  ✔ Generate a single tche.js file when the user save the game. @done (16-02-22 00:05)
 
-Tche Components (Define different behaviours using component objects):
+Tche Components (Define different behaviors using component objects):
  ☐ Create A component to manage the input
  ☐ The component should be inheritable and there should be a screen where the user can swap a component for an inherited one.
 

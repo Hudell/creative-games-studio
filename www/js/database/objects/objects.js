@@ -398,6 +398,7 @@ STUDIO.ObjectManager = {};
         'width' : { type : 'number' },
         'height' : { type : 'number' },
         'autosize' : { type : 'boolean' },
+        'behaviors' : { type : 'behaviors' },
         'gravityEffects' : { type : 'boolean' },
         'gravityStrength' : { type : 'number', default : 20},
         'ghost' : { type : 'boolean' },
