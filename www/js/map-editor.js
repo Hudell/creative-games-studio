@@ -979,7 +979,7 @@ STUDIO.MapEditor = {};
 
     STUDIO.Picker.pickBehaviors('MapObjectBehavior', function(behaviors){
       namespace.setPropertyValue(propName, behaviors);
-    });
+    }, value);
   };
 
   namespace.changeEventProperty = function(propName, propData) {

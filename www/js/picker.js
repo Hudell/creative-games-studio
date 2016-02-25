@@ -7,6 +7,7 @@ STUDIO.Picker = {};
   var searchTimeoutHandler = 0;
   var currentColumns = [];
   var currentData = [];
+  var currentIconClass = 'fa-sign-in';
   var maxRows = 10;
   var lastFilter = false;
   var keyColumn = 0;
@@ -47,8 +48,7 @@ STUDIO.Picker = {};
       rowStr += '</td>';
     }
 
-    rowStr += '<td><a href="#" data-key="' + key + '"><i class="fa fw fa-sign-in"></i></a></td>';
-
+    rowStr += '<td><a href="#" data-key="' + key + '"><i class="fa fw ' + currentIconClass + '"></i></a></td>';
     rowStr += '</tr>';
 
     $('#picker-table').find('tbody').append(rowStr);
@@ -155,8 +155,15 @@ STUDIO.Picker = {};
     });
   };
 
-  Picker.openPicker = function(pickerType, title, onPick, columns, data, keyColumn, onLoad) {
+  Picker.openPicker = function(pickerType, title, onPick, columns, data, keyColumn, onLoad, pickerColumnTitle, iconClass) {
     Picker.onPick = onPick;
+
+    if (pickerColumnTitle === undefined) {
+      pickerColumnTitle = t("Pick");
+    }
+    if (iconClass === undefined) {
+      iconClass = 'fa-sign-in';
+    }
 
     Picker.requestPicker(pickerType, function(result, xhr){
       var div = $('<div id="picker-div"></div>');
@@ -166,12 +173,13 @@ STUDIO.Picker = {};
 
       currentData = data;
       currentColumns = columns;
+      currentIconClass = iconClass;
 
       var tr = $('#picker-table').find('thead').find('tr');
       for (var i = 0; i < columns.length; i++) {
-        tr.append('<th>' + columns[i].name + '</th>')
+        tr.append('<th>' + columns[i].name + '</th>');
       }
-      tr.append('<th>' + t("Pick") + '</th>');
+      tr.append('<th>' + pickerColumnTitle + '</th>');
 
       $('#picker-search').on('keypress', Picker.onChangeFilter);
       $('#picker-search').on('keydown', Picker.onChangeFilter);
@@ -240,7 +248,7 @@ STUDIO.Picker = {};
     });
   };
 
-  Picker._pickType = function(baseTypes, onPick, excludingTypes, pickerName, title) {
+  Picker._pickType = function(baseTypes, onPick, excludingTypes, pickerName, title, pickerColumnTitle, iconClass) {
     var types = STUDIO.ObjectManager.getFilteredObjectList(baseTypes, excludingTypes);
     var columns = [];
     var data = [];
@@ -261,15 +269,15 @@ STUDIO.Picker = {};
 
     Picker.openPicker(pickerName, title, onPick, columns, data, keyColumn, function(){
       // On Load
-    });
+    }, pickerColumnTitle, iconClass);
   };
 
   Picker.pickType = function(baseTypes, onPick, excludingTypes) {
     Picker._pickType(baseTypes, onPick, excludingTypes, 'picker', t("Object Picker"));
   };
 
-  Picker.pickBehaviors = function(baseTypes, onPick, excludingTypes) {
-    Picker._pickType(baseTypes, onPick, excludingTypes, 'behaviors', t("Behavior Picker"));
+  Picker.pickBehaviors = function(baseTypes, onPick, excludingTypes, checkedBehaviors) {
+    Picker._pickType(baseTypes, onPick, excludingTypes, 'behaviors', t("Behavior Picker"), t("Use"), "fa-square-o");
   };
 
   Picker.pickString = function(currentValue, label, onPick) {
