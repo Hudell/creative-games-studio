@@ -532,6 +532,7 @@ table.dataTable thead .sorting:after {
     margin-right: 250px;
     overflow: scroll;
     height: 100%;
+    margin-left: 40px;
 }
 
 .map-editor iframe {
@@ -544,6 +545,13 @@ table.dataTable thead .sorting:after {
     position: absolute;
     right: 0;
     top: 52px;
+}
+
+.map-editor-layer-list {
+    width: 40px;
+    position: absolute;
+    left: 0;
+    top: 104px;
 }
 
 .sidebar-toolbar {

@@ -117,7 +117,7 @@
   TCHE.reader(Character.prototype, 'bottomY', Character.prototype.getBottomY);
 
   Character.prototype.getStepSize = function(){
-    return 4;
+    return 2;
   };
 
   TCHE.reader(Character.prototype, 'stepSize', Character.prototype.getStepSize);

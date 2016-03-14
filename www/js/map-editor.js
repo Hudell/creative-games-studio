@@ -330,11 +330,11 @@ STUDIO.MapEditor = {};
   };
 
   namespace.loadLayerList = function() {
-    var list = $('#map-editor-layer-list');
+    var list = $('.map-editor-layer-list');
     list.html('');
 
-    list.append('<li><a class="map-editor-manage-layers" id="map-editor-manage-layers-btn" href="#"><i class="fa fa-cogs fa-fw"></i> ' + t("Manage Layers") + ' </a></li>');
-    list.append('<li class="divider"></li>');
+    list.append('<a class="map-editor-manage-layers" id="map-editor-manage-layers-btn" href="#" title="' + t("Manage Layers") + '"><i class="fa fa-cogs fa-fw"></i></a>');
+    list.append('<hr style="margin: 0">');
 
     var layers = namespace._currentMapData.layers;
     for (var i = 0; i < layers.length; i++) {
@@ -349,10 +349,17 @@ STUDIO.MapEditor = {};
           break;
       }
 
-      list.append('<li><a class="map-editor-layer-link" data-index="' + i + '" href="#"><i class="fa ' + icon + ' fa-fw layer-icon"></i> ' + layers[i].name + '</a></li>');
+      var eyeIcon = 'fa-eye';
+      if (!layers[i].visible) {
+        eyeIcon = 'fa-eye-slash';
+      }
+
+      list.append('<span><a class="map-editor-layer-link" data-index="' + i + '" href="#" title="' + layers[i].name + '"><i class="fa ' + icon + ' fa-fw layer-icon"></i></a><a class="map-editor-layer-visibility-link" data-index="' + i + '" href="#" ><i class="fa ' + eyeIcon + ' fa-fw layer-icon"></i></a></span>');
     }
-    list.append('<li class="divider"></li>');
-    list.append('<li><a class="map-editor-layer-new" href="#"><i class="fa fa-plus fa-fw"></i> ' + t("New Layer") + ' </a></li>');
+    list.append('<hr style="margin: 0">');
+    list.append('<a class="map-editor-layer-new" href="#" title="' + t("New Layer") + '"><i class="fa fa-plus fa-fw"></i></a>');
+
+    namespace.changeLayerIndex(namespace._currentLayerIndex);
 
     $('.map-editor-layer-link').on('click', function(event) {
       event.preventDefault();
@@ -360,6 +367,14 @@ STUDIO.MapEditor = {};
       var link = $(event.currentTarget);
       var layerIndex = event.currentTarget.dataset.index;
       namespace.changeLayerIndex(layerIndex);
+    });
+
+    $('.map-editor-layer-visibility-link').on('click', function(event) {
+      event.preventDefault();
+
+      var link = $(event.currentTarget);
+      var layerIndex = event.currentTarget.dataset.index;
+      namespace.changeLayerVisibility(layerIndex);
     });
 
     $('.map-editor-layer-new').on('click', function(event){
@@ -370,20 +385,27 @@ STUDIO.MapEditor = {};
     $('#map-editor-manage-layers-btn').on('click', function(event){
       event.preventDefault();
       namespace.manageLayers();
-    });    
+    });
+  };
+
+  namespace.changeLayerVisibility = function(index) {
+    namespace.toggleLayerVisibility(index);
+    
+    namespace.refreshLayers();
   };
 
   namespace.changeLayerIndex = function(index) {
     var oldIndex = namespace._currentLayerIndex;
     namespace._currentLayerIndex = index;
 
-    var layersStr = t("Layers");
+    $('.map-editor-layer-list .map-editor-layer-link i').css('color', '#337ab7');
 
     if (namespace._currentMapData.layers.length > index && index >= 0) {
-      var layerName = namespace._currentMapData.layers[index].name;
-      $('#map-editor-layer-name').html(layersStr + ' - ' + layerName);
-    } else {
-      $('#map-editor-layer-name').html(layersStr);
+      var el = $('.map-editor-layer-list .map-editor-layer-link i')[index];
+
+      if (!!el) {
+        $(el).css('color', 'red');
+      }
     }
 
     if (index !== oldIndex) {
@@ -437,10 +459,12 @@ STUDIO.MapEditor = {};
 
     var organizedData = [];
     var index = -1;
-    for (var y = 0; y < layer.height; y++) {
+    var y;
+    var x;
+    for (y = 0; y < layer.height; y++) {
       organizedData[y] = [];
 
-      for (var x = 0; x < layer.width; x++) {
+      for (x = 0; x < layer.width; x++) {
         index++;
 
         organizedData[y][x] = layer.data[index];
@@ -1870,6 +1894,7 @@ STUDIO.MapEditor = {};
     };
 
     switch(layerType) {
+      case 'collision' :
       case 'tilelayer' :
         newLayer.data = [];
         var tiles = mapData.width * mapData.height;
